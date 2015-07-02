@@ -78,6 +78,7 @@ public class Location {
         gp.setMaxSize(100, 100);
         gp.setMinSize(40, 40);
         gp.setPadding(new Insets(2));
+        gp.setFocusTraversable(true);
         GridPane.setHgrow(gp, Priority.ALWAYS);
         GridPane.setVgrow(gp, Priority.ALWAYS);
         //gp.setGridLinesVisible(true);
