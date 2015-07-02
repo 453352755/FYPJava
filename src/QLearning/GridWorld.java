@@ -49,7 +49,7 @@ public class GridWorld {
                 location[i][j] = new Location(i, j);
 
                 //check walls
-                if (i == 0 || i == rows || j == 0 || j == cols) {
+                if (i == 0 || i == rows-1 || j == 0 || j == cols-1) {
                     location[i][j].isWall = true;
                     location[i][j].reward = WallPenalty;
                 }
