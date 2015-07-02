@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.canvas.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox fx:id="root" maxHeight="1080.0" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" style="-fx-opacity: 1;" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="QLearning.GridController">
+   <children>
+      <VBox prefHeight="640.0" prefWidth="320.0">
+         <children>
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="320.0">
+               <children>
+                  <Button fx:id="leftButton" layoutX="10.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveLeft" prefHeight="100.0" prefWidth="100.0" text="left">
+                     <graphic>
+                        <ImageView fx:id="leftImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                           <image>
+                              <Image url="@arrow.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="rightButton" layoutX="210.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveRight" prefHeight="100.0" prefWidth="100.0" text="right">
+                     <graphic>
+                        <ImageView fx:id="rightImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@arrow.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="upButton" layoutX="110.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveUp" prefHeight="100.0" prefWidth="100.0" text="up">
+                     <graphic>
+                        <ImageView fx:id="upImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="270.0">
+                           <image>
+                              <Image url="@arrow.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="downButton" layoutX="110.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveDown" prefHeight="100.0" prefWidth="100.0" text="down">
+                     <graphic>
+                        <ImageView fx:id="downImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+                           <image>
+                              <Image url="@arrow.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </AnchorPane>
+            <Separator prefWidth="200.0" />
+            <AnchorPane prefHeight="130.0" prefWidth="320.0">
+               <children>
+                  <Label layoutX="5.0" layoutY="5.0" text="Algorithm setting" />
+                  <Label layoutX="10.0" layoutY="63.0" text="Discount" />
+                  <TextField fx:id="discountValue" layoutX="131.0" layoutY="59.0" onAction="#updateDiscountValue" prefHeight="25.0" prefWidth="106.0" promptText="0.9" />
+                  <TextField fx:id="greedyValue" layoutX="131.0" layoutY="91.0" onAction="#updateGreedyValue" prefHeight="25.0" prefWidth="106.0" promptText="0.8" />
+                  <Label layoutX="10.0" layoutY="93.0" text="Greedy" />
+                  <Label layoutX="10.0" layoutY="31.0" text="Size" />
+                  <ChoiceBox fx:id="rowBox" layoutX="131.0" layoutY="26.0" prefHeight="25.0" prefWidth="50.0" />
+                  <ChoiceBox fx:id="colBox" layoutX="185.0" layoutY="26.0" prefHeight="25.0" prefWidth="50.0" />
+               </children>
+            </AnchorPane>
+            <Separator prefWidth="200.0" />
+            <AnchorPane prefHeight="100.0" prefWidth="320.0">
+               <children>
+                  <Label layoutX="5.0" layoutY="5.0" text="Run" />
+                  <Button fx:id="resetButton" layoutX="233.0" layoutY="57.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
+                  <Label layoutX="10.0" layoutY="29.0" text="Speed" />
+                  <TextField fx:id="speedValue" layoutX="58.0" layoutY="26.0" onAction="#updateSpeedValue" prefHeight="25.0" prefWidth="126.0" promptText="1" />
+                  <Label fx:id="autorunStatus" layoutX="84.0" layoutY="61.0" text="Play to start auto run" />
+                  <Button fx:id="pause" alignment="CENTER" contentDisplay="CENTER" layoutX="46.0" layoutY="57.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pauseClicked" prefHeight="25.0" prefWidth="25.0">
+                     <graphic>
+                        <ImageView fx:id="pauseIcon" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#pauseClicked" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@pause.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="play" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="57.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playClicked" prefHeight="25.0" prefWidth="25.0">
+                     <graphic>
+                        <ImageView fx:id="playIcon" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#playClicked" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@play.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Label layoutX="196.0" layoutY="29.0" text="Steps per second" />
+               </children>
+            </AnchorPane>
+            <Separator prefWidth="200.0" />
+            <AnchorPane prefHeight="99.0" prefWidth="320.0">
+               <children>
+                  <Label layoutX="5.0" layoutY="5.0" text="Result" />
+                  <Label layoutX="10.0" layoutY="32.0" text="Total Steps：" />
+                  <Label layoutX="10.0" layoutY="67.0" text="Total Rewards：" />
+                  <Label fx:id="totalSteps" layoutX="100.0" layoutY="32.0" text="0" />
+                  <Label fx:id="totalRewards" layoutX="100.0" layoutY="67.0" text="0" />
+               </children>
+            </AnchorPane>
+            <Separator prefWidth="200.0" />
+            <AnchorPane prefHeight="74.0" prefWidth="320.0">
+               <children>
+                  <Label layoutX="5.0" layoutY="10.0" text="Brightness" />
+                  <Slider fx:id="brightness" blockIncrement="0.1" layoutX="79.0" layoutY="22.0" majorTickUnit="0.5" max="1.0" minorTickCount="1" prefHeight="14.0" prefWidth="126.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                  <Label fx:id="brightnessValue" layoutX="244.0" layoutY="12.0" text="0" />
+                  <CheckBox fx:id="tracing" layoutX="5.0" layoutY="41.0" mnemonicParsing="false" onAction="#tracingChecked" text="Tracing" />
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+      <StackPane fx:id="graphPane" maxHeight="1000.0" maxWidth="1000.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="640.0" HBox.hgrow="ALWAYS" />
+   </children>
+</HBox>
