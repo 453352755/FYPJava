@@ -80,7 +80,7 @@ public class Location {
         //newgp.getChildren().addAll(gp.getChildren());
         gp.setPrefSize(60, 60);
         gp.setMaxSize(100, 100);
-        gp.setMinSize(40, 40);
+        gp.setMinSize(30, 30);
         gp.setPadding(new Insets(2));
         gp.setFocusTraversable(true);
         gp.setBackground(new Background(new BackgroundFill(
@@ -229,14 +229,18 @@ public class Location {
         GridPane.setHgrow(tDown, Priority.ALWAYS);
         GridPane.setVgrow(tDown, Priority.ALWAYS);
 
-        gp.add(up, 2, 0);
-        gp.add(left, 0, 2);
-        gp.add(down, 2, 4);
-        gp.add(right, 4, 2);
-        gp.add(tUp, 2, 1);
-        gp.add(tLeft, 1, 2);
-        gp.add(tDown, 2, 3);
-        gp.add(tRight, 3, 2);
+        gp.add(up, 2, 1);
+        gp.add(left, 1, 2);
+        gp.add(down, 2, 3);
+        gp.add(right, 3, 2);
+        gp.add(tUp, 2, 0);
+        gp.add(tLeft, 0, 2);
+        gp.add(tDown, 2, 4);
+        gp.add(tRight, 4, 2);
+//        GridPane.setRowSpan(tRight, 3);
+//        GridPane.setRowSpan(tLeft, 3);
+//        GridPane.setColumnSpan(tUp, 3);
+//        GridPane.setColumnSpan(tDown, 3);
         gp.add(c, 2, 2);
 
         return gp;
@@ -248,50 +252,87 @@ public class Location {
         int range = 50;
         int value = (int) computeOptimal();
         int index = (value - (value / range) * range) / (range / 10);
-        if (reward > 0) {
+        if (reward > 0 && !isWall) {
             g.setBackground(new Background(new BackgroundFill(
-                    Paint.valueOf(app.Color.Green[5]), CornerRadii.EMPTY, Insets.EMPTY)));
-        } else if (reward < 0) {
+                    Paint.valueOf(app.Color.Green[3]), CornerRadii.EMPTY, Insets.EMPTY)));
+        } else if (reward < 0 && !isWall) {
             g.setBackground(new Background(new BackgroundFill(
-                    Paint.valueOf(app.Color.Red[5]), CornerRadii.EMPTY, Insets.EMPTY)));
+                    Paint.valueOf(app.Color.Red[3]), CornerRadii.EMPTY, Insets.EMPTY)));
         } else {
             g.setBackground(new Background(new BackgroundFill(
                     Paint.valueOf(app.Color.Yellow[index]), CornerRadii.EMPTY, Insets.EMPTY)));
         }
         for (int i = 0; i < g.getChildren().size(); i++) {
+//            if (g.getChildren().get(i).getClass().equals(Text.class)) {
+//                t = (Text) g.getChildren().get(i);
+//                if (GridPane.getRowIndex(t) == 1) { //up
+//                    t.setText(form.format(qvalues[GridWorld.Up]));
+//                } else if (GridPane.getRowIndex(t) == 3) { //down
+//                    t.setText(form.format(qvalues[GridWorld.Down]));
+//                } else if (GridPane.getColumnIndex(t) == 1) { //left
+//                    t.setText(form.format(qvalues[GridWorld.Left]));
+//                } else if (GridPane.getColumnIndex(t) == 3) { //right
+//                    t.setText(form.format(qvalues[GridWorld.Right]));
+//                }
+//            } else if (g.getChildren().get(i).getClass().equals(Polygon.class)) {
+//                Polygon p = (Polygon) g.getChildren().get(i);
+//                if (GridPane.getRowIndex(p) == 0) { //up
+//                    if (isOptimal[GridWorld.Up]) {
+//                        p.setVisible(true);
+//                    } else {
+//                        p.setVisible(false);
+//                    }
+//                } else if (GridPane.getRowIndex(p) == 4) { //down
+//                    if (isOptimal[GridWorld.Down]) {
+//                        p.setVisible(true);
+//                    } else {
+//                        p.setVisible(false);
+//                    }
+//                } else if (GridPane.getColumnIndex(p) == 0) { //left
+//                    if (isOptimal[GridWorld.Left]) {
+//                        p.setVisible(true);
+//                    } else {
+//                        p.setVisible(false);
+//                    }
+//                } else if (GridPane.getColumnIndex(p) == 4) { //right
+//                    if (isOptimal[GridWorld.Right]) {
+//                        p.setVisible(true);
+//                    } else {
+//                        p.setVisible(false);
+//                    }
+//                }
             if (g.getChildren().get(i).getClass().equals(Text.class)) {
                 t = (Text) g.getChildren().get(i);
-                if (GridPane.getRowIndex(t) == 1) { //up
+                if (GridPane.getRowIndex(t) == 0) { //up
                     t.setText(form.format(qvalues[GridWorld.Up]));
-                } else if (GridPane.getRowIndex(t) == 3) { //down
+                } else if (GridPane.getRowIndex(t) == 4) { //down
                     t.setText(form.format(qvalues[GridWorld.Down]));
-                } else if (GridPane.getColumnIndex(t) == 1) { //left
+                } else if (GridPane.getColumnIndex(t) == 0) { //left
                     t.setText(form.format(qvalues[GridWorld.Left]));
-                } else if (GridPane.getColumnIndex(t) == 3) { //right
+                } else if (GridPane.getColumnIndex(t) == 4) { //right
                     t.setText(form.format(qvalues[GridWorld.Right]));
                 }
             } else if (g.getChildren().get(i).getClass().equals(Polygon.class)) {
                 Polygon p = (Polygon) g.getChildren().get(i);
-                p.autosize();
-                if (GridPane.getRowIndex(p) == 0) { //up
+                if (GridPane.getRowIndex(p) == 1) { //up
                     if (isOptimal[GridWorld.Up]) {
                         p.setVisible(true);
                     } else {
                         p.setVisible(false);
                     }
-                } else if (GridPane.getRowIndex(p) == 4) { //down
+                } else if (GridPane.getRowIndex(p) == 3) { //down
                     if (isOptimal[GridWorld.Down]) {
                         p.setVisible(true);
                     } else {
                         p.setVisible(false);
                     }
-                } else if (GridPane.getColumnIndex(p) == 0) { //left
+                } else if (GridPane.getColumnIndex(p) == 1) { //left
                     if (isOptimal[GridWorld.Left]) {
                         p.setVisible(true);
                     } else {
                         p.setVisible(false);
                     }
-                } else if (GridPane.getColumnIndex(p) == 4) { //right
+                } else if (GridPane.getColumnIndex(p) == 3) { //right
                     if (isOptimal[GridWorld.Right]) {
                         p.setVisible(true);
                     } else {
