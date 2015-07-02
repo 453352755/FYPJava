@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TitledPane fx:id="detail" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="320.0" style="-fx-background-color: #D4E157;" text="Location Detail" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="QLearning.DetailController">
-   <content>
-      <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #D4E157;">
-         <children>
-            <StackPane fx:id="location" prefHeight="300.0" prefWidth="300.0" />
-            <Label fx:id="label" text="Label" />
-         </children>
-      </VBox>
-   </content>
-</TitledPane>
+<VBox fx:id="vbox" prefHeight="640.0" prefWidth="320.0" style="-fx-background-color: #D4E157;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="QLearning.DetailController">
+   <children>
+      <StackPane fx:id="locationPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="320.0" style="-fx-background-color: #E0F7FA;" />
+      <Label fx:id="label" text="Label">
+         <font>
+            <Font size="26.0" />
+         </font>
+      </Label>
+   </children>
+</VBox>

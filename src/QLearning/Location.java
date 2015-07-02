@@ -51,6 +51,18 @@ public class Location {
         special = false;
     }
 
+    public Location clone() {
+        Location newLocation = new Location(this.x, this.y);
+        newLocation.isBlock = this.isBlock;
+        newLocation.isOptimal = this.isOptimal;
+        newLocation.isWall = this.isWall;
+        newLocation.qvalues = this.qvalues.clone();
+        newLocation.reward = this.reward;
+        newLocation.visits = this.visits.clone();
+        newLocation.special = this.special;
+        return newLocation;
+    }
+
     public Location(int row, int col, double reward, boolean special) {
         this.x = row;
         this.y = col;
@@ -79,7 +91,7 @@ public class Location {
 
         //newgp.getChildren().addAll(gp.getChildren());
         gp.setPrefSize(60, 60);
-        gp.setMaxSize(100, 100);
+        gp.setMaxSize(320, 320);
         gp.setMinSize(30, 30);
         gp.setPadding(new Insets(2));
         gp.setFocusTraversable(true);
@@ -148,9 +160,9 @@ public class Location {
         Font font = new Font(11);
         Text tUp = new Text("1");
         tUp.setTextAlignment(TextAlignment.CENTER);
-
+        
         Text tDown = new Text("1");
-
+        
         Text tLeft = new Text("1");
         tLeft.setRotate(270);
 

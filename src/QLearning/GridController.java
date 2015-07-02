@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -21,11 +22,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
 public class GridController {
@@ -36,13 +44,13 @@ public class GridController {
     private final QLearnAlgo algo = new QLearnAlgo(new GridWorld(10, 10));
     private GridPane grid;
     private GridPane selectedLocation;
-    private TitledPane detail;
+    private VBox detailPane;
     private DetailController detailCtrl;
 
     public void setGridWorld(int row, int col) {
         algo.gw = new GridWorld(row, col);
         System.out.println("New grid world set");
-        System.out.format("Rows: %d, Cols: %d", row, col);
+        System.out.format("Rows: %d, Cols: %d\n", row, col);
     }
 
     public void initialize() {
@@ -65,13 +73,14 @@ public class GridController {
         );
         rowBox.setValue(10);
         colBox.setValue(10);
-        
+
         //initialize deatail pane
         FXMLLoader detailLoader = new FXMLLoader();
         detailLoader.setLocation(getClass().getClassLoader().getResource("resource/detail.fxml"));
-        
+
         try {
-            detail = (TitledPane) detailLoader.load();
+            detailPane = (VBox) detailLoader.load();
+            System.out.println(detailPane.getChildrenUnmodifiable().size());
             detailCtrl = detailLoader.getController();
             System.out.println("Detail loaded");
         } catch (IOException ex) {
@@ -83,12 +92,13 @@ public class GridController {
             if (o.doubleValue() < 1280 && n.doubleValue() >= 1280) {
                 System.out.println("GUI expanded, showing node detail");
                 if (selectedLocation != null) {
-                    detailCtrl.location.getChildren().add(selectedLocation);
+                    //detailCtrl.location.getChildren().add(selectedLocation);
+                    System.out.println(detailCtrl.locationPane.isVisible());
                 }
-                root.getChildren().add(root.getChildren().size(), detail);
+                root.getChildren().add(root.getChildren().size(), detailPane);
             } else if (o.doubleValue() >= 1280 && n.doubleValue() < 1280) {
-                if (root.getChildren().contains(detail)) {
-                    root.getChildren().remove(detail);
+                if (root.getChildren().contains(detailPane)) {
+                    root.getChildren().remove(detailPane);
                 }
             }
         });
@@ -100,7 +110,8 @@ public class GridController {
         grid = new GridPane();
         grid.setPrefSize(640, 640);
         grid.setMaxSize(1000, 1000);
-        grid.setStyle("-fx-background-color: #C0C0C0;");
+        grid.setBackground(new Background(new BackgroundFill(
+                Paint.valueOf(app.Color.White), CornerRadii.EMPTY, Insets.EMPTY)));
         grid.setGridLinesVisible(true);
         grid.setAlignment(Pos.CENTER);
         grid.setCenterShape(true);
@@ -118,12 +129,24 @@ public class GridController {
             for (int j = 0; j < algo.gw.getCols(); j++) {
                 GridPane location = Location.newNode();
                 location.setOnMouseClicked((MouseEvent t) -> {
-                    System.out.print("mouse clicked: row ");
                     selectedLocation = (GridPane) t.getSource();
-                    System.out.print(GridPane.getRowIndex(selectedLocation));
+                    int row = GridPane.getRowIndex(selectedLocation);
+                    int col = GridPane.getColumnIndex(selectedLocation);
+                    String s = "-fx-border-color: "+app.Color.Blue[5]+";-fx-border-width:2;";
+                    selectedLocation.setStyle(s);
+                    System.out.print("mouse clicked: row ");
+                    System.out.print(row);
                     System.out.print(" col ");
-                    System.out.println(GridPane.getColumnIndex(selectedLocation));
-                    detailCtrl.location.getChildren().add(selectedLocation);
+                    System.out.println(col);
+                    GridPane loc = Location.newNode();
+                    algo.gw.location[row][col].updateQ(loc);
+                    try {
+                        detailCtrl.locationPane.getChildren().remove(0);
+                    } catch (Exception n) {
+                        
+                    }
+                    detailCtrl.locationPane.getChildren().add(loc);
+
                 });
                 grid.add(location, i, j);
 
@@ -274,6 +297,9 @@ public class GridController {
             col = 10;
         }
         setGridWorld(row, col);
+        graphPane.getChildren().remove(grid);
+        gridPaneInit();
+        graphPane.getChildren().add(grid);
         repaintAll();
         updatePerformance();
     }
