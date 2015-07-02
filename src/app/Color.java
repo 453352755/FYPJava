@@ -2,11 +2,12 @@ package app;
 
 /**
  * Color value from Google material design
+ *
  * @author Dong Yubo
  */
 public class Color {
 
-    public String[] Red = {
+    public static String[] Red = {
         "#FFEBEE",
         "#FFCDD2",
         "#EF9A9A",
@@ -19,7 +20,7 @@ public class Color {
         "#B71C1C"
     };
 
-    public String[] Pink = {
+    public static String[] Pink = {
         "#FCE4EC",
         "#F8BBD0",
         "#F48FB1",
@@ -32,7 +33,7 @@ public class Color {
         "#880E4F"
     };
 
-    public String[] Purple = {
+    public static String[] Purple = {
         "#F3E5F5",
         "#E1BEE7",
         "#CE93D8",
@@ -45,7 +46,7 @@ public class Color {
         "#4A148C"
     };
 
-    public String[] DeepPurple = {
+    public static String[] DeepPurple = {
         "#EDE7F6",
         "#D1C4E9",
         "#B39DDB",
@@ -58,7 +59,7 @@ public class Color {
         "#311B92"
     };
 
-    public String[] Indigo = {
+    public static String[] Indigo = {
         "#E8EAF6",
         "#C5CAE9",
         "#9FA8DA",
@@ -71,7 +72,7 @@ public class Color {
         "#1A237E"
     };
 
-    public String[] Blue = {
+    public static String[] Blue = {
         "#E3F2FD",
         "#BBDEFB",
         "#90CAF9",
@@ -84,7 +85,7 @@ public class Color {
         "#0D47A1"
     };
 
-    public String[] LightBlue = {
+    public static String[] LightBlue = {
         "#E1F5FE",
         "#B3E5FC",
         "#81D4FA",
@@ -97,7 +98,7 @@ public class Color {
         "#01579B"
     };
 
-    public String[] Cyan = {
+    public static String[] Cyan = {
         "#E0F7FA",
         "#B2EBF2",
         "#80DEEA",
@@ -110,7 +111,7 @@ public class Color {
         "#006064"
     };
 
-    public String[] Teal = {
+    public static String[] Teal = {
         "#E0F2F1",
         "#B2DFDB",
         "#80CBC4",
@@ -123,7 +124,7 @@ public class Color {
         "#004D40"
     };
 
-    public String[] Green = {
+    public static String[] Green = {
         "#E8F5E9",
         "#C8E6C9",
         "#A5D6A7",
@@ -135,8 +136,8 @@ public class Color {
         "#2E7D32",
         "#1B5E20"
     };
-    
-    public String[] LightGreen = {
+
+    public static String[] LightGreen = {
         "#F1F8E9",
         "#DCEDC8",
         "#C5E1A5",
@@ -148,8 +149,8 @@ public class Color {
         "#558B2F",
         "#33691E"
     };
-    
-    public String[] Lime = {
+
+    public static String[] Lime = {
         "#F9FBE7",
         "#F0F4C3",
         "#E6EE9C",
@@ -161,8 +162,8 @@ public class Color {
         "#9E9D24",
         "#827717"
     };
-    
-    public String[] Yellow = {
+
+    public static String[] Yellow = {
         "#FFFDE7",
         "#FFF9C4",
         "#FFF59D",
@@ -174,8 +175,8 @@ public class Color {
         "#F9A825",
         "#F57F17"
     };
-    
-    public String[] Amber = {
+
+    public static String[] Amber = {
         "#FFF8E1",
         "#FFECB3",
         "#FFE082",
@@ -187,8 +188,8 @@ public class Color {
         "#FF8F00",
         "#FF6F00"
     };
-    
-    public String[] Orange = {
+
+    public static String[] Orange = {
         "#FFF3E0",
         "#FFE0B2",
         "#FFCC80",
@@ -200,8 +201,8 @@ public class Color {
         "#EF6C00",
         "#E65100"
     };
-    
-    public String[] DeepOrange = {
+
+    public static String[] DeepOrange = {
         "#FBE9E7",
         "#FFCCBC",
         "#FFAB91",
@@ -213,8 +214,8 @@ public class Color {
         "#D84315",
         "#BF360C"
     };
-    
-    public String[] Brown = {
+
+    public static String[] Brown = {
         "#EFEBE9",
         "#D7CCC8",
         "#BCAAA4",
@@ -226,8 +227,8 @@ public class Color {
         "#4E342E",
         "#3E2723"
     };
-    
-    public String[] Grey = {
+
+    public static String[] Grey = {
         "#FAFAFA",
         "#F5F5F5",
         "#EEEEEE",
@@ -239,8 +240,8 @@ public class Color {
         "#424242",
         "#212121"
     };
-    
-    public String[] BlueGrey = {
+
+    public static String[] BlueGrey = {
         "#ECEFF1",
         "#CFD8DC",
         "#B0BEC5",
@@ -252,8 +253,8 @@ public class Color {
         "#37474F",
         "#263238"
     };
-    
-    public String Black = "#000000";
 
-    public String White = "#FFFFFF";
+    public static String Black = "#000000";
+
+    public static String White = "#FFFFFF";
 }

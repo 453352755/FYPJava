@@ -11,11 +11,15 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
@@ -71,7 +75,7 @@ public class Location {
 
     public static GridPane newNode() {
         final GridPane gp = new GridPane();
-        String style = "";
+        String color = app.Color.Red[2];
 
         //newgp.getChildren().addAll(gp.getChildren());
         gp.setPrefSize(60, 60);
@@ -79,6 +83,8 @@ public class Location {
         gp.setMinSize(40, 40);
         gp.setPadding(new Insets(2));
         gp.setFocusTraversable(true);
+        gp.setBackground(new Background(new BackgroundFill(
+                Paint.valueOf(color), CornerRadii.EMPTY, Insets.EMPTY)));
         GridPane.setHgrow(gp, Priority.ALWAYS);
         GridPane.setVgrow(gp, Priority.ALWAYS);
         //gp.setGridLinesVisible(true);
@@ -138,8 +144,6 @@ public class Location {
         Polygon left = new Polygon(new double[]{
             0, 6, 12, 0, 12, 12
         });
-        
-        
 
         Font font = new Font(11);
         Text tUp = new Text("1");
@@ -165,7 +169,7 @@ public class Location {
 
         Circle c = new Circle();
         c.setRadius(7);
-        c.setFill(Color.YELLOW);
+        c.setFill(Color.BLACK);
         c.setVisible(false);
 
         /**
@@ -241,7 +245,19 @@ public class Location {
     public void updateQ(GridPane g) {
         Text t;
         Format form = new DecimalFormat("0.##");
-        computeOptimal();
+        int range = 50;
+        int value = (int) computeOptimal();
+        int index = (value - (value / range) * range) / (range / 10);
+        if (reward > 0) {
+            g.setBackground(new Background(new BackgroundFill(
+                    Paint.valueOf(app.Color.Green[5]), CornerRadii.EMPTY, Insets.EMPTY)));
+        } else if (reward < 0) {
+            g.setBackground(new Background(new BackgroundFill(
+                    Paint.valueOf(app.Color.Red[5]), CornerRadii.EMPTY, Insets.EMPTY)));
+        } else {
+            g.setBackground(new Background(new BackgroundFill(
+                    Paint.valueOf(app.Color.Yellow[index]), CornerRadii.EMPTY, Insets.EMPTY)));
+        }
         for (int i = 0; i < g.getChildren().size(); i++) {
             if (g.getChildren().get(i).getClass().equals(Text.class)) {
                 t = (Text) g.getChildren().get(i);
@@ -287,7 +303,7 @@ public class Location {
         }
     }
 
-    public void computeOptimal() {
+    public double computeOptimal() {
         double big = qvalues[0];
         for (int i = 0; i < qvalues.length; i++) {
             if (qvalues[i] > big) {
@@ -297,6 +313,7 @@ public class Location {
         for (int i = 0; i < qvalues.length; i++) {
             isOptimal[i] = qvalues[i] == big;
         }
+        return big;
     }
 
     ////////////////////////////////////////////////////////////////////////////
