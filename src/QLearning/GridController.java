@@ -298,6 +298,7 @@ public class GridController {
         }
         setGridWorld(row, col);
         graphPane.getChildren().remove(grid);
+        detailCtrl.locationPane.getChildren().remove(0);
         gridPaneInit();
         graphPane.getChildren().add(grid);
         repaintAll();
