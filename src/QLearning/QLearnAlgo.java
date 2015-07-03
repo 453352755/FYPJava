@@ -8,8 +8,8 @@ public class QLearnAlgo {
 
     private double discount = 0.9;
     private boolean alphaFixed = false;
-    private double greedyProb;
-    private double alpha;
+    private double greedyProb = 0.8;
+    private double alpha = 0.5;
     private boolean tracing = false;
     private GridWorld gridWorld;
 

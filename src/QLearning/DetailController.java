@@ -16,13 +16,25 @@ import javafx.scene.layout.VBox;
 public class DetailController implements Initializable {
 
     @FXML
-    public StackPane locationPane;
+    private StackPane locationPane;
 
     @FXML
     private VBox detailPane;
 
     @FXML
     private Label label;
+
+    public StackPane getLocationPane() {
+        return locationPane;
+    }
+
+    public VBox getDetailPane() {
+        return detailPane;
+    }
+
+    public Label getLabel() {
+        return label;
+    }
 
     /**
      * Initializes the controller class.
@@ -33,6 +45,7 @@ public class DetailController implements Initializable {
         assert locationPane != null : "fx:id=\"location\" was not injected: check your FXML file 'detail.fxml'.";
         assert detailPane != null : "fx:id=\"detail\" was not injected: check your FXML file 'detail.fxml'.";
         assert label != null : "fx:id=\"label\" was not injected: check your FXML file 'detail.fxml'.";
+        label.setText(null);
     }
 
 }

@@ -97,7 +97,7 @@ public class GridController {
                 System.out.println("GUI expanded, showing node detail");
                 if (selectedLocation != null) {
                     //detailCtrl.location.getChildren().add(selectedLocation);
-                    System.out.println(detailCtrl.locationPane.isVisible());
+                    System.out.println(detailCtrl.getLocationPane().isVisible());
                 }
                 root.getChildren().add(root.getChildren().size(), detailPane);
             } else if (o.doubleValue() >= 1280 && n.doubleValue() < 1280) {
@@ -151,11 +151,13 @@ public class GridController {
                     //GridPane loc = Location.newNode();
                     loc.repaint(algo.getGridWorld());
                     try {
-                        detailCtrl.locationPane.getChildren().remove(0);
+                        detailCtrl.getLocationPane().getChildren().remove(0);
                     } catch (Exception n) {
 
                     }
-                    detailCtrl.locationPane.getChildren().add(loc.getLocPane());
+                    detailCtrl.getLocationPane().getChildren().add(loc.getLocPane());
+                    detailCtrl.getLabel().setText("Location Value: "+String.valueOf(
+                            algo.getGridWorld().getLocation(row, col).getLocationValue()));
 
                 });
 
@@ -303,7 +305,7 @@ public class GridController {
         }
         setGridWorld(row, col);
         graphPane.getChildren().remove(grid);
-        detailCtrl.locationPane.getChildren().remove(0);
+        detailCtrl.getLocationPane().getChildren().remove(0);
         gridPaneInit();
         graphPane.getChildren().add(grid);
         repaintAll();
