@@ -1,5 +1,9 @@
 package QLearning;
 
+/**
+ *
+ * @author Dong Yubo
+ */
 import java.text.DecimalFormat;
 import java.text.Format;
 import javafx.event.ActionEvent;
@@ -26,33 +30,36 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
-/**
- *
- * @author Dong Yubo
- */
 public class Location {
 
-    public double x; //row
-    public double y; //column
-    public double reward;
-    public boolean special;
-    public boolean isWall = false;
-    public boolean isBlock = false;
-    public double[] qvalues = new double[4];
-    public boolean[] isOptimal = new boolean[4];
-    public int[] visits = new int[4];
+    private int row; //row
+    private int col; //column
+    private double reward;
+
+    private boolean special;
+    private boolean isWall = false;
+    private boolean isBlock = false;
+
+    private double[] qvalues = new double[4];
+    private double locationValue;
+    private boolean[] isOptimal = new boolean[4];
+    private int[] visits = new int[4];
+
+    private GridPane locPane;
 
     ////////////////////////////////////////////////////////////////////////////
     //for grid world
+
     public Location(int row, int col) {
-        this.x = row;
-        this.y = col;
+        this.row = row;
+        this.col = col;
         reward = 0.0;
         special = false;
+        locPane = newNode();
     }
 
     public Location clone() {
-        Location newLocation = new Location(this.x, this.y);
+        Location newLocation = new Location(this.row, this.col);
         newLocation.isBlock = this.isBlock;
         newLocation.isOptimal = this.isOptimal;
         newLocation.isWall = this.isWall;
@@ -60,22 +67,86 @@ public class Location {
         newLocation.reward = this.reward;
         newLocation.visits = this.visits.clone();
         newLocation.special = this.special;
+        newLocation.locationValue = this.locationValue;
+        
         return newLocation;
     }
 
-    public Location(int row, int col, double reward, boolean special) {
-        this.x = row;
-        this.y = col;
-        this.reward = reward;
-        this.special = special;
-    }
-
     public int getRow() {
-        return (int) x;
+        return row;
     }
 
     public int getCol() {
-        return (int) y;
+        return col;
+    }
+
+    public double getReward() {
+        return reward;
+    }
+
+    public boolean isSpecial() {
+        return special;
+    }
+
+    public boolean isWall() {
+        return isWall;
+    }
+
+    public boolean isBlock() {
+        return isBlock;
+    }
+
+    public double[] getQvalues() {
+        return qvalues;
+    }
+
+    public double getQvalue(int i) {
+        return qvalues[i];
+    }
+
+    public double getLocationValue() {
+        return locationValue;
+    }
+
+    public GridPane getLocPane() {
+        return locPane;
+    }
+    
+
+    public boolean[] getIsOptimal() {
+        return isOptimal;
+    }
+
+    public int getVisit(int d) {
+        return visits[d];
+    }
+
+    public void setReward(double reward) {
+        this.reward = reward;
+    }
+
+    public void setSpecial(boolean special) {
+        this.special = special;
+    }
+
+    public void setIsWall(boolean isWall) {
+        this.isWall = isWall;
+    }
+
+    public void setIsBlock(boolean isBlock) {
+        this.isBlock = isBlock;
+    }
+
+    public void setQvalue(int i, double v) {
+        this.qvalues[i] = v;
+    }
+
+    public void setLocationValue(double locationValue) {
+        this.locationValue = locationValue;
+    }
+
+    public void visited(int i) {
+        this.visits[i]++;
     }
 
     public void doreset(double initVal) {
@@ -85,6 +156,16 @@ public class Location {
         }
     }
 
+    
+    public void print(){
+        String s = "";
+        System.out.format("row %d col %d\n",row,col);
+        for (int i = 0; i < qvalues.length; i++) {
+            System.out.print(qvalues[i]);
+            System.out.print(" ");
+        }
+        System.out.println("");
+    }
     public static GridPane newNode() {
         final GridPane gp = new GridPane();
         String color = app.Color.Red[2];
@@ -160,9 +241,9 @@ public class Location {
         Font font = new Font(11);
         Text tUp = new Text("1");
         tUp.setTextAlignment(TextAlignment.CENTER);
-        
+
         Text tDown = new Text("1");
-        
+
         Text tLeft = new Text("1");
         tLeft.setRotate(270);
 
@@ -258,23 +339,29 @@ public class Location {
         return gp;
     }
 
-    public void updateQ(GridPane g) {
+//    public void repaint(GridWorld gw) {
+//        repaint(this.locPane,gw);
+//    }
+
+    public void repaint(GridWorld gw) {
+        print();
         Text t;
         Format form = new DecimalFormat("0.##");
         int range = 50;
-        int value = (int) computeOptimal();
-        int index = (value - (value / range) * range) / (range / 10);
+        int LocalValue = (int) computeOptimal();
+        int index = (LocalValue - (LocalValue / range) * range) / (range / 10);
+
         if (reward > 0 && !isWall) {
-            g.setBackground(new Background(new BackgroundFill(
+            locPane.setBackground(new Background(new BackgroundFill(
                     Paint.valueOf(app.Color.Green[3]), CornerRadii.EMPTY, Insets.EMPTY)));
         } else if (reward < 0 && !isWall) {
-            g.setBackground(new Background(new BackgroundFill(
+            locPane.setBackground(new Background(new BackgroundFill(
                     Paint.valueOf(app.Color.Red[3]), CornerRadii.EMPTY, Insets.EMPTY)));
         } else {
-            g.setBackground(new Background(new BackgroundFill(
+            locPane.setBackground(new Background(new BackgroundFill(
                     Paint.valueOf(app.Color.Yellow[index]), CornerRadii.EMPTY, Insets.EMPTY)));
         }
-        for (int i = 0; i < g.getChildren().size(); i++) {
+        for (int i = 0; i < locPane.getChildren().size(); i++) {
 //            if (g.getChildren().get(i).getClass().equals(Text.class)) {
 //                t = (Text) g.getChildren().get(i);
 //                if (GridPane.getRowIndex(t) == 1) { //up
@@ -313,19 +400,23 @@ public class Location {
 //                        p.setVisible(false);
 //                    }
 //                }
-            if (g.getChildren().get(i).getClass().equals(Text.class)) {
-                t = (Text) g.getChildren().get(i);
+            if (locPane.getChildren().get(i).getClass().equals(Text.class)) {
+                t = (Text) locPane.getChildren().get(i);
                 if (GridPane.getRowIndex(t) == 0) { //up
                     t.setText(form.format(qvalues[GridWorld.Up]));
+                    System.out.println(form.format(qvalues[GridWorld.Up]));
                 } else if (GridPane.getRowIndex(t) == 4) { //down
                     t.setText(form.format(qvalues[GridWorld.Down]));
+                    System.out.println(form.format(qvalues[GridWorld.Down]));
                 } else if (GridPane.getColumnIndex(t) == 0) { //left
                     t.setText(form.format(qvalues[GridWorld.Left]));
+                    System.out.println(form.format(qvalues[GridWorld.Left]));
                 } else if (GridPane.getColumnIndex(t) == 4) { //right
                     t.setText(form.format(qvalues[GridWorld.Right]));
+                    System.out.println(form.format(qvalues[GridWorld.Right]));
                 }
-            } else if (g.getChildren().get(i).getClass().equals(Polygon.class)) {
-                Polygon p = (Polygon) g.getChildren().get(i);
+            } else if (locPane.getChildren().get(i).getClass().equals(Polygon.class)) {
+                Polygon p = (Polygon) locPane.getChildren().get(i);
                 if (GridPane.getRowIndex(p) == 1) { //up
                     if (isOptimal[GridWorld.Up]) {
                         p.setVisible(true);
@@ -351,7 +442,13 @@ public class Location {
                         p.setVisible(false);
                     }
                 }
-            } else {
+            } else if (locPane.getChildren().get(i).getClass().equals(Circle.class)){
+                Circle c = (Circle) locPane.getChildren().get(i);
+                if (row == gw.getCurRow() && col == gw.getCurCol()){
+                    c.setVisible(true);
+                }else {
+                    c.setVisible(false);
+                }
             }
         }
     }
@@ -366,15 +463,16 @@ public class Location {
         for (int i = 0; i < qvalues.length; i++) {
             isOptimal[i] = qvalues[i] == big;
         }
+        locationValue = big;
         return big;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     //for simulated world
-    public Location(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
+//    public Location(double x, double y) {
+//        this.row = x;
+//        this.col = y;
+//    }
 
     ////////////////////////////////////////////////////////////////////////////
     //universal

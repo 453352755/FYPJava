@@ -14,8 +14,6 @@ package QLearning;
  row3 
  ....
  */
-
-
 public class GridWorld {
 
     public static final int Up = 0;
@@ -23,42 +21,75 @@ public class GridWorld {
     public static final int Left = 2;
     public static final int Right = 3;
 
-    public final int DirectionProbability = 4;
-    public final double WallPenalty = -1.0;
-    public final double BloackPenalty = -1.0;
+    private int DirectionProbability = 4;
+    private double WallPenalty = -1.0;
+    private double BloackPenalty = -1.0;
 
     private final int rows;
     private final int cols;
-    public int numberOfSteps = 0;
-    public double totalReward = 0.0;
-    public int curRow;
-    public int curCol;
-    public double[][] value;
-    public Location[][] location;
+    private int numberOfSteps = 0;
+    private double totalReward = 0.0;
+    private int curRow;
+    private int curCol;
+    private Location[][] location;
 
     public GridWorld(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
         curRow = (int) (Math.random() * rows);
         curCol = (int) (Math.random() * cols);
-        value = new double[rows][cols];
         location = new Location[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                value[i][j] = 0;
                 location[i][j] = new Location(i, j);
 
                 //check walls
-                if (i == 0 || i == rows-1 || j == 0 || j == cols-1) {
-                    location[i][j].isWall = true;
-                    location[i][j].reward = WallPenalty;
+                if (i == 0 || i == rows - 1 || j == 0 || j == cols - 1) {
+                    location[i][j].setIsWall(true);
+                    location[i][j].setReward(WallPenalty);
                 }
             }
         }
-        
+
         //set special location
-        location[3][7].reward = 10;
-        location[4][8].reward = -3;
+        location[3][7].setReward(10);
+        location[4][8].setReward(-3);
+    }
+
+    public int getDirectionProbability() {
+        return DirectionProbability;
+    }
+
+    public double getWallPenalty() {
+        return WallPenalty;
+    }
+
+    public double getBloackPenalty() {
+        return BloackPenalty;
+    }
+
+    public int getNumberOfSteps() {
+        return numberOfSteps;
+    }
+
+    public double getTotalReward() {
+        return totalReward;
+    }
+
+    public int getCurRow() {
+        return curRow;
+    }
+
+    public int getCurCol() {
+        return curCol;
+    }
+
+    public Location[][] getLocation() {
+        return location;
+    }
+    
+    public Location getLocation(int row, int col){
+        return location[row][col];
     }
 
     public void reset() {
@@ -74,21 +105,30 @@ public class GridWorld {
         return cols;
     }
 
-    public double getValue(int row, int col) {
-        return value[row][col];
-    }
-
-    public void setValue(int row, int col, double value) {
-        this.value[row][col] = value;
-    }
-
-    public Location getLocation(int row, int col) {
-        return location[row][col];
-    }
-
     public void setCurrentPosition(int row, int col) {
         this.curRow = row;
         this.curCol = col;
+    }
+
+    public double getValueRange() {
+        double big = location[0][0].getLocationValue();
+        double small = location[0][0].getLocationValue();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (location[i][j].getLocationValue() > big) {
+                    big = location[i][j].getLocationValue();
+                } else if (location[i][j].getLocationValue() < small) {
+                    small = location[i][j].getLocationValue();
+                }
+            }
+        }
+        return big - small;
+    }
+
+    public void setReward(int row, int col, double reward) {
+        location[row][col].setReward(reward);
+        System.out.print("New reward set to ");
+        System.out.println(reward);
     }
 
     /**
@@ -137,12 +177,12 @@ public class GridWorld {
             reward = WallPenalty;
             newRow = curRow;
             newCol = curCol;
-        } else if (location[newRow][newCol].isBlock) {
+        } else if (location[newRow][newCol].isBlock()) {
             reward = BloackPenalty;
             newRow = curRow;
             newCol = curCol;
         } else {
-            reward = location[newRow][newCol].reward;
+            reward = location[newRow][newCol].getReward();
         }
 
         numberOfSteps++;

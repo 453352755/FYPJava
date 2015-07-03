@@ -1,5 +1,9 @@
 package QLearning;
 
+/**
+ *
+ * @author Dong Yubo
+ */
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,7 +52,7 @@ public class GridController {
     private DetailController detailCtrl;
 
     public void setGridWorld(int row, int col) {
-        algo.gw = new GridWorld(row, col);
+        algo.setGridWorld(new GridWorld(row, col));
         System.out.println("New grid world set");
         System.out.format("Rows: %d, Cols: %d\n", row, col);
     }
@@ -125,72 +129,75 @@ public class GridController {
 //        } catch (Exception e) {
 //            System.out.println("location fxml load failed");
 //        }
-        for (int i = 0; i < algo.gw.getRows(); i++) {
-            for (int j = 0; j < algo.gw.getCols(); j++) {
-                GridPane location = Location.newNode();
+        for (int i = 0; i < algo.getGridWorld().getRows(); i++) {
+            for (int j = 0; j < algo.getGridWorld().getCols(); j++) {
+                //GridPane location = Location.newNode();
+                GridPane location = algo.getGridWorld().getLocation(i, j).getLocPane();
+                
+                //location on mouse click
                 location.setOnMouseClicked((MouseEvent t) -> {
                     selectedLocation = (GridPane) t.getSource();
                     int row = GridPane.getRowIndex(selectedLocation);
                     int col = GridPane.getColumnIndex(selectedLocation);
-                    String s = "-fx-border-color: "+app.Color.Blue[5]+";-fx-border-width:2;";
+                    String s = "-fx-border-color: " + app.Color.Blue[5] + ";-fx-border-width:2;";
                     selectedLocation.setStyle(s);
                     System.out.print("mouse clicked: row ");
                     System.out.print(row);
                     System.out.print(" col ");
                     System.out.println(col);
-                    GridPane loc = Location.newNode();
-                    algo.gw.location[row][col].updateQ(loc);
+                    algo.getGridWorld().getLocation(row, col).print();
+                    Location loc = algo.getGridWorld().getLocation(row, col).clone();
+                    //loc.print();
+                    //GridPane loc = Location.newNode();
+                    loc.repaint(algo.getGridWorld());
                     try {
                         detailCtrl.locationPane.getChildren().remove(0);
                     } catch (Exception n) {
-                        
+
                     }
-                    detailCtrl.locationPane.getChildren().add(loc);
+                    detailCtrl.locationPane.getChildren().add(loc.getLocPane());
 
                 });
-                grid.add(location, i, j);
 
-                ColumnConstraints col = new ColumnConstraints();
+                grid.add(location, j, i);
+
+                //ColumnConstraints col = new ColumnConstraints();
                 //col.setPercentWidth(100 / gw.getCols());
                 //col.setHgrow(Priority.ALWAYS);
-                grid.getColumnConstraints().add(col);
-
-                RowConstraints row = new RowConstraints();
+                //grid.getColumnConstraints().add(col);
+                //RowConstraints row = new RowConstraints();
                 //row.setPercentHeight(100 / gw.getRows());
                 //row.setVgrow(Priority.ALWAYS);
-                grid.getRowConstraints().add(row);
-
+                //grid.getRowConstraints().add(row);
             }
         }
         System.out.println("location loaded");
 
     }
 
-    public void paint(GridPane loc) {
-        int row = GridPane.getRowIndex(loc);
-        int col = GridPane.getColumnIndex(loc);
-        algo.gw.location[row][col].updateQ(loc);
-        for (int i = 0; i < loc.getChildren().size(); i++) {
-            try {
-                Circle c = (Circle) loc.getChildren().get(i);
-                if (row == algo.gw.curRow && col == algo.gw.curCol) {
-                    c.setVisible(true);
-                } else {
-                    c.setVisible(false);
-                }
-            } catch (Exception e) {
-            }
-        }
-
-    }
-
+//    public void paint(GridPane loc) {
+//        int row = GridPane.getRowIndex(loc);
+//        int col = GridPane.getColumnIndex(loc);
+//        algo.getGridWorld().getLocation(row, col).repaint(loc);
+//        for (int i = 0; i < loc.getChildren().size(); i++) {
+//            try {
+//                Circle c = (Circle) loc.getChildren().get(i);
+//                if (row == algo.getGridWorld().getCurRow() && col == algo.getGridWorld().getCurCol()) {
+//                    c.setVisible(true);
+//                } else {
+//                    c.setVisible(false);
+//                }
+//            } catch (Exception e) {
+//            }
+//        }
+//
+//    }
     public void repaintAll() {
         //System.out.print("Repainting...");
         GridPane loc;
-        for (int i = 0; i < algo.gw.getRows(); i++) {
-            for (int j = 0; j < algo.gw.getCols(); j++) {
-                loc = (GridPane) getNode(i, j, grid);
-                paint(loc);
+        for (int i = 0; i < algo.getGridWorld().getRows(); i++) {
+            for (int j = 0; j < algo.getGridWorld().getCols(); j++) {
+                algo.getGridWorld().getLocation(i, j).repaint(algo.getGridWorld());
             }
         }
 
@@ -198,8 +205,8 @@ public class GridController {
     }
 
     void updatePerformance() {
-        double r = algo.gw.totalReward;
-        int s = algo.gw.numberOfSteps;
+        double r = algo.getGridWorld().getTotalReward();
+        int s = algo.getGridWorld().getNumberOfSteps();
         totalRewards.setText(String.valueOf(r));
         totalSteps.setText(String.valueOf(s));
     }
@@ -221,12 +228,6 @@ public class GridController {
     public void stop() {
         //System.out.println("Application stopped");
 
-    }
-
-    void setReward(int row, int col, double reward) {
-        algo.gw.location[row][col].reward = reward;
-        System.out.print("New reward set to ");
-        System.out.println(reward);
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +266,7 @@ public class GridController {
     @FXML
     void updateDiscountValue(ActionEvent event) {
         double dv = Double.parseDouble(discountValue.getText());
-        algo.discount = dv;
+        algo.setDiscount(dv);
 
         System.out.println("discount value = ");
         System.out.println(dv);
@@ -275,7 +276,7 @@ public class GridController {
     @FXML
     void updateGreedyValue(ActionEvent event) {
         double gv = Double.parseDouble(greedyValue.getText());
-        algo.greedyProb = gv;
+        algo.setGreedyProb(gv);
 
         System.out.println("greedy value = ");
         System.out.println(gv);
@@ -323,7 +324,8 @@ public class GridController {
             try {
                 interval = 1000 / (int) Double.parseDouble(speedValue.getText());
             } catch (Exception e) {
-                interval = 1000;
+                //default speed 1000
+                interval = 1;
             }
 
             while (play) {
@@ -399,10 +401,10 @@ public class GridController {
     void tracingChecked(ActionEvent event) {
         if (tracing.isSelected()) {
             System.out.println("Tracing started");
-            algo.tracing = true;
+            algo.setTracing(true);
         } else {
             System.out.println("Tracing Stopped");
-            algo.tracing = false;
+            algo.setTracing(false);
         }
     }
 
