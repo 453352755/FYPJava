@@ -133,7 +133,7 @@ public class GridController {
             for (int j = 0; j < algo.getGridWorld().getCols(); j++) {
                 //GridPane location = Location.newNode();
                 GridPane location = algo.getGridWorld().getLocation(i, j).getLocPane();
-                
+
                 //location on mouse click
                 location.setOnMouseClicked((MouseEvent t) -> {
                     selectedLocation = (GridPane) t.getSource();
@@ -408,6 +408,30 @@ public class GridController {
             algo.setTracing(false);
         }
     }
+
+    @FXML
+    void changeAlphaValue(ActionEvent event) {
+        double av = Double.parseDouble(alphaField.getText());
+        algo.setAlpha(av);
+        System.out.print("Alpha value set to ");
+        System.out.println(av);
+    }
+
+    @FXML
+    void alphaFixed(ActionEvent event) {
+        if(alphaFixedBox.isSelected()){
+            algo.setAlphaFixed(true);
+            System.out.println("Alpha fixed");
+        }else{
+            algo.setAlphaFixed(false);
+            System.out.println("Alpha Unfixed");
+        }
+    }
+    
+    @FXML
+    private CheckBox alphaFixedBox;
+    @FXML
+    private TextField alphaField;
 
     @FXML
     private Button leftButton;

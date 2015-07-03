@@ -21,6 +21,7 @@ import javafx.scene.layout.Pane;
  * @author Dong Yubo
  */
 public class RootController implements Initializable {
+
     GUI gui;
 
     @FXML
@@ -39,15 +40,24 @@ public class RootController implements Initializable {
     private Label status;
 
     @FXML
+    private Button rewardSettingButton;
+
+    @FXML
+    void changeRewardSetting(ActionEvent event) {
+        GUI.editRewardSetting();
+        System.out.println("changing reward setting");
+    }
+
+    @FXML
     void qlearnClicked(ActionEvent event) {
-        gui.switchToQLearn();
+        GUI.switchToQLearn();
         System.out.println("Switch to QLeaning simulation");
         status.setText("QLearning Simulation");
     }
 
     @FXML
     void analysisClicked(ActionEvent event) {
-        gui.switchToAnalysis();
+        GUI.switchToAnalysis();
         System.out.println("Switch to analysis, showing performance detail");
         status.setText("Analysis");
     }
@@ -55,7 +65,7 @@ public class RootController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //top.setSpacing((top.getWidth()-top.getChildren().size()*qLearnButton.getWidth())/(top.getChildren().size()+1));
-        
+
     }
 
 }

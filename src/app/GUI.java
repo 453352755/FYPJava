@@ -115,6 +115,9 @@ public class GUI extends Application {
         rootLayout.setCenter(QLearnLayout);
     }
 
+    public static void editRewardSetting(){
+        //QLearnCtrl
+    }
 }
 //
 //    public void drawtest() {
