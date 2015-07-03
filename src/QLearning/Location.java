@@ -81,6 +81,9 @@ public class Location {
     public int getCol() {
         return col;
     }
+    public double getTravelTime(int direction){
+        return travelTime[direction];
+    }
 
     public double getReward() {
         return reward;

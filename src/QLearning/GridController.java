@@ -84,9 +84,9 @@ public class GridController {
 
         try {
             detailPane = (VBox) detailLoader.load();
-            System.out.println(detailPane.getChildrenUnmodifiable().size());
+            //System.out.println(detailPane.getChildrenUnmodifiable().size());
             detailCtrl = detailLoader.getController();
-            System.out.println("Detail loaded");
+            //System.out.println("Detail loaded");
         } catch (IOException ex) {
             Logger.getLogger(GridController.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Load detail fxml failed");
@@ -208,8 +208,10 @@ public class GridController {
     void updatePerformance() {
         double r = algo.getGridWorld().getTotalReward();
         int s = algo.getGridWorld().getNumberOfSteps();
+        double t = algo.getGridWorld().getTravelTime();
         totalRewards.setText(String.valueOf(r));
         totalSteps.setText(String.valueOf(s));
+        totalTravelTime.setText(String.valueOf(t));
     }
 
     public Node getNode(final int row, final int column, GridPane gridPane) {
@@ -290,6 +292,7 @@ public class GridController {
         autorunStatus.setText("Play to start auto run");
         totalSteps.setText(null);
         totalRewards.setText(null);
+        totalTravelTime.setText(null);
         int row, col;
         try {
             row = rowBox.getValue();
@@ -320,7 +323,7 @@ public class GridController {
 
         @Override
         public void run() {
-            
+
             int interval;
             try {
                 interval = 1000 / (int) Double.parseDouble(speedValue.getText());
@@ -422,15 +425,15 @@ public class GridController {
 
     @FXML
     void alphaFixed(ActionEvent event) {
-        if(alphaFixedBox.isSelected()){
+        if (alphaFixedBox.isSelected()) {
             algo.setAlphaFixed(true);
             System.out.println("Alpha fixed");
-        }else{
+        } else {
             algo.setAlphaFixed(false);
             System.out.println("Alpha Unfixed");
         }
     }
-    
+
     @FXML
     private CheckBox alphaFixedBox;
     @FXML
@@ -468,6 +471,8 @@ public class GridController {
     private Label totalSteps;
     @FXML
     private Label totalRewards;
+    @FXML
+    private Label totalTravelTime;
     @FXML
     private TextField greedyValue;
     @FXML

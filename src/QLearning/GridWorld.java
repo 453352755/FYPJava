@@ -27,8 +27,11 @@ public class GridWorld {
 
     private final int rows;
     private final int cols;
+    
     private int numberOfSteps = 0;
     private double totalReward = 0.0;
+    private double travelTime = 0.0;
+    
     private int curRow;
     private int curCol;
     private Location[][] location;
@@ -125,6 +128,11 @@ public class GridWorld {
         return lowest;
     }
 
+    public double getTravelTime() {
+        return travelTime;
+    }
+
+    
     public void setCurrentPosition(int row, int col) {
         this.curRow = row;
         this.curCol = col;
@@ -197,16 +205,18 @@ public class GridWorld {
             }
         }
 
+        //wall
         if (newCol < 0 || newCol > cols - 1 || newRow < 0 || newRow > rows - 1) {
             reward = WallPenalty;
             newRow = curRow;
             newCol = curCol;
-        } else if (location[newRow][newCol].isBlock()) {
+        } else if (location[newRow][newCol].isBlock()) {//block
             reward = BloackPenalty;
             newRow = curRow;
             newCol = curCol;
-        } else {
+        } else {//move
             reward = location[newRow][newCol].getReward();
+            travelTime += location[curRow][curCol].getTravelTime(actualDirection);
         }
 
         numberOfSteps++;
