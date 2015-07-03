@@ -1,4 +1,3 @@
-
 package QLearning;
 
 /**
@@ -75,23 +74,23 @@ public class QLearnAlgo {
         //double newVal = locValue(newRow, newCol);
         double newVal = gridWorld.getLocation(newRow, newCol).getLocationValue();
         double newDatum = reward + discount * newVal;
-        gridWorld.getLocation(oldRow,oldCol).visited(direction);
+        gridWorld.getLocation(oldRow, oldCol).visited(direction);
         if (!alphaFixed) {
-            alpha = 1.0 / gridWorld.getLocation(oldRow,oldCol).getVisit(direction);
+            alpha = 1.0 / gridWorld.getLocation(oldRow, oldCol).getVisit(direction);
         }
 //	    alpha = 10.0/(9+visits[oldX][oldY][action]);
 
         if (tracing) {
             System.out.println("(" + oldRow + "," + oldCol + ") A=" + direction + " R=" + reward
                     + " (" + newRow + "," + newCol + ") newDatum=" + newDatum);
-            System.out.print("     Qold=" + gridWorld.getLocation(oldRow,oldCol).getQvalue(direction)
-                    + " Visits=" + gridWorld.getLocation(oldRow,oldCol).getVisit(direction));
+            System.out.print("     Qold=" + gridWorld.getLocation(oldRow, oldCol).getQvalue(direction)
+                    + " Visits=" + gridWorld.getLocation(oldRow, oldCol).getVisit(direction));
         }
 
-        gridWorld.getLocation(oldRow,oldCol).setQvalue(direction, (1 - alpha) * 
-                gridWorld.getLocation(oldRow,oldCol).getQvalue(direction)+ alpha * newDatum);
+        gridWorld.getLocation(oldRow, oldCol).setQvalue(direction, (1 - alpha)
+                * gridWorld.getLocation(oldRow, oldCol).getQvalue(direction) + alpha * newDatum);
         if (tracing) {
-            System.out.println(" Qnew=" + gridWorld.getLocation(oldRow,oldCol).getQvalue(direction));
+            System.out.println(" Qnew=" + gridWorld.getLocation(oldRow, oldCol).getQvalue(direction));
         }
     }
 
@@ -104,19 +103,22 @@ public class QLearnAlgo {
 //        }
 //        return val;
 //    }
-
+    
     public void doSteps(int count) {
 
         for (int i = 0; i < count; i++) {
             double rand = Math.random();
             if (rand < greedyProb) {// act greedily
                 int startDir = (int) (Math.random() * 4);
-                double bestVal = gridWorld.getLocation()[gridWorld.getCurRow()][gridWorld.getCurCol()].getQvalue(startDir);
+                double bestVal = gridWorld.getLocation(gridWorld.getCurRow(),
+                        gridWorld.getCurCol()).getQvalue(startDir);
                 int bestDir = startDir;
                 for (int dir = 1; dir < 4; dir++) {
                     startDir = (startDir + 1) % 4;
-                    if (gridWorld.getLocation()[gridWorld.getCurRow()][gridWorld.getCurCol()].getQvalue(startDir) > bestVal) {
-                        bestVal = gridWorld.getLocation()[gridWorld.getCurRow()][gridWorld.getCurCol()].getQvalue(startDir);
+                    if (gridWorld.getLocation(gridWorld.getCurRow(),
+                            gridWorld.getCurCol()).getQvalue(startDir) > bestVal) {
+                        bestVal = gridWorld.getLocation(gridWorld.getCurRow(),
+                                gridWorld.getCurCol()).getQvalue(startDir);
                         bestDir = startDir;
                     }
                 }

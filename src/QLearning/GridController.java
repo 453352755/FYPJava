@@ -145,7 +145,7 @@ public class GridController {
                     System.out.print(row);
                     System.out.print(" col ");
                     System.out.println(col);
-                    algo.getGridWorld().getLocation(row, col).print();
+                    //algo.getGridWorld().getLocation(row, col).print();
                     Location loc = algo.getGridWorld().getLocation(row, col).clone();
                     //loc.print();
                     //GridPane loc = Location.newNode();
@@ -320,13 +320,16 @@ public class GridController {
 
         @Override
         public void run() {
-            System.out.println("run started");
+            
             int interval;
             try {
                 interval = 1000 / (int) Double.parseDouble(speedValue.getText());
+                System.out.print("running at speed ");
+                System.out.println(speedValue.getText());
             } catch (Exception e) {
                 //default speed 1000
                 interval = 1;
+                System.out.println("running at speed 1000");
             }
 
             while (play) {
@@ -351,7 +354,7 @@ public class GridController {
 
     @FXML
     void playClicked(ActionEvent event) {
-        System.out.println("play button clicked");
+        //System.out.println("play button clicked");
         upButton.setDisable(true);
         downButton.setDisable(true);
         leftButton.setDisable(true);
@@ -372,7 +375,7 @@ public class GridController {
 
     @FXML
     void pauseClicked(ActionEvent event) {
-        System.out.println("pause button clicked");
+        //System.out.println("pause button clicked");
         upButton.setDisable(false);
         downButton.setDisable(false);
         leftButton.setDisable(false);

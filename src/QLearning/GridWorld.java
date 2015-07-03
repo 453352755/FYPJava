@@ -56,6 +56,12 @@ public class GridWorld {
         //set special location
         location[3][7].setReward(10);
         location[4][8].setReward(-3);
+        setBlock(6,4);
+    }
+    
+    public void setBlock(int row, int col){
+        location[row][col].setIsBlock(true);
+        location[row][col].setReward(BloackPenalty);
     }
 
     public int getDirectionProbability() {
@@ -129,6 +135,7 @@ public class GridWorld {
         double small = location[0][0].getLocationValue();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
+                location[i][j].computeOptimal();
                 if (location[i][j].getLocationValue() > big) {
                     big = location[i][j].getLocationValue();
                 } else if (location[i][j].getLocationValue() < small) {

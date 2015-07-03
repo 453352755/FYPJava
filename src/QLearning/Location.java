@@ -39,11 +39,13 @@ public class Location {
     private boolean special;
     private boolean isWall = false;
     private boolean isBlock = false;
+    private boolean duplicated = false;
 
     private double[] qvalues = new double[4];
     private double locationValue;
     private boolean[] isOptimal = new boolean[4];
     private int[] visits = new int[4];
+    private double[] travelTime = new double[4];
 
     private GridPane locPane;
 
@@ -67,6 +69,7 @@ public class Location {
         newLocation.visits = this.visits.clone();
         newLocation.special = this.special;
         newLocation.locationValue = this.locationValue;
+        newLocation.duplicated = true;
 
         return newLocation;
     }
@@ -236,7 +239,8 @@ public class Location {
             0, 6, 12, 0, 12, 12
         });
 
-        Font font = new Font(11);
+        Font smallFont = new Font(11);
+
         Text tUp = new Text("1");
         tUp.setTextAlignment(TextAlignment.CENTER);
 
@@ -248,10 +252,10 @@ public class Location {
         Text tRight = new Text("1");
         tRight.setRotate(90);
 
-        tUp.setFont(font);
-        tDown.setFont(font);
-        tLeft.setFont(font);
-        tRight.setFont(font);
+        tUp.setFont(smallFont);
+        tDown.setFont(smallFont);
+        tLeft.setFont(smallFont);
+        tRight.setFont(smallFont);
 
         up.setFill(Color.DODGERBLUE);
         down.setFill(Color.DODGERBLUE);
@@ -344,20 +348,30 @@ public class Location {
         //print();
         Text t;
         Format form = new DecimalFormat("0.##");
+        Font largeFont = new Font(30);
+
         double localValue = computeOptimal();
         int sec = (int) gw.getRange() / 10 == 0 ? 1 : (int) gw.getRange() / 10;
         int index = (int) (localValue - gw.getLowest()) / sec;
-        index = index < 0 ? 0 : index;
 
-        if (reward > 0 && !isWall) {
-            locPane.setBackground(new Background(new BackgroundFill(
-                    Paint.valueOf(app.Color.Green[3]), CornerRadii.EMPTY, Insets.EMPTY)));
-        } else if (reward < 0 && !isWall) {
-            locPane.setBackground(new Background(new BackgroundFill(
-                    Paint.valueOf(app.Color.Red[3]), CornerRadii.EMPTY, Insets.EMPTY)));
-        } else {
-            locPane.setBackground(new Background(new BackgroundFill(
-                    Paint.valueOf(app.Color.Yellow[index]), CornerRadii.EMPTY, Insets.EMPTY)));
+        index = index < 0 ? 0 : index;
+        index = index > 9 ? 9 : index;
+        try {
+            if (reward > 0 && !isWall) {
+                locPane.setBackground(new Background(new BackgroundFill(
+                        Paint.valueOf(app.Color.Green[3]), CornerRadii.EMPTY, Insets.EMPTY)));
+            } else if (reward < 0 && !isWall) {
+                locPane.setBackground(new Background(new BackgroundFill(
+                        Paint.valueOf(app.Color.Red[3]), CornerRadii.EMPTY, Insets.EMPTY)));
+            } else {
+                locPane.setBackground(new Background(new BackgroundFill(
+                        Paint.valueOf(app.Color.Yellow[index]), CornerRadii.EMPTY, Insets.EMPTY)));
+            }
+        } catch (ArrayIndexOutOfBoundsException a) {
+            System.out.print("color index: ");
+            System.out.println(index);
+            System.out.println(localValue);
+            System.out.println(sec);
         }
         for (int i = 0; i < locPane.getChildren().size(); i++) {
 //            if (g.getChildren().get(i).getClass().equals(Text.class)) {
@@ -400,8 +414,12 @@ public class Location {
 //                }
             if (locPane.getChildren().get(i).getClass().equals(Text.class)) {
                 t = (Text) locPane.getChildren().get(i);
+                if (duplicated) {
+                    t.setFont(largeFont);
+                }
                 if (GridPane.getRowIndex(t) == 0) { //up
                     t.setText(form.format(qvalues[GridWorld.Up]));
+
                     //System.out.println(form.format(qvalues[GridWorld.Up]));
                 } else if (GridPane.getRowIndex(t) == 4) { //down
                     t.setText(form.format(qvalues[GridWorld.Down]));
