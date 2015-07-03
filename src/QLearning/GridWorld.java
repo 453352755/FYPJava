@@ -32,6 +32,8 @@ public class GridWorld {
     private int curRow;
     private int curCol;
     private Location[][] location;
+    private double range;
+    private double highest,lowest;
 
     public GridWorld(int rows, int cols) {
         this.rows = rows;
@@ -87,8 +89,8 @@ public class GridWorld {
     public Location[][] getLocation() {
         return location;
     }
-    
-    public Location getLocation(int row, int col){
+
+    public Location getLocation(int row, int col) {
         return location[row][col];
     }
 
@@ -105,12 +107,24 @@ public class GridWorld {
         return cols;
     }
 
+    public double getRange() {
+        return range;
+    }
+
+    public double getHighest() {
+        return highest;
+    }
+
+    public double getLowest() {
+        return lowest;
+    }
+
     public void setCurrentPosition(int row, int col) {
         this.curRow = row;
         this.curCol = col;
     }
 
-    public double getValueRange() {
+    public double computeValueRange() {
         double big = location[0][0].getLocationValue();
         double small = location[0][0].getLocationValue();
         for (int i = 0; i < rows; i++) {
@@ -122,7 +136,10 @@ public class GridWorld {
                 }
             }
         }
-        return big - small;
+        range = big - small;
+        highest = big;
+        lowest = small;
+        return range;
     }
 
     public void setReward(int row, int col, double reward) {

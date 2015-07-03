@@ -49,7 +49,6 @@ public class Location {
 
     ////////////////////////////////////////////////////////////////////////////
     //for grid world
-
     public Location(int row, int col) {
         this.row = row;
         this.col = col;
@@ -68,7 +67,7 @@ public class Location {
         newLocation.visits = this.visits.clone();
         newLocation.special = this.special;
         newLocation.locationValue = this.locationValue;
-        
+
         return newLocation;
     }
 
@@ -111,7 +110,6 @@ public class Location {
     public GridPane getLocPane() {
         return locPane;
     }
-    
 
     public boolean[] getIsOptimal() {
         return isOptimal;
@@ -156,16 +154,16 @@ public class Location {
         }
     }
 
-    
-    public void print(){
+    public void print() {
         String s = "";
-        System.out.format("row %d col %d\n",row,col);
+        System.out.format("row %d col %d\n", row, col);
         for (int i = 0; i < qvalues.length; i++) {
             System.out.print(qvalues[i]);
             System.out.print(" ");
         }
         System.out.println("");
     }
+
     public static GridPane newNode() {
         final GridPane gp = new GridPane();
         String color = app.Color.Red[2];
@@ -342,14 +340,14 @@ public class Location {
 //    public void repaint(GridWorld gw) {
 //        repaint(this.locPane,gw);
 //    }
-
     public void repaint(GridWorld gw) {
-        print();
+        //print();
         Text t;
         Format form = new DecimalFormat("0.##");
-        int range = 50;
-        int LocalValue = (int) computeOptimal();
-        int index = (LocalValue - (LocalValue / range) * range) / (range / 10);
+        double localValue = computeOptimal();
+        int sec = (int) gw.getRange() / 10 == 0 ? 1 : (int) gw.getRange() / 10;
+        int index = (int) (localValue - gw.getLowest()) / sec;
+        index = index < 0 ? 0 : index;
 
         if (reward > 0 && !isWall) {
             locPane.setBackground(new Background(new BackgroundFill(
@@ -404,16 +402,16 @@ public class Location {
                 t = (Text) locPane.getChildren().get(i);
                 if (GridPane.getRowIndex(t) == 0) { //up
                     t.setText(form.format(qvalues[GridWorld.Up]));
-                    System.out.println(form.format(qvalues[GridWorld.Up]));
+                    //System.out.println(form.format(qvalues[GridWorld.Up]));
                 } else if (GridPane.getRowIndex(t) == 4) { //down
                     t.setText(form.format(qvalues[GridWorld.Down]));
-                    System.out.println(form.format(qvalues[GridWorld.Down]));
+                    //System.out.println(form.format(qvalues[GridWorld.Down]));
                 } else if (GridPane.getColumnIndex(t) == 0) { //left
                     t.setText(form.format(qvalues[GridWorld.Left]));
-                    System.out.println(form.format(qvalues[GridWorld.Left]));
+                    //System.out.println(form.format(qvalues[GridWorld.Left]));
                 } else if (GridPane.getColumnIndex(t) == 4) { //right
                     t.setText(form.format(qvalues[GridWorld.Right]));
-                    System.out.println(form.format(qvalues[GridWorld.Right]));
+                    //System.out.println(form.format(qvalues[GridWorld.Right]));
                 }
             } else if (locPane.getChildren().get(i).getClass().equals(Polygon.class)) {
                 Polygon p = (Polygon) locPane.getChildren().get(i);
@@ -442,11 +440,11 @@ public class Location {
                         p.setVisible(false);
                     }
                 }
-            } else if (locPane.getChildren().get(i).getClass().equals(Circle.class)){
+            } else if (locPane.getChildren().get(i).getClass().equals(Circle.class)) {
                 Circle c = (Circle) locPane.getChildren().get(i);
-                if (row == gw.getCurRow() && col == gw.getCurCol()){
+                if (row == gw.getCurRow() && col == gw.getCurCol()) {
                     c.setVisible(true);
-                }else {
+                } else {
                     c.setVisible(false);
                 }
             }
@@ -473,7 +471,6 @@ public class Location {
 //        this.row = x;
 //        this.col = y;
 //    }
-
     ////////////////////////////////////////////////////////////////////////////
     //universal
 }

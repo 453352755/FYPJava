@@ -197,6 +197,7 @@ public class GridController {
         GridPane loc;
         for (int i = 0; i < algo.getGridWorld().getRows(); i++) {
             for (int j = 0; j < algo.getGridWorld().getCols(); j++) {
+                algo.getGridWorld().computeValueRange();
                 algo.getGridWorld().getLocation(i, j).repaint(algo.getGridWorld());
             }
         }
