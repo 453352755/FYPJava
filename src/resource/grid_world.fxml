@@ -121,5 +121,6 @@
          </children>
       </VBox>
       <StackPane fx:id="graphPane" maxHeight="1000.0" maxWidth="1000.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="640.0" HBox.hgrow="ALWAYS" />
+      <Separator orientation="VERTICAL" prefHeight="200.0" prefWidth="1.0" />
    </children>
 </HBox>

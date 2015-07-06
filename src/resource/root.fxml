@@ -7,19 +7,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.RootController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="960.0" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.RootController">
    <bottom>
-      <Pane fx:id="bottom" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="960.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+      <Pane fx:id="bottom" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="960.0" styleClass="root-status-pane" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="status" layoutX="10.0" layoutY="2.0" text="Status" />
+            <Label fx:id="status" layoutX="10.0" layoutY="2.0" styleClass="root-status-label" text="Status" />
          </children></Pane>
    </bottom>
    <top>
-      <HBox fx:id="top" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="960.0" spacing="20.0" style="-fx-background-color: #42A5F5;" BorderPane.alignment="CENTER">
+      <HBox fx:id="top" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="960.0" spacing="20.0" styleClass="root-top-hbox" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="qLearnButton" alignment="CENTER" mnemonicParsing="false" onAction="#qlearnClicked" prefHeight="25.0" prefWidth="153.0" style="-fx-border-width: 0;" text="Qlearning: GridWorld" HBox.hgrow="ALWAYS" />
-            <Button fx:id="rewardSettingButton" mnemonicParsing="false" onAction="#changeRewardSetting" prefHeight="25.0" prefWidth="122.0" text="Reward Setting" />
-            <Button fx:id="analysisButton" mnemonicParsing="false" onAction="#analysisClicked" prefHeight="25.0" prefWidth="122.0" style="-fx-border-width: 0;" text="Analysis" HBox.hgrow="ALWAYS" />
+            <Button fx:id="qLearnButton" alignment="CENTER" mnemonicParsing="false" onAction="#qlearnClicked" prefHeight="25.0" prefWidth="153.0" style="-fx-border-width: 0;" styleClass="root-button" text="Qlearning: GridWorld" HBox.hgrow="ALWAYS" />
+            <Button fx:id="rewardSettingButton" mnemonicParsing="false" onAction="#changeRewardSetting" prefHeight="25.0" prefWidth="122.0" styleClass="root-button" text="Reward Setting" />
+            <Button fx:id="analysisButton" mnemonicParsing="false" onAction="#analysisClicked" prefHeight="25.0" prefWidth="122.0" style="-fx-border-width: 0;" styleClass="root-button" text="Analysis" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
    </top>
