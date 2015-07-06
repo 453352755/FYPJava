@@ -8,3 +8,35 @@ and open the template in the editor.
     Author     : Dong Yubo
 */
 
+//Qlearning grid world
+.direction-button {
+    -fx-background-radius: 10px;
+
+}
+
+.area-title-label{
+    
+}
+
+.algo-setting-label{
+    
+}
+
+.algo-setting-field{
+    
+}
+
+.play-pause-button {
+    -fx-background-radius: 0px;
+    -fx-border-image-width: 0px;
+    -fx-background-insets: 0px;
+    -fx-background-color:transparent;
+}
+
+.result-label{
+    
+}
+
+//Qlearning detail pane
+
+//analysis

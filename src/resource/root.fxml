@@ -15,7 +15,7 @@
          </children></Pane>
    </bottom>
    <top>
-      <HBox fx:id="top" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="960.0" spacing="20.0" style="-fx-background-color: #3b5998;" BorderPane.alignment="CENTER">
+      <HBox fx:id="top" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="960.0" spacing="20.0" style="-fx-background-color: #42A5F5;" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="qLearnButton" alignment="CENTER" mnemonicParsing="false" onAction="#qlearnClicked" prefHeight="25.0" prefWidth="153.0" style="-fx-border-width: 0;" text="Qlearning: GridWorld" HBox.hgrow="ALWAYS" />
             <Button fx:id="rewardSettingButton" mnemonicParsing="false" onAction="#changeRewardSetting" prefHeight="25.0" prefWidth="122.0" text="Reward Setting" />
