@@ -12,6 +12,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -59,17 +60,27 @@ public class Location {
         locPane = newNode();
     }
 
+    public Location(int row, int col, boolean duplicated) {
+        this.row = row;
+        this.col = col;
+        reward = 0.0;
+        special = false;
+        this.duplicated = duplicated;
+        locPane = newNode();
+    }
+
     public Location clone() {
-        Location newLocation = new Location(this.row, this.col);
+        Location newLocation = new Location(this.row, this.col, true);
         newLocation.isBlock = this.isBlock;
         newLocation.isOptimal = this.isOptimal;
         newLocation.isWall = this.isWall;
         newLocation.qvalues = this.qvalues.clone();
-        newLocation.reward = this.reward;
+        newLocation.setReward(this.reward);
         newLocation.visits = this.visits.clone();
         newLocation.special = this.special;
         newLocation.locationValue = this.locationValue;
         newLocation.duplicated = true;
+        newLocation.travelTime = this.travelTime.clone();
 
         return newLocation;
     }
@@ -81,7 +92,8 @@ public class Location {
     public int getCol() {
         return col;
     }
-    public double getTravelTime(int direction){
+
+    public double getTravelTime(int direction) {
         return travelTime[direction];
     }
 
@@ -125,8 +137,14 @@ public class Location {
         return visits[d];
     }
 
+    public double[] getTravelTime() {
+        return travelTime;
+    }
+
     public void setReward(double reward) {
         this.reward = reward;
+        Label r = (Label) GridController.getNode(4, 4, locPane);
+        r.setText(String.valueOf(reward));
     }
 
     public void setSpecial(boolean special) {
@@ -170,7 +188,7 @@ public class Location {
         System.out.println("");
     }
 
-    public static GridPane newNode() {
+    public GridPane newNode() {
         final GridPane gp = new GridPane();
         String color = app.Color.Red[2];
 
@@ -327,6 +345,20 @@ public class Location {
         GridPane.setHgrow(tDown, Priority.ALWAYS);
         GridPane.setVgrow(tDown, Priority.ALWAYS);
 
+        Label rewardLabel = new Label();
+        rewardLabel.setText(null);
+        if (this.reward != 0) {
+            rewardLabel.setText(String.valueOf(this.reward));
+        }
+        if (duplicated) {
+            rewardLabel.setStyle("-fx-font-size: 30px");
+        } else {
+            rewardLabel.setStyle("-fx-font-size: 9px");
+        }
+        GridPane.setHalignment(rewardLabel, HPos.CENTER);
+        GridPane.setValignment(rewardLabel, VPos.CENTER);
+        gp.add(rewardLabel, 4, 4);
+
         gp.add(up, 2, 1);
         gp.add(left, 1, 2);
         gp.add(down, 2, 3);
@@ -420,7 +452,9 @@ public class Location {
                 if (duplicated) {
                     t.setFont(largeFont);
                 }
-                if (GridPane.getRowIndex(t) == 0) { //up
+                if (this.isBlock) {
+                    t.setVisible(false);
+                } else if (GridPane.getRowIndex(t) == 0) { //up
                     t.setText(form.format(qvalues[GridWorld.Up]));
 
                     //System.out.println(form.format(qvalues[GridWorld.Up]));
@@ -436,7 +470,9 @@ public class Location {
                 }
             } else if (locPane.getChildren().get(i).getClass().equals(Polygon.class)) {
                 Polygon p = (Polygon) locPane.getChildren().get(i);
-                if (GridPane.getRowIndex(p) == 1) { //up
+                if (this.isBlock) {
+                    p.setVisible(false);
+                } else if (GridPane.getRowIndex(p) == 1) { //up
                     if (isOptimal[GridWorld.Up]) {
                         p.setVisible(true);
                     } else {

@@ -36,6 +36,35 @@ public class DetailController implements Initializable {
         return label;
     }
 
+    public void setTimeLabel(double[] time, boolean isBlock) {
+        if (isBlock) {
+            upTimeLabel.setText(null);
+            downTimeLabel.setText(null);
+            leftTimeLabel.setText(null);
+            rightTimeLabel.setText(null);
+        } else {
+            upTimeLabel.setText(String.valueOf(time[GridWorld.Up]));
+            downTimeLabel.setText(String.valueOf(time[GridWorld.Down]));
+            leftTimeLabel.setText(String.valueOf(time[GridWorld.Left]));
+            rightTimeLabel.setText(String.valueOf(time[GridWorld.Right]));
+        }
+    }
+
+    @FXML
+    private StackPane locationTimePane;
+
+    @FXML
+    private Label downTimeLabel;
+
+    @FXML
+    private Label upTimeLabel;
+
+    @FXML
+    private Label leftTimeLabel;
+
+    @FXML
+    private Label rightTimeLabel;
+
     /**
      * Initializes the controller class.
      */

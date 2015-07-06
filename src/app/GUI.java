@@ -107,7 +107,7 @@ public class GUI extends Application {
         try {
             QLearnLayout = (HBox) QLearnLoader.load();
             QLearnCtrl = QLearnLoader.getController();
-            System.out.println("QLearn layout loaded");
+            //System.out.println("QLearn layout loaded");
         } catch (IOException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("load failed");

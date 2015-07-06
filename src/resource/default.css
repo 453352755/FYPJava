@@ -38,5 +38,8 @@ and open the template in the editor.
 }
 
 //Qlearning detail pane
+.detail-time-label{
+    -fx-font-size: 20px;
+}
 
 //analysis

@@ -44,6 +44,7 @@ public class GridController {
 
     private boolean play;
     private static Thread t;
+    private long startTime;
 
     private final QLearnAlgo algo = new QLearnAlgo(new GridWorld(10, 10));
     private GridPane grid;
@@ -94,10 +95,10 @@ public class GridController {
 
         root.widthProperty().addListener((ObservableValue<? extends Number> ov, Number o, Number n) -> {
             if (o.doubleValue() < 1280 && n.doubleValue() >= 1280) {
-                System.out.println("GUI expanded, showing node detail");
+                //System.out.println("GUI expanded, showing node detail");
                 if (selectedLocation != null) {
                     //detailCtrl.location.getChildren().add(selectedLocation);
-                    System.out.println(detailCtrl.getLocationPane().isVisible());
+                    //System.out.println(detailCtrl.getLocationPane().isVisible());
                 }
                 root.getChildren().add(root.getChildren().size(), detailPane);
             } else if (o.doubleValue() >= 1280 && n.doubleValue() < 1280) {
@@ -156,7 +157,8 @@ public class GridController {
 
                     }
                     detailCtrl.getLocationPane().getChildren().add(loc.getLocPane());
-                    detailCtrl.getLabel().setText("Location Value: "+String.valueOf(
+                    detailCtrl.setTimeLabel(loc.getTravelTime(),loc.isBlock());
+                    detailCtrl.getLabel().setText("Location Value: " + String.valueOf(
                             algo.getGridWorld().getLocation(row, col).getLocationValue()));
 
                 });
@@ -173,7 +175,7 @@ public class GridController {
                 //grid.getRowConstraints().add(row);
             }
         }
-        System.out.println("location loaded");
+        //System.out.println("location loaded");
 
     }
 
@@ -216,7 +218,7 @@ public class GridController {
         totalTravelTime.setText(String.valueOf(t));
     }
 
-    public Node getNode(final int row, final int column, GridPane gridPane) {
+    public static Node getNode(final int row, final int column, GridPane gridPane) {
         Node result = null;
         ObservableList<Node> childrens = gridPane.getChildren();
         for (Node node : childrens) {
@@ -273,7 +275,7 @@ public class GridController {
         double dv = Double.parseDouble(discountValue.getText());
         algo.setDiscount(dv);
 
-        System.out.println("discount value = ");
+        System.out.print("discount value = ");
         System.out.println(dv);
 
     }
@@ -283,7 +285,7 @@ public class GridController {
         double gv = Double.parseDouble(greedyValue.getText());
         algo.setGreedyProb(gv);
 
-        System.out.println("greedy value = ");
+        System.out.print("greedy value = ");
         System.out.println(gv);
 
     }
@@ -305,7 +307,10 @@ public class GridController {
         }
         setGridWorld(row, col);
         graphPane.getChildren().remove(grid);
-        detailCtrl.getLocationPane().getChildren().remove(0);
+        if (!detailCtrl.getLocationPane().getChildren().isEmpty()) {
+            detailCtrl.getLocationPane().getChildren().remove(0);
+        }
+        detailCtrl.getLabel().setText("Location Value: ");
         gridPaneInit();
         graphPane.getChildren().add(grid);
         repaintAll();
@@ -316,7 +321,7 @@ public class GridController {
     void updateSpeedValue(ActionEvent event) {
         double sv = Double.parseDouble(speedValue.getText());
 
-        System.out.println("speed value = ");
+        System.out.print("speed value = ");
         System.out.println(sv);
 
     }
@@ -332,9 +337,9 @@ public class GridController {
                 System.out.print("running at speed ");
                 System.out.println(speedValue.getText());
             } catch (Exception e) {
-                //default speed 1000
-                interval = 1;
-                System.out.println("running at speed 1000");
+                //default speed infinity
+                interval = -1000;
+                System.out.println("running at speed infinity");
             }
 
             while (play) {
@@ -348,7 +353,9 @@ public class GridController {
                         //System.out.println(us);
                         //System.out.println("Map running");
                     }
-                    Thread.sleep(interval);
+                    if (interval != -1000) {
+                        Thread.sleep(interval);
+                    }
                 } catch (InterruptedException ex) {
                     Logger.getLogger(GridController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -374,6 +381,7 @@ public class GridController {
         //run simulator
         play = true;
         t = new Thread(new RunMap());
+        startTime = System.nanoTime();
         t.start();
 
     }
@@ -395,6 +403,10 @@ public class GridController {
         play = false;
         try {
             t.join();
+            long time = System.nanoTime() - startTime;
+            System.out.print("Total time taken: ");
+            System.out.print(time / 1000);
+            System.out.println(" micro second");
             repaintAll();
             updatePerformance();
             //t.interrupt();
