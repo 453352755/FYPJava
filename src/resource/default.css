@@ -8,6 +8,23 @@ and open the template in the editor.
     Author     : Dong Yubo
 */
 
+//root
+.root-top-hbox{
+    //-fx-background-color: lightblue;
+}
+
+.root-button{
+    -fx-background-color: greenyellow;
+}
+
+.root-status-pane{
+    
+}
+
+.root-status-label{
+    
+}
+
 //Qlearning grid world
 .direction-button {
     -fx-background-radius: 10px;
@@ -34,6 +51,10 @@ and open the template in the editor.
 }
 
 .result-label{
+    
+}
+
+.gridworld-gridpane{
     
 }
 

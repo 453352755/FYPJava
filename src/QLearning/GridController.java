@@ -58,6 +58,11 @@ public class GridController {
         System.out.format("Rows: %d, Cols: %d\n", row, col);
     }
 
+    public QLearnAlgo getAlgo() {
+        return algo;
+    }
+    
+
     public void initialize() {
 //        mapCanvas.setHeight(640);
 //        mapCanvas.setWidth(640);
@@ -120,6 +125,8 @@ public class GridController {
         grid.setGridLinesVisible(true);
         grid.setAlignment(Pos.CENTER);
         grid.setCenterShape(true);
+        grid.setHgap(1);
+        grid.setVgap(1);
 
 //        FXMLLoader loader = new FXMLLoader();
 //        loader.setLocation(getClass().getClassLoader().getResource("QLearning/location.fxml"));

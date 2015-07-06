@@ -1,6 +1,7 @@
 package app;
 
 import QLearning.GridController;
+import analysis.AnalysisController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -14,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -26,11 +28,11 @@ public class GUI extends Application {
     //private static Stage myStage;
     private static BorderPane rootLayout;
     private static HBox QLearnLayout;
-    private static AnchorPane analysisLayout;
+    private static Pane analysisLayout;
 
     private static GridController QLearnCtrl;
     private static RootController rootCtrl;
-    //private static AnalysisController analysisCtrl;
+    private static AnalysisController analysisCtrl;
 
     private static URL analysisURL;
     private static URL QLearnURL;
@@ -91,8 +93,9 @@ public class GUI extends Application {
         FXMLLoader ALoader = new FXMLLoader();
         ALoader.setLocation(analysisURL);
         try {
-            analysisLayout = (AnchorPane) ALoader.load();
-            //analysisCtrl = ALoader.getController();
+            analysisLayout = (Pane) ALoader.load();
+            analysisCtrl = ALoader.getController();
+            analysisCtrl.setGridController(QLearnCtrl.getAlgo());
             System.out.println("anslysis layout loaded");
         } catch (IOException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
