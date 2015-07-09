@@ -26,9 +26,10 @@ import javafx.stage.WindowEvent;
 public class GUI extends Application {
 
     //private static Stage myStage;
+    private Scene rootScene;
     private static BorderPane rootLayout;
     private static HBox QLearnLayout;
-    private static Pane analysisLayout;
+    private static HBox analysisLayout;
 
     private static GridController QLearnCtrl;
     private static RootController rootCtrl;
@@ -55,11 +56,12 @@ public class GUI extends Application {
 //        QLearnCtrl = QLoader.getController();
         //QLearnCtrl.setMainApp(this);
         switchToQLearn();
+        switchToAnalysis();
 
         //GUI customization
         rootLayout.setCenter(QLearnLayout);
-        Scene scene = new Scene(rootLayout);
-        myStage.setScene(scene);
+        rootScene = new Scene(rootLayout);
+        myStage.setScene(rootScene);
         myStage.setTitle("Multi-Vehicle Coverage Control Simulator");
         myStage.getIcons().add(new Image("file:images/car-icon.png"));
         myStage.centerOnScreen();
@@ -90,36 +92,47 @@ public class GUI extends Application {
     }
 
     public static void switchToAnalysis() {
-        FXMLLoader ALoader = new FXMLLoader();
-        ALoader.setLocation(analysisURL);
-        try {
-            analysisLayout = (Pane) ALoader.load();
-            analysisCtrl = ALoader.getController();
-            analysisCtrl.setGridController(QLearnCtrl.getAlgo());
-            System.out.println("anslysis layout loaded");
-        } catch (IOException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("load failed");
+        if (analysisLayout == null) {
+            FXMLLoader ALoader = new FXMLLoader();
+            ALoader.setLocation(analysisURL);
+            try {
+                analysisLayout = (HBox) ALoader.load();
+                analysisCtrl = ALoader.getController();
+                analysisCtrl.setGridController(QLearnCtrl.getAlgo());
+                System.out.println("anslysis layout loaded");
+            } catch (IOException ex) {
+                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("load failed");
+            }
         }
+//        System.out.println(analysisLayout.getWidth());
+//        System.out.println(analysisCtrl.chartFlowPane.getWidth());
         rootLayout.setCenter(analysisLayout);
     }
 
     public static void switchToQLearn() {
-        FXMLLoader QLearnLoader = new FXMLLoader();
-        QLearnLoader.setLocation(QLearnURL);
-        try {
-            QLearnLayout = (HBox) QLearnLoader.load();
-            QLearnCtrl = QLearnLoader.getController();
-            //System.out.println("QLearn layout loaded");
-        } catch (IOException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("load failed");
+        if (QLearnLayout == null) {
+            FXMLLoader QLearnLoader = new FXMLLoader();
+            QLearnLoader.setLocation(QLearnURL);
+            try {
+                QLearnLayout = (HBox) QLearnLoader.load();
+                QLearnCtrl = QLearnLoader.getController();
+                //System.out.println("QLearn layout loaded");
+            } catch (IOException ex) {
+                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("load failed");
+            }
         }
         rootLayout.setCenter(QLearnLayout);
     }
 
-    public static void editRewardSetting(){
+    public static void editRewardSetting() {
         //QLearnCtrl
+    }
+
+    public static void analysisFloat() {
+        rootLayout.setCenter(null);
+
     }
 }
 //

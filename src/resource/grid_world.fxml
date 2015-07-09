@@ -10,7 +10,7 @@
 
 <HBox id="gridworld-root" fx:id="root" maxHeight="1080.0" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" style="-fx-opacity: 1;" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="QLearning.GridController">
    <children>
-      <VBox id="grid-world-menu" prefHeight="640.0" prefWidth="320.0">
+      <VBox id="grid-world-menu" prefHeight="640.0" prefWidth="320.0" styleClass="qlearn-control-pane">
          <children>
             <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="320.0">
                <children>

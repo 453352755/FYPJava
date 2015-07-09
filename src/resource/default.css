@@ -9,8 +9,12 @@ and open the template in the editor.
 */
 
 //root
+.root-pane{
+    -fx-background-color: white;
+}
+
 .root-top-hbox{
-    //-fx-background-color: lightblue;
+    -fx-background-color: lightblue;
 }
 
 .root-button{
@@ -18,6 +22,7 @@ and open the template in the editor.
 }
 
 .root-status-pane{
+    -fx-background-color: lightblue;
     
 }
 
@@ -26,6 +31,10 @@ and open the template in the editor.
 }
 
 //Qlearning grid world
+.qlearn-control-pane{
+    -fx-background-color: lightblue;
+}
+
 .direction-button {
     -fx-background-radius: 10px;
 
@@ -64,3 +73,14 @@ and open the template in the editor.
 }
 
 //analysis
+.analysis-pane{
+    -fx-background-color: blue;
+}
+
+.analysis-control-pane{
+    -fx-background-color: lightyellow;
+}
+
+.analysis-chart-pane{
+    -fx-background-color: lavender;
+}

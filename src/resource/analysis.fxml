@@ -8,42 +8,39 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="analysisPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resource.AnalysisController">
+<HBox fx:id="analysisPane" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" styleClass="analysis-pane" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="analysis.AnalysisController">
    <children>
-      <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="640.0" prefWidth="960.0">
+      <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="640.0" prefWidth="160.0" styleClass="analysis-control-pane">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="640.0" prefWidth="160.0">
+            <Button fx:id="floatButton" mnemonicParsing="false" onAction="#floatButtonClicked" text="float" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonClicked" text="save" />
+            <Pane fx:id="qLearnControlPane" prefHeight="187.0" prefWidth="100.0">
                <children>
-                  <Button mnemonicParsing="false" text="float" />
-                  <Pane prefHeight="187.0" prefWidth="100.0">
-                     <children>
-                        <CheckBox layoutY="115.0" mnemonicParsing="false" text="CheckBox" />
-                        <CheckBox layoutY="49.0" mnemonicParsing="false" text="CheckBox" />
-                        <CheckBox layoutY="83.0" mnemonicParsing="false" text="CheckBox" />
-                        <Label layoutX="22.0" layoutY="14.0" text="Label" />
-                     </children>
-                  </Pane>
+                  <CheckBox fx:id="qLearnCChart" layoutX="7.0" layoutY="115.0" mnemonicParsing="false" onAction="#cChartChecked" text="C" />
+                  <CheckBox fx:id="qLearnAChart" layoutX="7.0" layoutY="49.0" mnemonicParsing="false" onAction="#aChartChecked" text="A" />
+                  <CheckBox fx:id="qLearnBChart" layoutX="7.0" layoutY="83.0" mnemonicParsing="false" onAction="#bChartChecked" text="B" />
+                  <Label layoutX="29.0" layoutY="14.0" text="QLearning" />
                </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets top="20.0" />
-               </padding>
-            </VBox>
-            <FlowPane alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="800.0">
-               <children>
-                  <LineChart fx:id="qLearnChart" prefHeight="299.0" prefWidth="388.0">
-                    <xAxis>
-                      <CategoryAxis fx:id="qLearnCategoryAxis" side="BOTTOM" />
-                    </xAxis>
-                    <yAxis>
-                      <NumberAxis fx:id="qLearnNumberAxis" side="LEFT" />
-                    </yAxis>
-                  </LineChart>
-               </children>
-            </FlowPane>
+            </Pane>
          </children>
-      </HBox>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets top="20.0" />
+         </padding>
+      </VBox>
+      <FlowPane fx:id="chartFlowPane" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="800.0" styleClass="analysis-chart-pane" HBox.hgrow="ALWAYS">
+         <children>
+            <LineChart maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="320.0" minWidth="400.0" prefHeight="320.0" prefWidth="400.0">
+               <xAxis>
+                  <CategoryAxis side="BOTTOM" />
+               </xAxis>
+               <yAxis>
+                  <NumberAxis side="LEFT" />
+               </yAxis>
+            </LineChart>
+         </children>
+      </FlowPane>
    </children>
-</Pane>
+</HBox>
