@@ -2,15 +2,22 @@ package analysis;
 
 import QLearning.QLearnAlgo;
 import app.GUI;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.Chart;
 import javafx.scene.chart.LineChart;
@@ -18,12 +25,15 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -51,7 +61,11 @@ public class AnalysisController implements Initializable {
     }
 
     private void addChart(Chart c) {
-        chartFlowPane.getChildren().add(c);
+        if (chartFlowPane.getChildren().size() < 4) {
+            chartFlowPane.getChildren().add(c);
+        } else {
+            System.out.println("Max Chart number reached");
+        }
     }
 
     private void removeChart(Chart c) {
@@ -208,6 +222,37 @@ public class AnalysisController implements Initializable {
 
     @FXML
     void saveButtonClicked(ActionEvent event) {
+        System.out.print("Saving Chart ");
+
+        //construct file name
+        Format form = new SimpleDateFormat("yyyyMMdd");
+        String name = "";
+        for (int i = 0; i < chartFlowPane.getChildren().size(); i++) {
+            name += ((Chart) chartFlowPane.getChildren().get(i)).getTitle();
+        }
+        name += " " + form.format(new Date()) + ".png";
+        System.out.println(name);
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Chart");
+        fileChooser.setInitialFileName(name);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG", "*.png"));
+        File directory = new File("C:\\Dropbox\\FY");
+        if (!directory.canRead()) {
+            directory = new File("c:/");
+        }
+        fileChooser.setInitialDirectory(directory);
+        File file = fileChooser.showSaveDialog(new Stage());
+
+        //select file location
+        if (file != null) {
+            try {
+                WritableImage snapshot = chartFlowPane.snapshot(new SnapshotParameters(), null);
+                ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", file);
+            } catch (IOException ex) {
+                System.out.println("IO exception");
+            }
+        }
 
     }
 
