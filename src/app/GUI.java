@@ -55,8 +55,10 @@ public class GUI extends Application {
 //        QLearnLayout = (HBox) QLoader.load();
 //        QLearnCtrl = QLoader.getController();
         //QLearnCtrl.setMainApp(this);
+        analysisInit();
         switchToQLearn();
-        switchToAnalysis();
+        analysisCtrl.setGridController(QLearnCtrl.getAlgo());
+
 
         //GUI customization
         rootLayout.setCenter(QLearnLayout);
@@ -92,22 +94,27 @@ public class GUI extends Application {
     }
 
     public static void switchToAnalysis() {
+        if (analysisLayout != null) {
+            rootLayout.setCenter(analysisLayout);
+        }
+//        System.out.println(analysisLayout.getWidth());
+//        System.out.println(analysisCtrl.chartFlowPane.getWidth());
+    }
+
+    private static void analysisInit() {
         if (analysisLayout == null) {
             FXMLLoader ALoader = new FXMLLoader();
             ALoader.setLocation(analysisURL);
             try {
                 analysisLayout = (HBox) ALoader.load();
                 analysisCtrl = ALoader.getController();
-                analysisCtrl.setGridController(QLearnCtrl.getAlgo());
+                
                 System.out.println("anslysis layout loaded");
             } catch (IOException ex) {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("load failed");
             }
         }
-//        System.out.println(analysisLayout.getWidth());
-//        System.out.println(analysisCtrl.chartFlowPane.getWidth());
-        rootLayout.setCenter(analysisLayout);
     }
 
     public static void switchToQLearn() {
@@ -117,6 +124,11 @@ public class GUI extends Application {
             try {
                 QLearnLayout = (HBox) QLearnLoader.load();
                 QLearnCtrl = QLearnLoader.getController();
+                if (analysisCtrl == null) {
+                    analysisInit();
+                }
+                QLearnCtrl.setAnalysisController(analysisCtrl);
+
                 //System.out.println("QLearn layout loaded");
             } catch (IOException ex) {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);

@@ -9,8 +9,6 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
-import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,11 +23,10 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -45,7 +42,8 @@ public class AnalysisController implements Initializable {
     private LineChart aLineChart;
     private LineChart bLineChart;
     private LineChart cLineChart;
-    private String chartStyle
+    private XYChart.Series rewardSeries;
+    private final String chartStyle
             = "-fx-border-width: 2;"
             + "-fx-border-stroke: black;"
             + "-fx-background-color: lightyellow;"
@@ -73,33 +71,32 @@ public class AnalysisController implements Initializable {
             chartFlowPane.getChildren().remove(c);
         }
     }
+    
+    public void reset(){
+        rewardSeries.getData().clear();
+    }
 
     private void chartAInit() {
         if (aLineChart == null) {
-            final NumberAxis xAxis = new NumberAxis();
-            final NumberAxis yAxis = new NumberAxis();
-            xAxis.setLabel("Number of Month");
+            final NumberAxis stepAxis = new NumberAxis();
+            final NumberAxis rewardAxis = new NumberAxis();
+            stepAxis.setLabel("Number of Steps");
             //creating the chart
-            aLineChart = new LineChart<Number, Number>(xAxis, yAxis);
-
-            aLineChart.setTitle("Stock Monitoring, 2010");
+            aLineChart = new LineChart<Number, Number>(stepAxis, rewardAxis);
+            aLineChart.setTitle("Reward");
             aLineChart.setStyle(chartStyle);
-            XYChart.Series series = new XYChart.Series();
-            series.setName("My portfolio");
-            //populating the series with data
-            series.getData().add(new XYChart.Data(1, 23));
-            series.getData().add(new XYChart.Data(2, 14));
-            series.getData().add(new XYChart.Data(3, 15));
-            series.getData().add(new XYChart.Data(4, 24));
-            series.getData().add(new XYChart.Data(5, 34));
-            series.getData().add(new XYChart.Data(6, 36));
-            series.getData().add(new XYChart.Data(7, 22));
-            series.getData().add(new XYChart.Data(8, 45));
-            series.getData().add(new XYChart.Data(9, 43));
-            series.getData().add(new XYChart.Data(10, 17));
-            series.getData().add(new XYChart.Data(11, 29));
-            series.getData().add(new XYChart.Data(12, 25));
-            aLineChart.getData().add(series);
+            rewardSeries = new XYChart.Series();
+            rewardSeries.setName("Reward");
+            aLineChart.getData().add(rewardSeries);
+            
+        }
+    }
+    
+    public void addRewardData(int steps, double reward){
+        if(rewardSeries == null){
+            chartAInit();
+        }else{
+            rewardSeries.getData().add(new XYChart.Data(steps,reward));
         }
     }
 
@@ -109,7 +106,7 @@ public class AnalysisController implements Initializable {
             final NumberAxis yAxis = new NumberAxis();
             xAxis.setLabel("Number of Month");
             //creating the chart
-            bLineChart = new LineChart<Number, Number>(xAxis, yAxis);
+            bLineChart = new LineChart<>(xAxis, yAxis);
 
             bLineChart.setTitle("Stock Monitoring, 2010");
             bLineChart.setStyle(chartStyle);
@@ -138,7 +135,7 @@ public class AnalysisController implements Initializable {
             final NumberAxis yAxis = new NumberAxis();
             xAxis.setLabel("Number of Month");
             //creating the chart
-            cLineChart = new LineChart<Number, Number>(xAxis, yAxis);
+            cLineChart = new LineChart<>(xAxis, yAxis);
 
             cLineChart.setTitle("Stock Monitoring, 2010");
             cLineChart.setStyle(chartStyle);
@@ -173,8 +170,6 @@ public class AnalysisController implements Initializable {
     @FXML
     private CheckBox qLearnAChart;
 
-    @FXML
-    private NumberAxis qLearnNumberAxis;
 
     @FXML
     private HBox analysisPane;
@@ -184,17 +179,6 @@ public class AnalysisController implements Initializable {
 
     @FXML
     private Button saveButton;
-
-    @FXML
-    private CategoryAxis qLearnCategoryAxis;
-
-    private class RunAnalysis implements Runnable {
-
-        @Override
-        public void run() {
-
-        }
-    }
 
     @FXML
     void floatButtonClicked(ActionEvent event) {
@@ -207,7 +191,11 @@ public class AnalysisController implements Initializable {
         newStage.setMinHeight(640);
         newStage.setMaxWidth(1920);
         newStage.setMaxHeight(1080);
-
+        newStage.setHeight(640);
+        newStage.setWidth(960);
+        //https://www.iconfinder.com/icons/175360/combo_icon#size=512
+        newStage.getIcons().add(new Image("file:images/chart-icon.png"));
+        //newStage.initStyle(StageStyle.UNIFIED);
         Scene scene = new Scene(analysisPane);
         newStage.setScene(scene);
         newStage.show();

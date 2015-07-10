@@ -4,6 +4,7 @@ package QLearning;
  *
  * @author Dong Yubo
  */
+import analysis.AnalysisController;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,6 +46,7 @@ public class GridController {
     private boolean play;
     private static Thread t;
     private long startTime;
+    private AnalysisController analysisController;
 
     private final QLearnAlgo algo = new QLearnAlgo(new GridWorld(10, 10));
     private GridPane grid;
@@ -58,10 +60,13 @@ public class GridController {
         System.out.format("Rows: %d, Cols: %d\n", row, col);
     }
 
+    public void setAnalysisController(AnalysisController a) {
+        this.analysisController = a;
+    }
+
     public QLearnAlgo getAlgo() {
         return algo;
     }
-    
 
     public void initialize() {
 //        mapCanvas.setHeight(640);
@@ -164,7 +169,7 @@ public class GridController {
 
                     }
                     detailCtrl.getLocationPane().getChildren().add(loc.getLocPane());
-                    detailCtrl.setTimeLabel(loc.getTravelTime(),loc.isBlock());
+                    detailCtrl.setTimeLabel(loc.getTravelTime(), loc.isBlock());
                     detailCtrl.getLabel().setText("Location Value: " + String.valueOf(
                             algo.getGridWorld().getLocation(row, col).getLocationValue()));
 
@@ -216,6 +221,12 @@ public class GridController {
         //System.out.println("finished");
     }
 
+    private void addData() {
+        analysisController.addRewardData(algo.getGridWorld().getNumberOfSteps(),
+                algo.getGridWorld().getTotalReward());
+        //System.out.println("New data: ");
+    }
+
     void updatePerformance() {
         double r = algo.getGridWorld().getTotalReward();
         int s = algo.getGridWorld().getNumberOfSteps();
@@ -223,6 +234,7 @@ public class GridController {
         totalRewards.setText(String.valueOf(r));
         totalSteps.setText(String.valueOf(s));
         totalTravelTime.setText(String.valueOf(t));
+        addData();
     }
 
     public static Node getNode(final int row, final int column, GridPane gridPane) {
@@ -322,6 +334,7 @@ public class GridController {
         graphPane.getChildren().add(grid);
         repaintAll();
         updatePerformance();
+        analysisController.reset();
     }
 
     @FXML
