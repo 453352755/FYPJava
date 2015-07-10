@@ -23,20 +23,20 @@ public class GridWorld {
 
     private int DirectionProbability = 4;
     private double WallPenalty = -1.0;
-    private double BloackPenalty = -1.0;
+    private double BlockPenalty = -1.0;
 
     private final int rows;
     private final int cols;
-    
+
     private int numberOfSteps = 0;
     private double totalReward = 0.0;
     private double travelTime = 0.0;
-    
+
     private int curRow;
     private int curCol;
     private Location[][] location;
     private double range;
-    private double highest,lowest;
+    private double highest, lowest;
 
     public GridWorld(int rows, int cols) {
         this.rows = rows;
@@ -47,6 +47,9 @@ public class GridWorld {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 location[i][j] = new Location(i, j);
+                for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
+                    location[i][j].setTravelTime(k, Math.random() * 60);
+                }
 
                 //check walls
                 if (i == 0 || i == rows - 1 || j == 0 || j == cols - 1) {
@@ -59,12 +62,12 @@ public class GridWorld {
         //set special location
         location[3][7].setReward(10);
         location[4][8].setReward(-3);
-        setBlock(6,4);
+        setBlock(6, 4);
     }
-    
-    public void setBlock(int row, int col){
+
+    public void setBlock(int row, int col) {
         location[row][col].setIsBlock(true);
-        location[row][col].setReward(BloackPenalty);
+        location[row][col].setReward(BlockPenalty);
     }
 
     public int getDirectionProbability() {
@@ -76,7 +79,7 @@ public class GridWorld {
     }
 
     public double getBloackPenalty() {
-        return BloackPenalty;
+        return BlockPenalty;
     }
 
     public int getNumberOfSteps() {
@@ -132,7 +135,6 @@ public class GridWorld {
         return travelTime;
     }
 
-    
     public void setCurrentPosition(int row, int col) {
         this.curRow = row;
         this.curCol = col;
@@ -211,7 +213,7 @@ public class GridWorld {
             newRow = curRow;
             newCol = curCol;
         } else if (location[newRow][newCol].isBlock()) {//block
-            reward = BloackPenalty;
+            reward = BlockPenalty;
             newRow = curRow;
             newCol = curCol;
         } else {//move

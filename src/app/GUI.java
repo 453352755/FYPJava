@@ -57,7 +57,6 @@ public class GUI extends Application {
         //QLearnCtrl.setMainApp(this);
         analysisInit();
         switchToQLearn();
-        analysisCtrl.setGridController(QLearnCtrl.getAlgo());
 
 
         //GUI customization

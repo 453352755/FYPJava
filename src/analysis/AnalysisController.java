@@ -1,6 +1,5 @@
 package analysis;
 
-import QLearning.QLearnAlgo;
 import app.GUI;
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +15,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.Chart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -38,11 +36,11 @@ import javax.imageio.ImageIO;
  */
 public class AnalysisController implements Initializable {
 
-    private QLearnAlgo algo = null;
     private LineChart aLineChart;
     private LineChart bLineChart;
     private LineChart cLineChart;
     private XYChart.Series rewardSeries;
+    private XYChart.Series timeSeries;
     private final String chartStyle
             = "-fx-border-width: 2;"
             + "-fx-border-stroke: black;"
@@ -53,10 +51,6 @@ public class AnalysisController implements Initializable {
             + "-fx-min-width: 400;"
             + "-fx-pref-height: 320;"
             + "-fx-pref-width: 400;";
-
-    public void setGridController(QLearnAlgo qLearnAlgo) {
-        this.algo = qLearnAlgo;
-    }
 
     private void addChart(Chart c) {
         if (chartFlowPane.getChildren().size() < 4) {
@@ -71,8 +65,8 @@ public class AnalysisController implements Initializable {
             chartFlowPane.getChildren().remove(c);
         }
     }
-    
-    public void reset(){
+
+    public void reset() {
         rewardSeries.getData().clear();
     }
 
@@ -82,21 +76,21 @@ public class AnalysisController implements Initializable {
             final NumberAxis rewardAxis = new NumberAxis();
             stepAxis.setLabel("Number of Steps");
             //creating the chart
-            aLineChart = new LineChart<Number, Number>(stepAxis, rewardAxis);
+            aLineChart = new LineChart<>(stepAxis, rewardAxis);
             aLineChart.setTitle("Reward");
             aLineChart.setStyle(chartStyle);
             rewardSeries = new XYChart.Series();
             rewardSeries.setName("Reward");
             aLineChart.getData().add(rewardSeries);
-            
+
         }
     }
-    
-    public void addRewardData(int steps, double reward){
-        if(rewardSeries == null){
+
+    public void addRewardData(int steps, double reward) {
+        if (rewardSeries == null) {
             chartAInit();
-        }else{
-            rewardSeries.getData().add(new XYChart.Data(steps,reward));
+        } else {
+            rewardSeries.getData().add(new XYChart.Data(steps, reward));
         }
     }
 
@@ -104,28 +98,22 @@ public class AnalysisController implements Initializable {
         if (bLineChart == null) {
             final NumberAxis xAxis = new NumberAxis();
             final NumberAxis yAxis = new NumberAxis();
-            xAxis.setLabel("Number of Month");
+            xAxis.setLabel("Number of Steps");
             //creating the chart
             bLineChart = new LineChart<>(xAxis, yAxis);
-
-            bLineChart.setTitle("Stock Monitoring, 2010");
+            bLineChart.setTitle("Total Time Taken");
             bLineChart.setStyle(chartStyle);
-            XYChart.Series series = new XYChart.Series();
-            series.setName("My portfolio");
-            //populating the series with data
-            series.getData().add(new XYChart.Data(1, 23));
-            series.getData().add(new XYChart.Data(2, 14));
-            series.getData().add(new XYChart.Data(3, 15));
-            series.getData().add(new XYChart.Data(4, 24));
-            series.getData().add(new XYChart.Data(5, 34));
-            series.getData().add(new XYChart.Data(6, 36));
-            series.getData().add(new XYChart.Data(7, 22));
-            series.getData().add(new XYChart.Data(8, 45));
-            series.getData().add(new XYChart.Data(9, 43));
-            series.getData().add(new XYChart.Data(10, 17));
-            series.getData().add(new XYChart.Data(11, 29));
-            series.getData().add(new XYChart.Data(12, 25));
-            bLineChart.getData().add(series);
+            timeSeries = new XYChart.Series();
+            timeSeries.setName("Time");
+            bLineChart.getData().add(timeSeries);
+        }
+    }
+
+    public void addTimeData(int steps, double time) {
+        if (rewardSeries == null) {
+            chartBInit();
+        } else {
+            rewardSeries.getData().add(new XYChart.Data(steps, time));
         }
     }
 
@@ -142,18 +130,6 @@ public class AnalysisController implements Initializable {
             XYChart.Series series = new XYChart.Series();
             series.setName("My portfolio");
             //populating the series with data
-            series.getData().add(new XYChart.Data(1, 23));
-            series.getData().add(new XYChart.Data(2, 14));
-            series.getData().add(new XYChart.Data(3, 15));
-            series.getData().add(new XYChart.Data(4, 24));
-            series.getData().add(new XYChart.Data(5, 34));
-            series.getData().add(new XYChart.Data(6, 36));
-            series.getData().add(new XYChart.Data(7, 22));
-            series.getData().add(new XYChart.Data(8, 45));
-            series.getData().add(new XYChart.Data(9, 43));
-            series.getData().add(new XYChart.Data(10, 17));
-            series.getData().add(new XYChart.Data(11, 29));
-            series.getData().add(new XYChart.Data(12, 25));
             cLineChart.getData().add(series);
         }
     }
@@ -169,7 +145,6 @@ public class AnalysisController implements Initializable {
 
     @FXML
     private CheckBox qLearnAChart;
-
 
     @FXML
     private HBox analysisPane;

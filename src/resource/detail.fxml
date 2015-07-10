@@ -16,10 +16,10 @@
             <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="320.0">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="80.0" layoutX="120.0" layoutY="120.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="80.0" />
-                  <Label fx:id="upTimeLabel" layoutX="148.0" layoutY="105.0" styleClass="detail-time-label" />
-                  <Label fx:id="leftTimeLabel" layoutX="106.0" layoutY="145.0" rotate="270.0" styleClass="detail-time-label" />
-                  <Label fx:id="downTimeLabel" layoutX="135.0" layoutY="185.0" styleClass="detail-time-label" />
-                  <Label fx:id="rightTimeLabel" layoutX="179.0" layoutY="145.0" rotate="90.0" styleClass="detail-time-label" />
+                  <Label fx:id="upTimeLabel" layoutX="135.0" layoutY="105.0" styleClass="detail-time-label" text="0.00" />
+                  <Label fx:id="leftTimeLabel" layoutX="102.0" layoutY="145.0" rotate="270.0" styleClass="detail-time-label" text="0.00" />
+                  <Label fx:id="downTimeLabel" layoutX="142.0" layoutY="185.0" styleClass="detail-time-label" text="0.00" />
+                  <Label fx:id="rightTimeLabel" layoutX="175.0" layoutY="145.0" rotate="90.0" styleClass="detail-time-label" text="0.00" />
                </children>
             </Pane>
          </children>

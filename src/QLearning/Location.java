@@ -166,6 +166,10 @@ public class Location {
     public void setLocationValue(double locationValue) {
         this.locationValue = locationValue;
     }
+    
+    public void setTravelTime(int direction, double time){
+        this.travelTime[direction] = time;
+    }
 
     public void visited(int i) {
         this.visits[i]++;

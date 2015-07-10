@@ -221,9 +221,11 @@ public class GridController {
         //System.out.println("finished");
     }
 
-    private void addData() {
+    private void addDataToChart() {
         analysisController.addRewardData(algo.getGridWorld().getNumberOfSteps(),
                 algo.getGridWorld().getTotalReward());
+        analysisController.addTimeData(algo.getGridWorld().getNumberOfSteps(),
+                algo.getGridWorld().getTravelTime());
         //System.out.println("New data: ");
     }
 
@@ -233,8 +235,8 @@ public class GridController {
         double t = algo.getGridWorld().getTravelTime();
         totalRewards.setText(String.valueOf(r));
         totalSteps.setText(String.valueOf(s));
-        totalTravelTime.setText(String.valueOf(t));
-        addData();
+        totalTravelTime.setText(String.valueOf(t)+" mins");
+        addDataToChart();
     }
 
     public static Node getNode(final int row, final int column, GridPane gridPane) {
@@ -330,6 +332,7 @@ public class GridController {
             detailCtrl.getLocationPane().getChildren().remove(0);
         }
         detailCtrl.getLabel().setText("Location Value: ");
+        detailCtrl.resetTimeLabel();
         gridPaneInit();
         graphPane.getChildren().add(grid);
         repaintAll();

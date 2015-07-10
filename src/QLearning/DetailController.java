@@ -1,6 +1,8 @@
 package QLearning;
 
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.Format;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -43,11 +45,19 @@ public class DetailController implements Initializable {
             leftTimeLabel.setText(null);
             rightTimeLabel.setText(null);
         } else {
-            upTimeLabel.setText(String.valueOf(time[GridWorld.Up]));
-            downTimeLabel.setText(String.valueOf(time[GridWorld.Down]));
-            leftTimeLabel.setText(String.valueOf(time[GridWorld.Left]));
-            rightTimeLabel.setText(String.valueOf(time[GridWorld.Right]));
+            Format form = new DecimalFormat("0.##");
+            upTimeLabel.setText(form.format(time[GridWorld.Up]));
+            downTimeLabel.setText(form.format(time[GridWorld.Down]));
+            leftTimeLabel.setText(form.format(time[GridWorld.Left]));
+            rightTimeLabel.setText(form.format(time[GridWorld.Right]));
         }
+    }
+
+    public void resetTimeLabel() {
+        upTimeLabel.setText(null);
+        downTimeLabel.setText(null);
+        leftTimeLabel.setText(null);
+        rightTimeLabel.setText(null);
     }
 
     @FXML
@@ -75,6 +85,7 @@ public class DetailController implements Initializable {
         assert detailPane != null : "fx:id=\"detail\" was not injected: check your FXML file 'detail.fxml'.";
         assert label != null : "fx:id=\"label\" was not injected: check your FXML file 'detail.fxml'.";
         label.setText(null);
+        resetTimeLabel();
     }
 
 }
