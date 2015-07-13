@@ -24,22 +24,16 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
 
 public class GridController {
 
@@ -148,8 +142,8 @@ public class GridController {
                 GridPane location = algo.getGridWorld().getLocation(i, j).getLocPane();
 
                 //location on mouse click
-                location.setOnMouseClicked((MouseEvent t) -> {
-                    selectedLocation = (GridPane) t.getSource();
+                location.setOnMouseClicked((MouseEvent me) -> {
+                    selectedLocation = (GridPane) me.getSource();
                     int row = GridPane.getRowIndex(selectedLocation);
                     int col = GridPane.getColumnIndex(selectedLocation);
                     String s = "-fx-border-color: " + app.Color.Blue[5] + ";-fx-border-width:2;";
@@ -159,7 +153,7 @@ public class GridController {
                     System.out.print(" col ");
                     System.out.println(col);
                     //algo.getGridWorld().getLocation(row, col).print();
-                    Location loc = algo.getGridWorld().getLocation(row, col).clone();
+                    Location loc = algo.getGridWorld().getLocation(row, col).copy();
                     //loc.print();
                     //GridPane loc = Location.newNode();
                     loc.repaint(algo.getGridWorld());
@@ -225,17 +219,17 @@ public class GridController {
         analysisController.addRewardData(algo.getGridWorld().getNumberOfSteps(),
                 algo.getGridWorld().getTotalReward());
         analysisController.addTimeData(algo.getGridWorld().getNumberOfSteps(),
-                algo.getGridWorld().getTravelTime());
+                algo.getGridWorld().getTotalTravelTime());
         //System.out.println("New data: ");
     }
 
     void updatePerformance() {
-        double r = algo.getGridWorld().getTotalReward();
-        int s = algo.getGridWorld().getNumberOfSteps();
-        double t = algo.getGridWorld().getTravelTime();
-        totalRewards.setText(String.valueOf(r));
-        totalSteps.setText(String.valueOf(s));
-        totalTravelTime.setText(String.valueOf(t)+" mins");
+        double reward = algo.getGridWorld().getTotalReward();
+        int step = algo.getGridWorld().getNumberOfSteps();
+        double time = algo.getGridWorld().getTotalTravelTime();
+        totalRewards.setText(String.valueOf(reward));
+        totalSteps.setText(String.valueOf(step));
+        totalTravelTime.setText(String.valueOf(time)+" mins");
         addDataToChart();
     }
 

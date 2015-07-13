@@ -30,11 +30,11 @@ public class GridWorld {
 
     private int numberOfSteps = 0;
     private double totalReward = 0.0;
-    private double travelTime = 0.0;
+    private double totalTravelTime = 0.0;
 
     private int curRow;
     private int curCol;
-    private Location[][] location;
+    private final Location[][] location;
     private double range;
     private double highest, lowest;
 
@@ -78,7 +78,7 @@ public class GridWorld {
         return WallPenalty;
     }
 
-    public double getBloackPenalty() {
+    public double getBlockPenalty() {
         return BlockPenalty;
     }
 
@@ -96,10 +96,6 @@ public class GridWorld {
 
     public int getCurCol() {
         return curCol;
-    }
-
-    public Location[][] getLocation() {
-        return location;
     }
 
     public Location getLocation(int row, int col) {
@@ -131,14 +127,28 @@ public class GridWorld {
         return lowest;
     }
 
-    public double getTravelTime() {
-        return travelTime;
+    public double getTotalTravelTime() {
+        return totalTravelTime;
     }
 
     public void setCurrentPosition(int row, int col) {
         this.curRow = row;
         this.curCol = col;
     }
+
+    public void setDirectionProbability(int DirectionProbability) {
+        this.DirectionProbability = DirectionProbability;
+    }
+
+    public void setWallPenalty(double WallPenalty) {
+        this.WallPenalty = WallPenalty;
+    }
+
+    public void setBlockPenalty(double BlockPenalty) {
+        this.BlockPenalty = BlockPenalty;
+    }
+    
+    
 
     public double computeValueRange() {
         double big = location[0][0].getLocationValue();
@@ -203,7 +213,7 @@ public class GridWorld {
             {
                 newRow = 0;
                 newCol = 0;
-                reward = 0.0;
+                //reward = 0.0;
             }
         }
 
@@ -218,7 +228,7 @@ public class GridWorld {
             newCol = curCol;
         } else {//move
             reward = location[newRow][newCol].getReward();
-            travelTime += location[curRow][curCol].getTravelTime(actualDirection);
+            totalTravelTime += location[curRow][curCol].getTravelTime(actualDirection);
         }
 
         numberOfSteps++;

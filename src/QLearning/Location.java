@@ -6,16 +6,10 @@ package QLearning;
  */
 import java.text.DecimalFormat;
 import java.text.Format;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
@@ -33,8 +27,8 @@ import javafx.scene.text.TextAlignment;
 
 public class Location {
 
-    private int row; //row
-    private int col; //column
+    private final int row; //row
+    private final int col; //column
     private double reward;
 
     private boolean special;
@@ -48,7 +42,7 @@ public class Location {
     private int[] visits = new int[4];
     private double[] travelTime = new double[4];
 
-    private GridPane locPane;
+    private final GridPane locPane;
 
     ////////////////////////////////////////////////////////////////////////////
     //for grid world
@@ -69,7 +63,7 @@ public class Location {
         locPane = newNode();
     }
 
-    public Location clone() {
+    public Location copy() {
         Location newLocation = new Location(this.row, this.col, true);
         newLocation.isBlock = this.isBlock;
         newLocation.isOptimal = this.isOptimal;
@@ -166,8 +160,8 @@ public class Location {
     public void setLocationValue(double locationValue) {
         this.locationValue = locationValue;
     }
-    
-    public void setTravelTime(int direction, double time){
+
+    public void setTravelTime(int direction, double time) {
         this.travelTime[direction] = time;
     }
 
@@ -192,7 +186,7 @@ public class Location {
         System.out.println("");
     }
 
-    public GridPane newNode() {
+    public final GridPane newNode() {
         final GridPane gp = new GridPane();
         String color = app.Color.Red[2];
 

@@ -12,7 +12,7 @@ public class QLearnAlgo {
     private double alpha = 0.5;
     private boolean tracing = false;
     private GridWorld gridWorld;
-
+    
     public QLearnAlgo(GridWorld gridWorld) {
         this.gridWorld = gridWorld;
     }
