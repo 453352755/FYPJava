@@ -8,3 +8,79 @@ and open the template in the editor.
     Author     : Dong Yubo
 */
 
+//root
+.root-pane{
+    -fx-background-color: white;
+}
+
+.root-top-hbox{
+    -fx-background-color: lightblue;
+}
+
+.root-button{
+    -fx-background-color: greenyellow;
+}
+
+.root-status-pane{
+    -fx-background-color: lightblue;
+    
+}
+
+.root-status-label{
+    
+}
+
+//Qlearning grid world
+.qlearn-control-pane{
+    -fx-background-color: lightblue;
+}
+
+.direction-button {
+    -fx-background-radius: 10px;
+
+}
+
+.area-title-label{
+    
+}
+
+.algo-setting-label{
+    
+}
+
+.algo-setting-field{
+    
+}
+
+.play-pause-button {
+    -fx-background-radius: 0px;
+    -fx-border-image-width: 0px;
+    -fx-background-insets: 0px;
+    -fx-background-color:transparent;
+}
+
+.result-label{
+    
+}
+
+.gridworld-gridpane{
+    
+}
+
+//Qlearning detail pane
+.detail-time-label{
+    -fx-font-size: 20px;
+}
+
+//analysis
+.analysis-pane{
+    -fx-background-color: blue;
+}
+
+.analysis-control-pane{
+    -fx-background-color: lightyellow;
+}
+
+.analysis-chart-pane{
+    -fx-background-color: lavender;
+}

@@ -8,13 +8,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox fx:id="root" maxHeight="1080.0" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" style="-fx-opacity: 1;" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="QLearning.GridController">
+<HBox id="gridworld-root" fx:id="root" maxHeight="1080.0" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" style="-fx-opacity: 1;" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="QLearning.GridController">
    <children>
-      <VBox prefHeight="640.0" prefWidth="320.0">
+      <VBox id="grid-world-menu" prefHeight="640.0" prefWidth="320.0" styleClass="qlearn-control-pane">
          <children>
             <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="320.0">
                <children>
-                  <Button fx:id="leftButton" layoutX="10.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveLeft" prefHeight="100.0" prefWidth="100.0" text="left">
+                  <Button fx:id="leftButton" layoutX="10.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveLeft" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="left">
                      <graphic>
                         <ImageView fx:id="leftImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
                            <image>
@@ -23,7 +23,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="rightButton" layoutX="210.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveRight" prefHeight="100.0" prefWidth="100.0" text="right">
+                  <Button fx:id="rightButton" layoutX="210.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveRight" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="right">
                      <graphic>
                         <ImageView fx:id="rightImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -32,7 +32,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="upButton" layoutX="110.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveUp" prefHeight="100.0" prefWidth="100.0" text="up">
+                  <Button fx:id="upButton" layoutX="110.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveUp" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="up">
                      <graphic>
                         <ImageView fx:id="upImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="270.0">
                            <image>
@@ -41,7 +41,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="downButton" layoutX="110.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveDown" prefHeight="100.0" prefWidth="100.0" text="down">
+                  <Button fx:id="downButton" layoutX="110.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveDown" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="down">
                      <graphic>
                         <ImageView fx:id="downImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
                            <image>
@@ -53,7 +53,7 @@
                </children>
             </AnchorPane>
             <Separator prefWidth="200.0" />
-            <AnchorPane prefHeight="130.0" prefWidth="320.0">
+            <AnchorPane prefHeight="157.0" prefWidth="320.0">
                <children>
                   <Label layoutX="5.0" layoutY="5.0" text="Algorithm setting" />
                   <Label layoutX="10.0" layoutY="63.0" text="Discount" />
@@ -63,6 +63,9 @@
                   <Label layoutX="10.0" layoutY="31.0" text="Size" />
                   <ChoiceBox fx:id="rowBox" layoutX="131.0" layoutY="26.0" prefHeight="25.0" prefWidth="50.0" />
                   <ChoiceBox fx:id="colBox" layoutX="185.0" layoutY="26.0" prefHeight="25.0" prefWidth="50.0" />
+                  <Label layoutX="10.0" layoutY="125.0" text="Fixed Alpha" />
+                  <TextField fx:id="alphaField" layoutX="131.0" layoutY="121.0" onAction="#changeAlphaValue" prefHeight="25.0" prefWidth="106.0" promptText="0.5" />
+                  <CheckBox fx:id="alphaFixedBox" layoutX="97.0" layoutY="125.0" mnemonicParsing="false" onAction="#alphaFixed" />
                </children>
             </AnchorPane>
             <Separator prefWidth="200.0" />
@@ -73,7 +76,7 @@
                   <Label layoutX="10.0" layoutY="29.0" text="Speed" />
                   <TextField fx:id="speedValue" layoutX="58.0" layoutY="26.0" onAction="#updateSpeedValue" prefHeight="25.0" prefWidth="126.0" promptText="1" />
                   <Label fx:id="autorunStatus" layoutX="84.0" layoutY="61.0" text="Play to start auto run" />
-                  <Button fx:id="pause" alignment="CENTER" contentDisplay="CENTER" layoutX="46.0" layoutY="57.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pauseClicked" prefHeight="25.0" prefWidth="25.0">
+                  <Button fx:id="pause" alignment="CENTER" contentDisplay="CENTER" layoutX="46.0" layoutY="57.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pauseClicked" prefHeight="25.0" prefWidth="25.0" styleClass="play-pause-button">
                      <graphic>
                         <ImageView fx:id="pauseIcon" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#pauseClicked" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -82,7 +85,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="play" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="57.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playClicked" prefHeight="25.0" prefWidth="25.0">
+                  <Button fx:id="play" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="57.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playClicked" prefHeight="25.0" prefWidth="25.0" styleClass="play-pause-button">
                      <graphic>
                         <ImageView fx:id="playIcon" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#playClicked" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -98,14 +101,16 @@
             <AnchorPane prefHeight="99.0" prefWidth="320.0">
                <children>
                   <Label layoutX="5.0" layoutY="5.0" text="Result" />
-                  <Label layoutX="10.0" layoutY="32.0" text="Total Steps：" />
-                  <Label layoutX="10.0" layoutY="67.0" text="Total Rewards：" />
-                  <Label fx:id="totalSteps" layoutX="100.0" layoutY="32.0" text="0" />
-                  <Label fx:id="totalRewards" layoutX="100.0" layoutY="67.0" text="0" />
+                  <Label layoutX="10.0" layoutY="32.0" styleClass="result-label" text="Total Steps：" />
+                  <Label layoutX="10.0" layoutY="53.0" styleClass="result-label" text="Total Rewards：" />
+                  <Label fx:id="totalSteps" layoutX="119.0" layoutY="32.0" styleClass="result-label" text="0" />
+                  <Label fx:id="totalRewards" layoutX="119.0" layoutY="53.0" styleClass="result-label" text="0" />
+                  <Label layoutX="10.0" layoutY="73.0" styleClass="result-label" text="Total Travel Time:" />
+                  <Label fx:id="totalTravelTime" layoutX="119.0" layoutY="73.0" styleClass="result-label" text="0" />
                </children>
             </AnchorPane>
             <Separator prefWidth="200.0" />
-            <AnchorPane prefHeight="74.0" prefWidth="320.0">
+            <AnchorPane prefHeight="64.0" prefWidth="320.0">
                <children>
                   <Label layoutX="5.0" layoutY="10.0" text="Brightness" />
                   <Slider fx:id="brightness" blockIncrement="0.1" layoutX="79.0" layoutY="22.0" majorTickUnit="0.5" max="1.0" minorTickCount="1" prefHeight="14.0" prefWidth="126.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
@@ -116,5 +121,6 @@
          </children>
       </VBox>
       <StackPane fx:id="graphPane" maxHeight="1000.0" maxWidth="1000.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="640.0" HBox.hgrow="ALWAYS" />
+      <Separator orientation="VERTICAL" prefHeight="200.0" prefWidth="1.0" />
    </children>
 </HBox>
