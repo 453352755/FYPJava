@@ -16,18 +16,55 @@
             <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="320.0">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="80.0" layoutX="120.0" layoutY="120.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="80.0" />
-                  <Label fx:id="upTimeLabel" layoutX="135.0" layoutY="105.0" styleClass="detail-time-label" text="0.00" />
-                  <Label fx:id="leftTimeLabel" layoutX="102.0" layoutY="145.0" rotate="270.0" styleClass="detail-time-label" text="0.00" />
-                  <Label fx:id="downTimeLabel" layoutX="142.0" layoutY="185.0" styleClass="detail-time-label" text="0.00" />
-                  <Label fx:id="rightTimeLabel" layoutX="175.0" layoutY="145.0" rotate="90.0" styleClass="detail-time-label" text="0.00" />
+                  <Label fx:id="upTimeLabel" layoutX="135.0" layoutY="105.0" styleClass="detail-time-label" text="0.00" visible="false" />
+                  <Label fx:id="leftTimeLabel" layoutX="102.0" layoutY="145.0" rotate="270.0" styleClass="detail-time-label" text="0.00" visible="false" />
+                  <Label fx:id="downTimeLabel" layoutX="142.0" layoutY="185.0" styleClass="detail-time-label" text="0.00" visible="false" />
+                  <Label fx:id="rightTimeLabel" layoutX="175.0" layoutY="145.0" rotate="90.0" styleClass="detail-time-label" text="0.00" visible="false" />
                </children>
             </Pane>
          </children>
       </StackPane>
-      <Label fx:id="label" text="Label">
-         <font>
-            <Font size="26.0" />
-         </font>
-      </Label>
+      <GridPane fx:id="locGridPane">
+        <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0" prefWidth="30.0" />
+          <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="221.0" minWidth="10.0" prefWidth="133.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.0" minWidth="10.0" prefWidth="144.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.0" minWidth="10.0" prefWidth="29.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Up" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="upField" onAction="#upValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <TextField fx:id="leftField" onAction="#leftValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <TextField fx:id="downField" onAction="#downValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <TextField fx:id="rightField" onAction="#rightValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <Label text="Down" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Left" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="Right" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label fx:id="locationValueLabel" prefHeight="38.0" prefWidth="255.0" text="Location Value: 0.00" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+            <Label text="Reward" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <TextField fx:id="rewardField" onAction="#rewardValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <Label fx:id="rowColLabel" prefHeight="38.0" prefWidth="204.0" text="Row 0 - Col 0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+            <Label text="Block" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <CheckBox fx:id="blockCheckBox" graphicTextGap="0.0" mnemonicParsing="false" onAction="#blockChecked" prefHeight="17.0" prefWidth="0.0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+         </children>
+      </GridPane>
    </children>
 </VBox>

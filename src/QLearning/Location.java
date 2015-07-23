@@ -393,9 +393,12 @@ public class Location {
             if (reward > 0 && !isWall) {
                 locPane.setBackground(new Background(new BackgroundFill(
                         Paint.valueOf(app.Color.Green[3]), CornerRadii.EMPTY, Insets.EMPTY)));
-            } else if (reward < 0 && !isWall) {
+            } else if (reward < 0 && !isWall && !isBlock) {
                 locPane.setBackground(new Background(new BackgroundFill(
                         Paint.valueOf(app.Color.Red[3]), CornerRadii.EMPTY, Insets.EMPTY)));
+            } else if (isBlock) {
+                locPane.setBackground(new Background(new BackgroundFill(
+                        Paint.valueOf(app.Color.Brown[3]), CornerRadii.EMPTY, Insets.EMPTY)));
             } else {
                 locPane.setBackground(new Background(new BackgroundFill(
                         Paint.valueOf(app.Color.Yellow[index]), CornerRadii.EMPTY, Insets.EMPTY)));

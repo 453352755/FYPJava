@@ -21,9 +21,10 @@ public class GridWorld {
     public static final int Left = 2;
     public static final int Right = 3;
 
-    private int DirectionProbability = 4;
+    private double DirectionProbability = 0.7;
     private double WallPenalty = -1.0;
     private double BlockPenalty = -1.0;
+    private double defaultReward = 0.0;
 
     private final int rows;
     private final int cols;
@@ -47,6 +48,7 @@ public class GridWorld {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 location[i][j] = new Location(i, j);
+                location[i][j].setReward(defaultReward);
                 for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
                     location[i][j].setTravelTime(k, Math.random() * 60);
                 }
@@ -62,15 +64,19 @@ public class GridWorld {
         //set special location
         location[3][7].setReward(10);
         location[4][8].setReward(-3);
-        setBlock(6, 4);
+        setBlock(6, 4, true);
     }
 
-    public void setBlock(int row, int col) {
-        location[row][col].setIsBlock(true);
-        location[row][col].setReward(BlockPenalty);
+    public void setBlock(int row, int col, boolean isBlock) {
+        location[row][col].setIsBlock(isBlock);
+        if (isBlock) {
+            location[row][col].setReward(BlockPenalty);
+        } else {
+            location[row][col].setReward(defaultReward);
+        }
     }
 
-    public int getDirectionProbability() {
+    public double getDirectionProbability() {
         return DirectionProbability;
     }
 
@@ -147,8 +153,6 @@ public class GridWorld {
     public void setBlockPenalty(double BlockPenalty) {
         this.BlockPenalty = BlockPenalty;
     }
-    
-    
 
     public double computeValueRange() {
         double big = location[0][0].getLocationValue();
@@ -182,11 +186,15 @@ public class GridWorld {
      * @return
      */
     public int getActualDirection(int d) {
-        int rand = (int) (Math.random() * 10);
+        double rand = Math.random();
         if (rand < DirectionProbability) {
-            return rand;
-        } else {
             return d;
+        } else {
+            int r = d;
+            while (r == d) {
+                r = (int) (Math.random() * 4);
+            }
+            return r;
         }
     }
 
