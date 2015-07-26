@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -39,7 +40,7 @@ import javafx.scene.paint.Paint;
 public class GridController {
 
     private boolean play;
-    private static Thread t;
+    private static Thread algoThread;
     private long startTime;
     private AnalysisController analysisController;
 
@@ -104,14 +105,15 @@ public class GridController {
         }
 
         root.widthProperty().addListener((ObservableValue<? extends Number> ov, Number o, Number n) -> {
-            if (o.doubleValue() < 1280 && n.doubleValue() >= 1280) {
+            int bound = 1290;
+            if (o.doubleValue() < bound && n.doubleValue() >= bound) {
                 //System.out.println("GUI expanded, showing node detail");
                 if (selectedLocation != null) {
                     //detailCtrl.location.getChildren().add(selectedLocation);
                     //System.out.println(detailCtrl.getLocationPane().isVisible());
                 }
                 root.getChildren().add(root.getChildren().size(), detailPane);
-            } else if (o.doubleValue() >= 1280 && n.doubleValue() < 1280) {
+            } else if (o.doubleValue() >= bound && n.doubleValue() < bound) {
                 if (root.getChildren().contains(detailPane)) {
                     root.getChildren().remove(detailPane);
                 }
@@ -341,8 +343,12 @@ public class GridController {
 
     @FXML
     void updateSpeedValue(ActionEvent event) {
-        double sv = Double.parseDouble(speedValue.getText());
-
+        double sv;
+        try {
+            sv = Double.parseDouble(speedValue.getText());
+        } catch (NumberFormatException e) {
+            sv = -1000;
+        }
         System.out.print("speed value = ");
         System.out.println(sv);
 
@@ -369,15 +375,22 @@ public class GridController {
                     algo.doSteps(1);
                     if (interval > 100) {
                         long start = System.nanoTime();
-                        repaintAll();
+
                         long end = System.nanoTime();
                         long us = (end - start) / 1000;
                         //System.out.println(us);
                         //System.out.println("Map running");
-                    }
-                    if (interval != -1000) {
                         Thread.sleep(interval);
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                repaintAll();
+                                updatePerformance();
+                            }
+                        });
+
                     }
+
                 } catch (InterruptedException ex) {
                     Logger.getLogger(GridController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -398,13 +411,15 @@ public class GridController {
         speedValue.setDisable(true);
         //playButton.setDisable(true);
         resetButton.setDisable(true);
+        directionProbability.setDisable(true);
+        discountValue.setDisable(true);
         autorunStatus.setText("Auto running");
 
         //run simulator
         play = true;
-        t = new Thread(new RunMap());
+        algoThread = new Thread(new RunMap());
         startTime = System.nanoTime();
-        t.start();
+        algoThread.start();
 
     }
 
@@ -418,17 +433,19 @@ public class GridController {
         discountValue.setDisable(false);
         greedyValue.setDisable(false);
         speedValue.setDisable(false);
+        directionProbability.setDisable(false);
+        discountValue.setDisable(false);
         //playButton.setDisable(false);
         resetButton.setDisable(false);
         autorunStatus.setText("Paused, single step");
 
         play = false;
         try {
-            t.join();
+            algoThread.join();
             long time = System.nanoTime() - startTime;
             System.out.print("Total time taken: ");
-            System.out.print(time / 1000);
-            System.out.println(" micro second");
+            System.out.print(time / 1000000);
+            System.out.println(" mili second");
             repaintAll();
             updatePerformance();
             //t.interrupt();
@@ -462,8 +479,16 @@ public class GridController {
     @FXML
     void changeDirectionProbability(ActionEvent event) {
         double dv = Double.parseDouble(directionProbability.getText());
-        algo.setAlpha(dv);
+        algo.getGridWorld().setDirectionProbability(dv);
         System.out.print("DIrection Probability set to ");
+        System.out.println(dv);
+    }
+
+    @FXML
+    void defaultTravelTimeChanged(ActionEvent event) {
+        double dv = Double.parseDouble(defaultTravelTimeField.getText());
+        algo.getGridWorld().setDefaultTraveTime(dv);
+        System.out.print("Default Travel Time set to ");
         System.out.println(dv);
     }
 
@@ -479,63 +504,98 @@ public class GridController {
     }
 
     @FXML
+    void randomTravelTimeChecked(ActionEvent event) {
+        if (randomTravelTimeCheckBox.isSelected()) {
+            defaultTravelTimeField.setDisable(true);
+            algo.getGridWorld().setRandomTravelTime(true);
+            System.out.println("Random travel time");
+        } else {
+            defaultTravelTimeField.setDisable(false);
+            algo.getGridWorld().setRandomTravelTime(false);
+        }
+    }
+
+    @FXML
     private CheckBox alphaFixedBox;
+
+    @FXML
+    private CheckBox randomTravelTimeCheckBox;
+
     @FXML
     private TextField alphaField;
 
     @FXML
     private Button leftButton;
+
     @FXML
     private Button rightButton;
+
     @FXML
     private Button upButton;
+
     @FXML
     private Button downButton;
+
     @FXML
     private Button pauseButton;
+
     @FXML
     private Button playButton;
+
     @FXML
     private Button resetButton;
 
     @FXML
     private ImageView leftImage;
+
     @FXML
     private ImageView rightImage;
+
     @FXML
     private ImageView downImage;
+
     @FXML
     private ImageView upImage;
+
     @FXML
     private ImageView playIcon;
+
     @FXML
     private ImageView pauseIcon;
 
     @FXML
     private Label totalSteps;
+
     @FXML
     private Label totalRewards;
+
     @FXML
     private Label totalTravelTime;
+
     @FXML
     private TextField greedyValue;
+
     @FXML
     private TextField speedValue;
+
     @FXML
     private TextField discountValue;
+
     @FXML
     private TextField directionProbability;
+
+    @FXML
+    private TextField defaultTravelTimeField;
+
     @FXML
     private ChoiceBox<Integer> rowBox;
+
     @FXML
     private ChoiceBox<Integer> colBox;
 
     @FXML
-    private Slider brightness;
-    @FXML
     private Canvas mapCanvas;
-    @FXML
-    private Label brightnessValue;
+
     @FXML
     private Label autorunStatus;
 
@@ -544,6 +604,7 @@ public class GridController {
 
     @FXML
     private CheckBox tracing;
+
     @FXML
     private HBox root;
 }
