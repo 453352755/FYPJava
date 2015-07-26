@@ -43,7 +43,7 @@ public class AnalysisController implements Initializable {
     private XYChart.Series timeSeries;
     private final String chartStyle
             = "-fx-border-width: 2;"
-            + "-fx-border-stroke: black;"
+            + "-fx-border-color: black;"
             + "-fx-background-color: lightyellow;"
             + "-fx-max-height: 640;"
             + "-fx-max-width: 800;"
@@ -110,10 +110,10 @@ public class AnalysisController implements Initializable {
     }
 
     public void addTimeData(int steps, double time) {
-        if (rewardSeries == null) {
+        if (timeSeries == null) {
             chartBInit();
         } else {
-            rewardSeries.getData().add(new XYChart.Data(steps, time));
+            timeSeries.getData().add(new XYChart.Data(steps, time));
         }
     }
 
@@ -165,7 +165,7 @@ public class AnalysisController implements Initializable {
         newStage.setMinWidth(960);
         newStage.setMinHeight(640);
         newStage.setMaxWidth(1920);
-        newStage.setMaxHeight(1080);
+        newStage.setMaxHeight(1920);
         newStage.setHeight(640);
         newStage.setWidth(960);
         //https://www.iconfinder.com/icons/175360/combo_icon#size=512
