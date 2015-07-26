@@ -26,6 +26,12 @@ public class RootController implements Initializable {
     private Button analysisButton;
 
     @FXML
+    private Button saveButton;
+
+    @FXML
+    private Button importButton;
+
+    @FXML
     private HBox top;
 
     @FXML
@@ -55,6 +61,20 @@ public class RootController implements Initializable {
         GUI.switchToAnalysis();
         System.out.println("Switch to analysis, showing performance detail");
         status.setText("Analysis");
+    }
+
+    @FXML
+    void saveClicked(ActionEvent event) {
+        GUI.saveContext();
+        System.out.println("Switch to analysis, showing performance detail");
+        status.setText("Simulation Saved");
+    }
+
+    @FXML
+    void importClicked(ActionEvent event) {
+        GUI.importContext();
+        System.out.println("Switch to analysis, showing performance detail");
+        status.setText("Simulation Imported");
     }
 
     @Override

@@ -58,7 +58,6 @@ public class GUI extends Application {
         analysisInit();
         switchToQLearn();
 
-
         //GUI customization
         rootLayout.setCenter(QLearnLayout);
         rootScene = new Scene(rootLayout);
@@ -92,6 +91,13 @@ public class GUI extends Application {
         launch(args);
     }
 
+    public static void saveContext() {
+    }
+
+    public static void importContext() {
+       
+    }
+
     public static void switchToAnalysis() {
         if (analysisLayout != null) {
             rootLayout.setCenter(analysisLayout);
@@ -107,7 +113,7 @@ public class GUI extends Application {
             try {
                 analysisLayout = (HBox) ALoader.load();
                 analysisCtrl = ALoader.getController();
-                
+
                 System.out.println("anslysis layout loaded");
             } catch (IOException ex) {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
