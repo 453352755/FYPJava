@@ -20,6 +20,8 @@
             <Button fx:id="qLearnButton" alignment="CENTER" mnemonicParsing="false" onAction="#qlearnClicked" prefHeight="25.0" prefWidth="153.0" style="-fx-border-width: 0;" styleClass="root-button" text="Qlearning: GridWorld" HBox.hgrow="ALWAYS" />
             <Button fx:id="rewardSettingButton" mnemonicParsing="false" onAction="#changeRewardSetting" prefHeight="25.0" prefWidth="122.0" styleClass="root-button" text="Reward Setting" />
             <Button fx:id="analysisButton" mnemonicParsing="false" onAction="#analysisClicked" prefHeight="25.0" prefWidth="122.0" style="-fx-border-width: 0;" styleClass="root-button" text="Analysis" HBox.hgrow="ALWAYS" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveClicked" prefHeight="25.0" prefWidth="122.0" style="-fx-border-width: 0;" styleClass="root-button" text="Save" />
+            <Button fx:id="importButton" mnemonicParsing="false" onAction="#importClicked" prefHeight="25.0" prefWidth="122.0" style="-fx-border-width: 0;" styleClass="root-button" text="Import" />
          </children>
       </HBox>
    </top>

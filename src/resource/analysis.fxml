@@ -19,7 +19,7 @@
                <children>
                   <CheckBox fx:id="qLearnCChart" layoutX="7.0" layoutY="115.0" mnemonicParsing="false" onAction="#cChartChecked" text="C" />
                   <CheckBox fx:id="qLearnAChart" layoutX="7.0" layoutY="49.0" mnemonicParsing="false" onAction="#aChartChecked" text="Step-Reward" />
-                  <CheckBox fx:id="qLearnBChart" layoutX="7.0" layoutY="83.0" mnemonicParsing="false" onAction="#bChartChecked" text="B" />
+                  <CheckBox fx:id="qLearnBChart" layoutX="7.0" layoutY="83.0" mnemonicParsing="false" onAction="#bChartChecked" text="Total Time Taken" />
                   <Label layoutX="29.0" layoutY="14.0" text="QLearning" />
                </children>
             </Pane>
@@ -33,7 +33,7 @@
       </VBox>
       <FlowPane fx:id="chartFlowPane" alignment="CENTER" columnHalignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="800.0" prefWrapLength="800.0" styleClass="analysis-chart-pane" HBox.hgrow="ALWAYS">
          <children>
-            <LineChart maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="320.0" minWidth="400.0" prefHeight="320.0" prefWidth="400.0">
+            <LineChart maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="320.0" minWidth="400.0" prefHeight="320.0" prefWidth="400.0" style="-fx-border-color: #ffffff; -fx-border-width: 10;">
                <xAxis>
                   <CategoryAxis side="BOTTOM" />
                </xAxis>
