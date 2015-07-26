@@ -25,6 +25,8 @@ public class GridWorld {
     private double WallPenalty = -1.0;
     private double BlockPenalty = -1.0;
     private double defaultReward = 0.0;
+    private double defaultTraveTime = 1;
+    private boolean randomTravelTime = true;
 
     private final int rows;
     private final int cols;
@@ -49,8 +51,14 @@ public class GridWorld {
             for (int j = 0; j < cols; j++) {
                 location[i][j] = new Location(i, j);
                 location[i][j].setReward(defaultReward);
-                for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
-                    location[i][j].setTravelTime(k, Math.random() * 60);
+                if (randomTravelTime) {
+                    for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
+                        location[i][j].setTravelTime(k, Math.random() * 10);
+                    }
+                } else {
+                    for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
+                        location[i][j].setTravelTime(k, defaultTraveTime);
+                    }
                 }
 
                 //check walls
@@ -71,8 +79,22 @@ public class GridWorld {
         location[row][col].setIsBlock(isBlock);
         if (isBlock) {
             location[row][col].setReward(BlockPenalty);
+            location[row][col].setLocationValue(0);
+            for (int k = 0; k < location[row][col].getTravelTime().length; k++) {
+                location[row][col].setTravelTime(k, 0);
+                location[row][col].setQvalue(k, 0);
+            }
         } else {
             location[row][col].setReward(defaultReward);
+            if (randomTravelTime) {
+                for (int k = 0; k < location[row][col].getTravelTime().length; k++) {
+                    location[row][col].setTravelTime(k, Math.random() * 10);
+                }
+            } else {
+                for (int k = 0; k < location[row][col].getTravelTime().length; k++) {
+                    location[row][col].setTravelTime(k, defaultTraveTime);
+                }
+            }
         }
     }
 
@@ -135,6 +157,22 @@ public class GridWorld {
 
     public double getTotalTravelTime() {
         return totalTravelTime;
+    }
+
+    public boolean isRandomTravelTime() {
+        return randomTravelTime;
+    }
+
+    public void setRandomTravelTime(boolean randomTravelTime) {
+        this.randomTravelTime = randomTravelTime;
+    }
+
+    public void setDirectionProbability(double DirectionProbability) {
+        this.DirectionProbability = DirectionProbability;
+    }
+
+    public void setDefaultTraveTime(double defaultTraveTime) {
+        this.defaultTraveTime = defaultTraveTime;
     }
 
     public void setCurrentPosition(int row, int col) {
