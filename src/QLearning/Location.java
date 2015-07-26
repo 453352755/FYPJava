@@ -455,7 +455,10 @@ public class Location {
                 }
                 if (this.isBlock) {
                     t.setVisible(false);
-                } else if (GridPane.getRowIndex(t) == 0) { //up
+                } else {
+                    t.setVisible(true);
+                }
+                if (GridPane.getRowIndex(t) == 0) { //up
                     t.setText(form.format(qvalues[GridWorld.Up]));
 
                     //System.out.println(form.format(qvalues[GridWorld.Up]));
