@@ -1,0 +1,32 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package QLearning;
+
+/**
+ *
+ * @author dong
+ */
+public interface Algorithm {
+    
+
+
+    public void setGridWorld(GridWorld gw);
+
+    public boolean moveToDir(int Left);
+
+    public boolean doSteps(int i);
+
+    public void setTracing(boolean b);
+
+    public void setAlpha(double av);
+
+    public void setAlphaFixed(boolean b);
+
+    public void setDiscount(double dv);
+
+    public void setGreedyProb(double gv);
+    
+}
