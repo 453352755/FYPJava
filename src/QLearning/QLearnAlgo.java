@@ -4,7 +4,7 @@ package QLearning;
  *
  * @author Dong Yubo
  */
-public class QLearnAlgo {
+public class QLearnAlgo implements Algorithm {
 
     private double discount = 0.9;
     private boolean alphaFixed = false;
@@ -12,7 +12,7 @@ public class QLearnAlgo {
     private double alpha = 0.5;
     private boolean tracing = false;
     private GridWorld gridWorld;
-    
+
     public QLearnAlgo(GridWorld gridWorld) {
         this.gridWorld = gridWorld;
     }
@@ -41,33 +41,43 @@ public class QLearnAlgo {
         return gridWorld;
     }
 
+    @Override
     public void setDiscount(double discount) {
         this.discount = discount;
     }
 
+    @Override
     public void setAlphaFixed(boolean alphaFixed) {
         this.alphaFixed = alphaFixed;
     }
 
+    @Override
     public void setGreedyProb(double greedyProb) {
         this.greedyProb = greedyProb;
     }
 
+    @Override
     public void setAlpha(double alpha) {
         this.alpha = alpha;
     }
 
+    @Override
     public void setTracing(boolean tracing) {
         this.tracing = tracing;
     }
 
+    @Override
     public void setGridWorld(GridWorld gridWorld) {
         this.gridWorld = gridWorld;
     }
 
-    public void dostep(int direction) {
+    @Override
+    public boolean moveToDir(int direction) {
         int oldRow = gridWorld.getCurRow(), oldCol = gridWorld.getCurCol();
         double reward = gridWorld.move(direction);
+        if (reward == GridWorld.DeadPenalty) {
+            return false;
+        }
         int newRow = gridWorld.getCurRow(), newCol = gridWorld.getCurCol();
 
         // update Q values
@@ -92,6 +102,7 @@ public class QLearnAlgo {
         if (tracing) {
             System.out.println(" Qnew=" + gridWorld.getLocation(oldRow, oldCol).getQvalue(direction));
         }
+        return true;
     }
 
 //    public double locValue(int row, int col) {
@@ -103,8 +114,8 @@ public class QLearnAlgo {
 //        }
 //        return val;
 //    }
-    
-    public void doSteps(int count) {
+    @Override
+    public boolean doSteps(int count) {
 
         for (int i = 0; i < count; i++) {
             double rand = Math.random();
@@ -122,11 +133,16 @@ public class QLearnAlgo {
                         bestDir = startDir;
                     }
                 }
-                dostep(bestDir);
+                if (!moveToDir(bestDir)) {
+                    return false;
+                }
             } else { // act randomly
-                dostep((int) (Math.random() * 4));
+                if (!moveToDir((int) (Math.random() * 4))) {
+                    return false;
+                }
             }
         }
+        return true;
     }
 
 }
