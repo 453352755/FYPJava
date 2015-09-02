@@ -1,5 +1,7 @@
 package QLearning;
 
+import java.util.HashSet;
+
 /**
  *
  * @author Dong Yubo
@@ -20,13 +22,15 @@ public class GridWorld {
     public static final int Down = 1;
     public static final int Left = 2;
     public static final int Right = 3;
+    public static double DeadPenalty = -100;
 
-    private double DirectionProbability = 0.7;
-    private double WallPenalty = -1.0;
-    private double BlockPenalty = -1.0;
+    private double DirectionProbability = 1;
+    private double WallPenalty = 0;
+    private double BlockPenalty = 0;
     private double defaultReward = 0.0;
     private double defaultTraveTime = 1;
-    private boolean randomTravelTime = true;
+    private boolean randomTravelTime = false;
+    private boolean batteryEnabled = true;
 
     private final int rows;
     private final int cols;
@@ -37,6 +41,8 @@ public class GridWorld {
 
     private int curRow;
     private int curCol;
+    private int fullBatterySteps;
+    private int remainingSteps;
     private final Location[][] location;
     private double range;
     private double highest, lowest;
@@ -44,8 +50,10 @@ public class GridWorld {
     public GridWorld(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
-        curRow = (int) (Math.random() * rows);
-        curCol = (int) (Math.random() * cols);
+        this.fullBatterySteps = 10;
+        remainingSteps = fullBatterySteps;
+//        curRow = (int) (Math.random() * rows);
+//        curCol = (int) (Math.random() * cols);
         location = new Location[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -69,10 +77,41 @@ public class GridWorld {
             }
         }
 
+        setStart(0, 0);
+        setGoal(9, 9);
+        setCharging(3, 6, true);
+        setCharging(6, 4, true);
+
         //set special location
-        location[3][7].setReward(10);
-        location[4][8].setReward(-3);
-        setBlock(6, 4, true);
+//        location[3][7].setReward(10);
+//        location[4][8].setReward(-3);
+//        setBlock(6, 4, true);
+    }
+
+    public void setStart(int row, int col) {
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                location[row][col].setIsStart(false);
+            }
+        }
+        location[row][col].setIsStart(true);
+        curRow = row;
+        curCol = col;
+    }
+
+    public void setGoal(int row, int col) {
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                location[row][col].setIsGoal(false);
+            }
+        }
+        location[row][col].setIsGoal(true);
+        location[row][col].setReward(100);
+    }
+
+    public void setCharging(int row, int col, boolean isCharging) {
+        location[row][col].setIsCharging(isCharging);
+        location[row][col].setReward(10);
     }
 
     public void setBlock(int row, int col, boolean isBlock) {
@@ -98,6 +137,13 @@ public class GridWorld {
         }
     }
 
+    public void charge() {
+        //TO DO
+        //charge at location i,j charge to ? percent, charge for ? minutes, charge speed 
+        
+        this.remainingSteps = fullBatterySteps;
+    }
+
     public double getDirectionProbability() {
         return DirectionProbability;
     }
@@ -108,6 +154,10 @@ public class GridWorld {
 
     public double getBlockPenalty() {
         return BlockPenalty;
+    }
+
+    public int getRemainingSteps() {
+        return remainingSteps;
     }
 
     public int getNumberOfSteps() {
@@ -131,6 +181,11 @@ public class GridWorld {
     }
 
     public void reset() {
+        totalTravelTime = 0;
+        range = 0;
+        highest = 0;
+        lowest = 0;
+        remainingSteps = fullBatterySteps;
         numberOfSteps = 0;
         totalReward = 0.0;
     }
@@ -161,6 +216,14 @@ public class GridWorld {
 
     public boolean isRandomTravelTime() {
         return randomTravelTime;
+    }
+
+    public boolean isBatteryEnabled() {
+        return batteryEnabled;
+    }
+
+    public void setBatteryEnabled(boolean batteryEnabled) {
+        this.batteryEnabled = batteryEnabled;
     }
 
     public void setRandomTravelTime(boolean randomTravelTime) {
@@ -262,9 +325,11 @@ public class GridWorld {
                 //reward = 0.0;
             }
         }
-
-        //wall
-        if (newCol < 0 || newCol > cols - 1 || newRow < 0 || newRow > rows - 1) {
+        if (batteryEnabled && remainingSteps <= 0) {
+            newRow = curRow;
+            newCol = curCol;
+            reward = DeadPenalty;
+        }else if (newCol < 0 || newCol > cols - 1 || newRow < 0 || newRow > rows - 1) {//wall
             reward = WallPenalty;
             newRow = curRow;
             newCol = curCol;
@@ -276,11 +341,16 @@ public class GridWorld {
             reward = location[newRow][newCol].getReward();
             totalTravelTime += location[curRow][curCol].getTravelTime(actualDirection);
         }
+        
+        if (location[newRow][newCol].isCharging()) {
+            charge();
+        }
 
         numberOfSteps++;
         totalReward += reward;
         curRow = newRow;
         curCol = newCol;
+        remainingSteps--;
         return reward;
     }
 }
