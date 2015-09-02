@@ -34,6 +34,9 @@ public class Location {
     private boolean special;
     private boolean isWall = false;
     private boolean isBlock = false;
+    private boolean isStart = false;
+    private boolean isCharging = false;
+    private boolean isGoal = false;
     private boolean duplicated = false;
 
     private double[] qvalues = new double[4];
@@ -103,6 +106,30 @@ public class Location {
         return isWall;
     }
 
+    public boolean isStart() {
+        return isStart;
+    }
+
+    public void setIsStart(boolean isStart) {
+        this.isStart = isStart;
+    }
+
+    public boolean isCharging() {
+        return isCharging;
+    }
+
+    public void setIsCharging(boolean isCharging) {
+        this.isCharging = isCharging;
+    }
+
+    public boolean isGoal() {
+        return isGoal;
+    }
+
+    public void setIsGoal(boolean isGoal) {
+        this.isGoal = isGoal;
+    }
+
     public boolean isBlock() {
         return isBlock;
     }
@@ -138,7 +165,12 @@ public class Location {
     public void setReward(double reward) {
         this.reward = reward;
         Label r = (Label) GridController.getNode(4, 4, locPane);
-        r.setText(String.valueOf(reward));
+        Format form = new DecimalFormat("0");
+        if (this.reward == 0) {
+            r.setText(null);
+        } else {
+            r.setText(String.valueOf(form.format(reward)));
+        }
     }
 
     public void setSpecial(boolean special) {
@@ -345,9 +377,10 @@ public class Location {
 
         Label rewardLabel = new Label();
         rewardLabel.setText(null);
-        if (this.reward != 0) {
-            rewardLabel.setText(String.valueOf(this.reward));
-        }
+//        Format form = new DecimalFormat("0");
+//        if (this.reward != 0) {
+//            rewardLabel.setText(form.format(0));
+//        }
         if (duplicated) {
             rewardLabel.setStyle("-fx-font-size: 30px");
         } else {
@@ -399,6 +432,12 @@ public class Location {
             } else if (isBlock) {
                 locPane.setBackground(new Background(new BackgroundFill(
                         Paint.valueOf(app.Color.Brown[3]), CornerRadii.EMPTY, Insets.EMPTY)));
+            } else if (isStart || isGoal) {
+                locPane.setBackground(new Background(new BackgroundFill(
+                        Paint.valueOf(app.Color.Blue[3]), CornerRadii.EMPTY, Insets.EMPTY)));
+            } else if (isCharging) {
+                locPane.setBackground(new Background(new BackgroundFill(
+                        Paint.valueOf(app.Color.Cyan[3]), CornerRadii.EMPTY, Insets.EMPTY)));
             } else {
                 locPane.setBackground(new Background(new BackgroundFill(
                         Paint.valueOf(app.Color.Yellow[index]), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -410,44 +449,6 @@ public class Location {
             System.out.println(sec);
         }
         for (int i = 0; i < locPane.getChildren().size(); i++) {
-//            if (g.getChildren().get(i).getClass().equals(Text.class)) {
-//                t = (Text) g.getChildren().get(i);
-//                if (GridPane.getRowIndex(t) == 1) { //up
-//                    t.setText(form.format(qvalues[GridWorld.Up]));
-//                } else if (GridPane.getRowIndex(t) == 3) { //down
-//                    t.setText(form.format(qvalues[GridWorld.Down]));
-//                } else if (GridPane.getColumnIndex(t) == 1) { //left
-//                    t.setText(form.format(qvalues[GridWorld.Left]));
-//                } else if (GridPane.getColumnIndex(t) == 3) { //right
-//                    t.setText(form.format(qvalues[GridWorld.Right]));
-//                }
-//            } else if (g.getChildren().get(i).getClass().equals(Polygon.class)) {
-//                Polygon p = (Polygon) g.getChildren().get(i);
-//                if (GridPane.getRowIndex(p) == 0) { //up
-//                    if (isOptimal[GridWorld.Up]) {
-//                        p.setVisible(true);
-//                    } else {
-//                        p.setVisible(false);
-//                    }
-//                } else if (GridPane.getRowIndex(p) == 4) { //down
-//                    if (isOptimal[GridWorld.Down]) {
-//                        p.setVisible(true);
-//                    } else {
-//                        p.setVisible(false);
-//                    }
-//                } else if (GridPane.getColumnIndex(p) == 0) { //left
-//                    if (isOptimal[GridWorld.Left]) {
-//                        p.setVisible(true);
-//                    } else {
-//                        p.setVisible(false);
-//                    }
-//                } else if (GridPane.getColumnIndex(p) == 4) { //right
-//                    if (isOptimal[GridWorld.Right]) {
-//                        p.setVisible(true);
-//                    } else {
-//                        p.setVisible(false);
-//                    }
-//                }
             if (locPane.getChildren().get(i).getClass().equals(Text.class)) {
                 t = (Text) locPane.getChildren().get(i);
                 if (duplicated) {
@@ -526,12 +527,4 @@ public class Location {
         return big;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    //for simulated world
-//    public Location(double x, double y) {
-//        this.row = x;
-//        this.col = y;
-//    }
-    ////////////////////////////////////////////////////////////////////////////
-    //universal
 }
