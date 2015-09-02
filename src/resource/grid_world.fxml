@@ -10,9 +10,9 @@
 
 <HBox id="gridworld-root" fx:id="root" maxHeight="1080.0" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" style="-fx-opacity: 1;" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="QLearning.GridController">
     <children>
-        <VBox id="grid-world-menu" prefHeight="640.0" prefWidth="320.0" styleClass="qlearn-control-pane">
+        <VBox id="grid-world-menu" maxHeight="1.7976931348623157E308" maxWidth="480.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="320.0" styleClass="qlearn-control-pane" HBox.hgrow="SOMETIMES">
             <children>
-                <GridPane prefHeight="216.0" prefWidth="314.0">
+                <GridPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="220.0" prefWidth="320.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
@@ -67,25 +67,28 @@
                     </children>
                 </GridPane>
                 <Separator prefWidth="200.0" />
-                <GridPane prefHeight="169.0" prefWidth="314.0">
+                <GridPane alignment="CENTER" maxHeight="270.0" prefHeight="169.0" prefWidth="314.0" VBox.vgrow="ALWAYS">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="10.0" prefWidth="23.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.0" minWidth="10.0" prefWidth="145.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="117.0" minWidth="10.0" prefWidth="105.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" minWidth="10.0" prefWidth="57.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="10.0" prefWidth="12.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="211.0" minWidth="10.0" prefWidth="116.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="0.0" prefWidth="36.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="166.0" minWidth="4.0" prefWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="166.0" minWidth="10.0" prefWidth="89.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="47.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="14.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="30.0" minHeight="20.0" prefHeight="30.0" />
-                        <RowConstraints maxHeight="30.0" minHeight="20.0" prefHeight="30.0" />
-                        <RowConstraints maxHeight="30.0" minHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="30.0" minHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="30.0" minHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="30.0" minHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
                     </rowConstraints>
                     <children>
                         <Label text="  Algorithm setting" GridPane.columnSpan="2147483647" />
                         <Label text="Size" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="1">
                             <children>
                                 <ChoiceBox fx:id="rowBox" prefHeight="25.0" prefWidth="50.0" />
                                 <ChoiceBox fx:id="colBox" prefHeight="25.0" prefWidth="50.0" />
@@ -94,36 +97,37 @@
                         <Label text="Discount" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Greedy" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label text="Direction Probability" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <TextField fx:id="directionProbability" onAction="#changeDirectionProbability" prefHeight="25.0" prefWidth="106.0" promptText="0.7" text="0.7" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <TextField fx:id="directionProbability" disable="true" onAction="#changeDirectionProbability" prefHeight="25.0" prefWidth="106.0" promptText="0.7" text="1" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                         <TextField fx:id="alphaField" onAction="#changeAlphaValue" prefHeight="25.0" prefWidth="106.0" promptText="0.5" text="0.5" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                         <TextField fx:id="greedyValue" onAction="#updateGreedyValue" prefHeight="25.0" prefWidth="106.0" promptText="0.8" text="0.8" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                         <TextField fx:id="discountValue" onAction="#updateDiscountValue" prefHeight="25.0" prefWidth="106.0" promptText="0.9" text="0.9" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                             <children>
-                                <Label prefHeight="17.0" prefWidth="105.0" text="Fixed Alpha" />
-                                <CheckBox fx:id="alphaFixedBox" mnemonicParsing="false" onAction="#alphaFixed" />
+                                <CheckBox fx:id="alphaFixedBox" mnemonicParsing="false" onAction="#alphaFixed" text="Fixed Alpha" />
                             </children>
                         </HBox>
+                  <CheckBox fx:id="batteryLifeCheckBox" mnemonicParsing="false" onAction="#batteryLifeEnabled" selected="true" text="Battery Life Enabled" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                     </children>
                 </GridPane>
                 <Separator prefWidth="200.0" />
-                <GridPane prefHeight="100.0" prefWidth="320.0">
+                <GridPane alignment="CENTER" maxHeight="200.0" prefHeight="100.0" prefWidth="320.0" VBox.vgrow="ALWAYS">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="10.0" prefWidth="19.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="152.0" minWidth="10.0" prefWidth="146.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="103.0" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="93.0" minWidth="10.0" prefWidth="57.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0" prefWidth="211.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="75.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="93.0" minWidth="10.0" prefWidth="16.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                  <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                     </rowConstraints>
                     <children>
                         <Label text="  Run" GridPane.columnSpan="2147483647" />
-                        <Label text="Speed (Steps per second)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="speedValue" onAction="#updateSpeedValue" prefHeight="25.0" prefWidth="126.0" promptText="1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <HBox alignment="CENTER_LEFT" prefHeight="39.0" prefWidth="302.0" spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+                        <Label text="Speed (Steps per second)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="speedValue" onAction="#updateSpeedValue" prefHeight="25.0" prefWidth="62.0" promptText="1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="39.0" prefWidth="302.0" spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
                             <children>
                                 <Button fx:id="play" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="57.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playClicked" prefHeight="25.0" prefWidth="25.0" styleClass="play-pause-button">
                                     <graphic>
@@ -147,21 +151,34 @@
                                 <Label fx:id="autorunStatus" text="Play to start auto run" />
                             </children>
                         </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                     <children>
+                        <Label text="Algorithms" />
+                        <RadioButton fx:id="originalRadioButton" mnemonicParsing="false" onAction="#originalAlgoChosen" text="Original">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="Algo" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="modifiedRadioButton" mnemonicParsing="false" onAction="#modifiedAlgoChosen" selected="true" text="Modified" toggleGroup="$Algo" />
+                     </children>
+                  </HBox>
                     </children>
                 </GridPane>
                 <Separator prefWidth="200.0" />
-                <GridPane prefHeight="95.0" prefWidth="314.0">
+                <GridPane alignment="CENTER" maxHeight="250.0" prefHeight="95.0" prefWidth="314.0" VBox.vgrow="ALWAYS">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="10.0" prefWidth="21.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="145.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="10.0" prefWidth="115.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="93.0" minWidth="10.0" prefWidth="41.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="10.0" prefWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="217.0" minWidth="10.0" prefWidth="107.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="172.0" minWidth="10.0" prefWidth="46.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="172.0" minWidth="10.0" prefWidth="107.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="172.0" minWidth="10.0" prefWidth="35.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="93.0" minWidth="10.0" prefWidth="16.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="25.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="25.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="25.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="25.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="25.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="23.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="25.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="25.0" vgrow="ALWAYS" />
                     </rowConstraints>
                     <children>
                         <Label text="  Result" GridPane.columnSpan="2147483647" />
@@ -171,24 +188,26 @@
                         <Label fx:id="totalRewards" prefHeight="17.0" prefWidth="180.0" styleClass="result-label" text="0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <Label styleClass="result-label" text="Total Travel Time:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label fx:id="totalTravelTime" prefHeight="17.0" prefWidth="180.0" styleClass="result-label" text="0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                  <Label text="Remaining Steps:" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <Label fx:id="remainingStepsLabel" text="10" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                     </children>
                 </GridPane>
                 <Separator prefWidth="200.0" />
-                <GridPane>
+                <GridPane alignment="CENTER" maxHeight="50.0" maxWidth="-Infinity" prefWidth="320.0" VBox.vgrow="ALWAYS">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="69.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="161.0" minWidth="10.0" prefWidth="148.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="79.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="193.0" minWidth="10.0" prefWidth="192.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="29.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="18.0" minWidth="-Infinity" prefWidth="18.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                     </rowConstraints>
                     <children>
                         <CheckBox fx:id="tracing" mnemonicParsing="false" onAction="#tracingChecked" text="Tracing" GridPane.columnIndex="1" />
-                        <CheckBox fx:id="randomTravelTimeCheckBox" mnemonicParsing="false" onAction="#randomTravelTimeChecked" selected="true" text="Random Travel Time" GridPane.columnIndex="2" />
-                        <TextField fx:id="defaultTravelTimeField" disable="true" onAction="#defaultTravelTimeChanged" prefHeight="25.0" prefWidth="54.0" promptText="0.5" text="1" GridPane.columnIndex="3" />
+                        <CheckBox fx:id="randomTravelTimeCheckBox" mnemonicParsing="false" onAction="#randomTravelTimeChecked" text="Random Travel Time" GridPane.columnIndex="2" />
+                        <TextField fx:id="defaultTravelTimeField" disable="true" onAction="#defaultTravelTimeChanged" prefHeight="25.0" prefWidth="68.0" promptText="0.5" text="1" GridPane.columnIndex="3" />
                     </children>
                 </GridPane>
             </children>
