@@ -26,10 +26,15 @@ import javafx.scene.layout.VBox;
 public class DetailController implements Initializable {
 
     private QLearnAlgo algo;
+    private GridWorld gw;
     private Location loc;
 
     public void setAlgo(QLearnAlgo algo) {
         this.algo = algo;
+    }
+    
+    public void setGridWorld(GridWorld gw){
+        this.gw = gw;
     }
 
     @FXML
@@ -92,44 +97,67 @@ public class DetailController implements Initializable {
 
     @FXML
     void upValueChanged(ActionEvent event) {
-        algo.getGridWorld().getLocation(loc.getRow(), loc.getCol()).
+        gw.getLocation(loc.getRow(), loc.getCol()).
                 setTravelTime(Up, Double.valueOf(upField.getText()));
     }
 
     @FXML
     void leftValueChanged(ActionEvent event) {
-        algo.getGridWorld().getLocation(loc.getRow(), loc.getCol()).
+        gw.getLocation(loc.getRow(), loc.getCol()).
                 setTravelTime(Left, Double.valueOf(leftField.getText()));
 
     }
 
     @FXML
     void downValueChanged(ActionEvent event) {
-        algo.getGridWorld().getLocation(loc.getRow(), loc.getCol()).
+        gw.getLocation(loc.getRow(), loc.getCol()).
                 setTravelTime(Down, Double.valueOf(downField.getText()));
 
     }
 
     @FXML
     void rightValueChanged(ActionEvent event) {
-        algo.getGridWorld().getLocation(loc.getRow(), loc.getCol()).
+        gw.getLocation(loc.getRow(), loc.getCol()).
                 setTravelTime(Right, Double.valueOf(rightField.getText()));
 
     }
 
     @FXML
     void rewardValueChanged(ActionEvent event) {
-        algo.getGridWorld().getLocation(loc.getRow(),
+        gw.getLocation(loc.getRow(),
                 loc.getCol()).setReward(Double.valueOf(rewardField.getText()));
     }
 
     @FXML
     void blockChecked(ActionEvent event) {
         if (blockCheckBox.isSelected()) {
-            algo.getGridWorld().setBlock(loc.getRow(), loc.getCol(),true);
+            gw.setBlock(loc.getRow(), loc.getCol(),true);
         } else {
-            algo.getGridWorld().setBlock(loc.getRow(), loc.getCol(),false);
+            gw.setBlock(loc.getRow(), loc.getCol(),false);
         }
+    }
+    
+    @FXML
+    void startChecked(ActionEvent event) {
+        if (startCheckBox.isSelected()) {
+            gw.setStart(loc.getRow(), loc.getCol());
+        }
+    }
+    
+    @FXML
+    void chargingChecked(ActionEvent event) {
+        if (chargingCheckBox.isSelected()) {
+            gw.setCharging(loc.getRow(), loc.getCol(),true);
+        } else {
+            gw.setCharging(loc.getRow(), loc.getCol(),false);
+        }
+    }
+    
+    @FXML
+    void goalChecked(ActionEvent event) {
+        if (goalCheckBox.isSelected()) {
+            gw.setGoal(loc.getRow(), loc.getCol());
+        } 
     }
 
     @FXML
@@ -155,6 +183,15 @@ public class DetailController implements Initializable {
 
     @FXML
     private CheckBox blockCheckBox;
+    
+    @FXML
+    private CheckBox startCheckBox;
+    
+    @FXML
+    private CheckBox chargingCheckBox;
+    
+    @FXML
+    private CheckBox goalCheckBox;
 
     /**
      * Initializes the controller class.
@@ -206,6 +243,9 @@ public class DetailController implements Initializable {
         }
         rewardField.setText(form.format(loc.getReward()));
         blockCheckBox.setSelected(loc.isBlock());
+        startCheckBox.setSelected(loc.isStart());
+        chargingCheckBox.setSelected(loc.isCharging());
+        goalCheckBox.setSelected(loc.isGoal());
         locGridPane.setVisible(true);
 
     }
