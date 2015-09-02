@@ -7,6 +7,7 @@ package QLearning;
 import analysis.AnalysisController;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -24,8 +25,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -44,14 +46,17 @@ public class GridController {
     private long startTime;
     private AnalysisController analysisController;
 
-    private final QLearnAlgo algo = new QLearnAlgo(new GridWorld(10, 10));
-    private GridPane grid;
-    private GridPane selectedLocation;
+    private GridWorld gw = new GridWorld(10, 10);
+    //private Algorithm algo = new ModifiedAlgo(gw);
+    private Algorithm algo = new QLearnAlgo(gw);
+    private GridPane gridPane;
+    private GridPane selectedLocationPane;
     private VBox detailPane;
     private DetailController detailCtrl;
 
     public void setGridWorld(int row, int col) {
-        algo.setGridWorld(new GridWorld(row, col));
+        gw = new GridWorld(10, 10);
+        algo.setGridWorld(gw);
         System.out.println("New grid world set");
         System.out.format("Rows: %d, Cols: %d\n", row, col);
     }
@@ -60,7 +65,7 @@ public class GridController {
         this.analysisController = a;
     }
 
-    public QLearnAlgo getAlgo() {
+    public Algorithm getAlgo() {
         return algo;
     }
 
@@ -75,7 +80,7 @@ public class GridController {
         test.setText("test");
         test.setStyle("-fx-text-fill:#FFEB3B;-fx-font-size:40;");
 
-        graphPane.getChildren().add(grid);
+        graphPane.getChildren().add(gridPane);
         rowBox.setItems(FXCollections.observableArrayList(
                 10, 15, 20)
         );
@@ -87,7 +92,7 @@ public class GridController {
 //        alphaField.setText(String.valueOf(algo.getAlpha()));
 //        greedyValue.setText(String.valueOf(algo.getGreedyProb()));
 //        discountValue.setText(String.valueOf(algo.getDiscount()));
-//        directionProbability.setText(String.valueOf(algo.getGridWorld().getDirectionProbability()));
+//        directionProbability.setText(String.valueOf(gw.getDirectionProbability()));
 
         //initialize deatail pane
         FXMLLoader detailLoader = new FXMLLoader();
@@ -97,7 +102,7 @@ public class GridController {
             detailPane = (VBox) detailLoader.load();
             //System.out.println(detailPane.getChildrenUnmodifiable().size());
             detailCtrl = detailLoader.getController();
-            detailCtrl.setAlgo(algo);
+            detailCtrl.setGridWorld(gw);
             //System.out.println("Detail loaded");
         } catch (IOException ex) {
             Logger.getLogger(GridController.class.getName()).log(Level.SEVERE, null, ex);
@@ -108,7 +113,7 @@ public class GridController {
             int bound = 1290;
             if (o.doubleValue() < bound && n.doubleValue() >= bound) {
                 //System.out.println("GUI expanded, showing node detail");
-                if (selectedLocation != null) {
+                if (selectedLocationPane != null) {
                     //detailCtrl.location.getChildren().add(selectedLocation);
                     //System.out.println(detailCtrl.getLocationPane().isVisible());
                 }
@@ -124,16 +129,16 @@ public class GridController {
     }
 
     public void gridPaneInit() {
-        grid = new GridPane();
-        grid.setPrefSize(640, 640);
-        grid.setMaxSize(1000, 1000);
-        grid.setBackground(new Background(new BackgroundFill(
+        gridPane = new GridPane();
+        gridPane.setPrefSize(640, 640);
+        gridPane.setMaxSize(1000, 1000);
+        gridPane.setBackground(new Background(new BackgroundFill(
                 Paint.valueOf(app.Color.White), CornerRadii.EMPTY, Insets.EMPTY)));
-        grid.setGridLinesVisible(true);
-        grid.setAlignment(Pos.CENTER);
-        grid.setCenterShape(true);
-        grid.setHgap(1);
-        grid.setVgap(1);
+        gridPane.setGridLinesVisible(true);
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setCenterShape(true);
+        gridPane.setHgap(1);
+        gridPane.setVgap(1);
 
 //        FXMLLoader loader = new FXMLLoader();
 //        loader.setLocation(getClass().getClassLoader().getResource("QLearning/location.fxml"));
@@ -144,27 +149,27 @@ public class GridController {
 //        } catch (Exception e) {
 //            System.out.println("location fxml load failed");
 //        }
-        for (int i = 0; i < algo.getGridWorld().getRows(); i++) {
-            for (int j = 0; j < algo.getGridWorld().getCols(); j++) {
+        for (int i = 0; i < gw.getRows(); i++) {
+            for (int j = 0; j < gw.getCols(); j++) {
                 //GridPane location = Location.newNode();
-                GridPane location = algo.getGridWorld().getLocation(i, j).getLocPane();
+                GridPane location = gw.getLocation(i, j).getLocPane();
 
                 //location on mouse click
                 location.setOnMouseClicked((MouseEvent me) -> {
-                    selectedLocation = (GridPane) me.getSource();
-                    int row = GridPane.getRowIndex(selectedLocation);
-                    int col = GridPane.getColumnIndex(selectedLocation);
+                    selectedLocationPane = (GridPane) me.getSource();
+                    int row = GridPane.getRowIndex(selectedLocationPane);
+                    int col = GridPane.getColumnIndex(selectedLocationPane);
                     String s = "-fx-border-color: " + app.Color.Blue[5] + ";-fx-border-width:2;";
-                    selectedLocation.setStyle(s);
+                    selectedLocationPane.setStyle(s);
 //                    System.out.print("location detail: row ");
 //                    System.out.print(row);
 //                    System.out.print(" col ");
 //                    System.out.println(col);
-                    //algo.getGridWorld().getLocation(row, col).print();
-                    Location loc = algo.getGridWorld().getLocation(row, col).copy();
+                    //gw.getLocation(row, col).print();
+                    Location loc = gw.getLocation(row, col).copy();
                     //loc.print();
                     //GridPane loc = Location.newNode();
-                    loc.repaint(algo.getGridWorld());
+                    loc.repaint(gw);
                     detailCtrl.init(loc);
 //                    try {
 //                        detailCtrl.getLocationPane().getChildren().remove(0);
@@ -175,11 +180,11 @@ public class GridController {
 //                    detailCtrl.setTimeLabel(loc.getTravelTime(), loc.isBlock());
 //                    DecimalFormat form = new DecimalFormat("0.##");
 //                    detailCtrl.getLocationValueLabel().setText("Location Value: " + form.format(
-//                            algo.getGridWorld().getLocation(row, col).getLocationValue()));
+//                            gw.getLocation(row, col).getLocationValue()));
 
                 });
 
-                grid.add(location, j, i);
+                gridPane.add(location, j, i);
 
                 //ColumnConstraints col = new ColumnConstraints();
                 //col.setPercentWidth(100 / gw.getCols());
@@ -198,11 +203,11 @@ public class GridController {
 //    public void paint(GridPane loc) {
 //        int row = GridPane.getRowIndex(loc);
 //        int col = GridPane.getColumnIndex(loc);
-//        algo.getGridWorld().getLocation(row, col).repaint(loc);
+//        gw.getLocation(row, col).repaint(loc);
 //        for (int i = 0; i < loc.getChildren().size(); i++) {
 //            try {
 //                Circle c = (Circle) loc.getChildren().get(i);
-//                if (row == algo.getGridWorld().getCurRow() && col == algo.getGridWorld().getCurCol()) {
+//                if (row == gw.getCurRow() && col == gw.getCurCol()) {
 //                    c.setVisible(true);
 //                } else {
 //                    c.setVisible(false);
@@ -215,10 +220,10 @@ public class GridController {
     public void repaintAll() {
         //System.out.print("Repainting...");
         GridPane loc;
-        for (int i = 0; i < algo.getGridWorld().getRows(); i++) {
-            for (int j = 0; j < algo.getGridWorld().getCols(); j++) {
-                algo.getGridWorld().computeValueRange();
-                algo.getGridWorld().getLocation(i, j).repaint(algo.getGridWorld());
+        for (int i = 0; i < gw.getRows(); i++) {
+            for (int j = 0; j < gw.getCols(); j++) {
+                gw.computeValueRange();
+                gw.getLocation(i, j).repaint(gw);
             }
         }
 
@@ -226,21 +231,22 @@ public class GridController {
     }
 
     private void addDataToChart() {
-        analysisController.addRewardData(algo.getGridWorld().getNumberOfSteps(),
-                algo.getGridWorld().getTotalReward());
-        analysisController.addTimeData(algo.getGridWorld().getNumberOfSteps(),
-                algo.getGridWorld().getTotalTravelTime());
+        analysisController.addRewardData(gw.getNumberOfSteps(),
+                gw.getTotalReward());
+        analysisController.addTimeData(gw.getNumberOfSteps(),
+                gw.getTotalTravelTime());
         //System.out.println("New data: ");
     }
 
     void updatePerformance() {
         DecimalFormat form = new DecimalFormat("0.#E0");
-        double reward = algo.getGridWorld().getTotalReward();
-        int step = algo.getGridWorld().getNumberOfSteps();
-        double time = algo.getGridWorld().getTotalTravelTime();
+        double reward = gw.getTotalReward();
+        int step = gw.getNumberOfSteps();
+        double time = gw.getTotalTravelTime();
         totalRewards.setText(form.format(reward));
         totalSteps.setText(form.format(step));
         totalTravelTime.setText(form.format(time) + " mins");
+        remainingStepsLabel.setText(String.valueOf(gw.getRemainingSteps()));
         addDataToChart();
     }
 
@@ -266,7 +272,7 @@ public class GridController {
 ////////////////////////////////////////////////////////////////////////////////
     @FXML
     void moveLeft(ActionEvent event) {
-        algo.dostep(GridWorld.Left);
+        algo.moveToDir(GridWorld.Left);
         repaintAll();
         updatePerformance();
         System.out.println("move left");
@@ -274,7 +280,7 @@ public class GridController {
 
     @FXML
     void moveRight(ActionEvent event) {
-        algo.dostep(GridWorld.Right);
+        algo.moveToDir(GridWorld.Right);
         repaintAll();
         updatePerformance();
         System.out.println("move right");
@@ -282,7 +288,7 @@ public class GridController {
 
     @FXML
     void moveUp(ActionEvent event) {
-        algo.dostep(GridWorld.Up);
+        algo.moveToDir(GridWorld.Up);
         repaintAll();
         updatePerformance();
         System.out.println("move up");
@@ -290,7 +296,7 @@ public class GridController {
 
     @FXML
     void moveDown(ActionEvent event) {
-        algo.dostep(GridWorld.Down);
+        algo.moveToDir(GridWorld.Down);
         repaintAll();
         updatePerformance();
         System.out.println("move down");
@@ -332,10 +338,10 @@ public class GridController {
             col = 10;
         }
         setGridWorld(row, col);
-        graphPane.getChildren().remove(grid);
+        graphPane.getChildren().remove(gridPane);
         detailCtrl.reset();
         gridPaneInit();
-        graphPane.getChildren().add(grid);
+        graphPane.getChildren().add(gridPane);
         repaintAll();
         updatePerformance();
         analysisController.reset();
@@ -372,7 +378,10 @@ public class GridController {
 
             while (play) {
                 try {
-                    algo.doSteps(1);
+                    boolean move = algo.doSteps(1);
+                    if (move == false) play = false;
+//                    play = move;
+                    //algo.doSteps(1);
                     if (interval > 100) {
                         long start = System.nanoTime();
 
@@ -411,7 +420,7 @@ public class GridController {
         speedValue.setDisable(true);
         //playButton.setDisable(true);
         resetButton.setDisable(true);
-        directionProbability.setDisable(true);
+        //directionProbability.setDisable(true);
         discountValue.setDisable(true);
         autorunStatus.setText("Auto running");
 
@@ -433,7 +442,7 @@ public class GridController {
         discountValue.setDisable(false);
         greedyValue.setDisable(false);
         speedValue.setDisable(false);
-        directionProbability.setDisable(false);
+        //directionProbability.setDisable(false);
         discountValue.setDisable(false);
         //playButton.setDisable(false);
         resetButton.setDisable(false);
@@ -479,7 +488,7 @@ public class GridController {
     @FXML
     void changeDirectionProbability(ActionEvent event) {
         double dv = Double.parseDouble(directionProbability.getText());
-        algo.getGridWorld().setDirectionProbability(dv);
+        gw.setDirectionProbability(dv);
         System.out.print("DIrection Probability set to ");
         System.out.println(dv);
     }
@@ -487,7 +496,7 @@ public class GridController {
     @FXML
     void defaultTravelTimeChanged(ActionEvent event) {
         double dv = Double.parseDouble(defaultTravelTimeField.getText());
-        algo.getGridWorld().setDefaultTraveTime(dv);
+        gw.setDefaultTraveTime(dv);
         System.out.print("Default Travel Time set to ");
         System.out.println(dv);
     }
@@ -507,16 +516,53 @@ public class GridController {
     void randomTravelTimeChecked(ActionEvent event) {
         if (randomTravelTimeCheckBox.isSelected()) {
             defaultTravelTimeField.setDisable(true);
-            algo.getGridWorld().setRandomTravelTime(true);
+            gw.setRandomTravelTime(true);
             System.out.println("Random travel time");
         } else {
             defaultTravelTimeField.setDisable(false);
-            algo.getGridWorld().setRandomTravelTime(false);
+            gw.setRandomTravelTime(false);
+        }
+    }
+    
+    @FXML
+    void batteryLifeEnabled(ActionEvent event) {
+        if (batteryLifeCheckBox.isSelected()) {
+            gw.setBatteryEnabled(true);
+        }else{
+            gw.setBatteryEnabled(false);
+        }
+    }
+    
+    @FXML
+    void originalAlgoChosen(ActionEvent event) {
+        System.out.println("Original Algo selected");
+        if (originalRadioButton.isSelected()) {
+            algo = new QLearnAlgo(gw);
         }
     }
 
     @FXML
+    void modifiedAlgoChosen(ActionEvent event) {
+        System.out.println("Modified Algo selected");
+        if (modifiedRadioButton.isSelected()) {
+            algo = new ModifiedAlgo(gw);
+        }
+    }
+
+    @FXML
+    private ToggleGroup Algo;
+
+    @FXML
+    private RadioButton modifiedRadioButton;
+
+    @FXML
+    private RadioButton originalRadioButton;
+
+    @FXML
     private CheckBox alphaFixedBox;
+    
+    @FXML
+    private CheckBox batteryLifeCheckBox;
 
     @FXML
     private CheckBox randomTravelTimeCheckBox;
@@ -571,6 +617,9 @@ public class GridController {
 
     @FXML
     private Label totalTravelTime;
+    
+    @FXML
+    private Label remainingStepsLabel;
 
     @FXML
     private TextField greedyValue;
