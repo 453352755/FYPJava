@@ -29,6 +29,8 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -44,7 +46,6 @@ public class GridController {
     private boolean play;
     private static Thread algoThread;
     private long startTime;
-    
 
     private GridWorld gw = new GridWorld(3, 5);
     //private Algorithm algo = new ModifiedAlgo(gw);
@@ -72,16 +73,21 @@ public class GridController {
 
     public void initialize() {
         gridPaneInit();
-        Label test = new Label();
-        test.setText("test");
-        test.setStyle("-fx-text-fill:#FFEB3B;-fx-font-size:40;");
-
+//        Label test = new Label();
+//        test.setText("test");
+//        test.setStyle("-fx-text-fill:#FFEB3B;-fx-font-size:40;");
+        upButton.setOnKeyTyped((KeyEvent ke) -> {
+            if (ke.getCode() == KeyCode.UP) {
+                System.out.println("key up pressed");
+                moveUp(null);
+            }
+        });
         graphPane.getChildren().add(gridPane);
         rowBox.setItems(FXCollections.observableArrayList(
-                3,4,5,6,7,8,9,10, 15, 20)
+                3, 4, 5, 6, 7, 8, 9, 10, 15, 20)
         );
         colBox.setItems(FXCollections.observableArrayList(
-                3,4,5,6,7,8,9,10, 15, 20)
+                3, 4, 5, 6, 7, 8, 9, 10, 15, 20)
         );
         rowBox.setValue(3);
         colBox.setValue(5);
@@ -99,6 +105,7 @@ public class GridController {
             //System.out.println(detailPane.getChildrenUnmodifiable().size());
             detailCtrl = detailLoader.getController();
             detailCtrl.setGridWorld(gw);
+            detailCtrl.setAlgo(algo);
             detailCtrl.setGridCtrl(this);
             //System.out.println("Detail loaded");
         } catch (IOException ex) {
@@ -121,7 +128,7 @@ public class GridController {
                 }
             }
         });
-        
+
         checkSettings();
 
         repaintAll();
@@ -335,15 +342,18 @@ public class GridController {
             row = 10;
             col = 10;
         }
-        setGridWorld(row, col);
+
+        if (!(row == gw.getRows() && col == gw.getCols())) {
+            setGridWorld(row, col);
+        }
         checkSettings();
         graphPane.getChildren().remove(gridPane);
-        detailCtrl.reset(algo,gw);
+        detailCtrl.reset(algo, gw);
         gridPaneInit();
         graphPane.getChildren().add(gridPane);
         repaintAll();
         updatePerformance();
-        analysisCtrl.reset(algo,gw);
+        analysisCtrl.reset(algo, gw);
     }
 
     @FXML
@@ -367,12 +377,43 @@ public class GridController {
         checkFixedalpha(event);
         checkRandomTravelTime(event);
         checkTracing(event);
-        
+
         changeAlphaValue(event);
         changeDirectionProbability(event);
         changeDiscountValue(event);
         changeGreedyValue(event);
         changeDefaultTravelTime(event);
+    }
+
+    private class RunSim implements Runnable {
+
+        @Override
+        public void run() {
+            int interval = 5000 / (gw.getCols() + gw.getRows());
+            System.out.println(interval);
+            gw.moveToStart();
+            gw.getLocation(gw.getCurRow(), gw.getCurCol()).setIsPath(true);
+
+            while (!gw.getLocation(gw.getCurRow(), gw.getCurCol()).isGoal()) {
+                try {
+                    //repaintAll();
+                    Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                repaintAll();
+                                updatePerformance();
+                            }
+                        });
+                    gw.move(algo.getOptimalDir(gw.getCurRow(), gw.getCurCol()));
+                    gw.getLocation(gw.getCurRow(), gw.getCurCol()).setIsPath(true);
+                    Thread.sleep(interval);
+                } catch (InterruptedException ie) {
+                    System.out.println("simulation sleep exception");
+                }
+            }
+            
+            
+        }
     }
 
     private class RunMap implements Runnable {
@@ -440,11 +481,25 @@ public class GridController {
         autorunStatus.setText("Auto running");
 
         //run simulator
+        gw.resetPath();
         play = true;
         algoThread = new Thread(new RunMap());
         startTime = System.nanoTime();
         algoThread.start();
 
+    }
+
+    @FXML
+    void simulateClicked(ActionEvent event) {
+        System.out.println("simulating actual run");
+        Thread t = new Thread(new RunSim());
+        t.start();
+//        try {
+//            t.join();
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(GridController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        repaintAll();
     }
 
     @FXML
@@ -538,24 +593,24 @@ public class GridController {
             gw.setRandomTravelTime(false);
         }
     }
-    
+
     @FXML
     void checkBatteryLife(ActionEvent event) {
         if (batteryLifeCheckBox.isSelected()) {
             gw.setBatteryEnabled(true);
             System.out.println("Battery life enabled");
-        }else{
+        } else {
             gw.setBatteryEnabled(false);
             System.out.println("Battery life disabled");
         }
     }
-    
+
     @FXML
     void checkAlgo(ActionEvent event) {
         if (originalRadioButton.isSelected()) {
             algo = new QLearnAlgo(gw);
             System.out.println("Original Algo selected");
-        }else if (modifiedRadioButton.isSelected()) {
+        } else if (modifiedRadioButton.isSelected()) {
             algo = new ModifiedAlgo(gw);
             System.out.println("Modified Algo selected");
         }
@@ -572,7 +627,7 @@ public class GridController {
 
     @FXML
     private CheckBox alphaFixedBox;
-    
+
     @FXML
     private CheckBox batteryLifeCheckBox;
 
@@ -604,6 +659,9 @@ public class GridController {
     private Button resetButton;
 
     @FXML
+    private Button simButton;
+
+    @FXML
     private ImageView leftImage;
 
     @FXML
@@ -629,7 +687,7 @@ public class GridController {
 
     @FXML
     private Label totalTravelTime;
-    
+
     @FXML
     private Label remainingStepsLabel;
 

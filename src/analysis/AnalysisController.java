@@ -1,5 +1,7 @@
 package analysis;
 
+import QLearning.Algorithm;
+import QLearning.GridWorld;
 import app.GUI;
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +68,7 @@ public class AnalysisController implements Initializable {
         }
     }
 
-    public void reset() {
+    public void reset(Algorithm algo, GridWorld gw) {
         rewardSeries.getData().clear();
     }
 

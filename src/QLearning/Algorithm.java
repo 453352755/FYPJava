@@ -37,4 +37,6 @@ public interface Algorithm {
 
     public boolean isOptimal(int row, int col, int dir);
 
+    public int getOptimalDir(int row, int col);
+
 }

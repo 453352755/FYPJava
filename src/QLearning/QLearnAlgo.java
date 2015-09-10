@@ -178,22 +178,7 @@ public class QLearnAlgo implements Algorithm {
         for (int i = 0; i < count; i++) {
             double rand = Math.random();
             if (rand < greedyProb) {// act greedily
-                int startDir = (int) (Math.random() * 4);
-                int row = gw.getCurRow();
-                int col = gw.getCurCol();
-                int bat = gw.getRemainingSteps();
-
-                double bestVal = Qvalue[row][col][startDir];
-                int bestDir = startDir;
-                for (int dir = 1; dir < 4; dir++) {
-                    startDir = (startDir + 1) % 4;
-                    if (Qvalue[row][col][startDir] > bestVal) {
-                        bestVal = Qvalue[row][col][startDir];
-                        bestDir = startDir;
-                    }
-                }
-
-                if (!moveToDir(bestDir)) {
+                if (!moveToDir(getOptimalDir(gw.getCurRow(), gw.getCurCol()))) {
                     return false;
                 }
             } else { // act randomly
@@ -203,6 +188,23 @@ public class QLearnAlgo implements Algorithm {
             }
         }
         return true;
+    }
+    
+    @Override
+    public int getOptimalDir(int row, int col) {
+        int startDir = (int) (Math.random() * 4);
+        int bat = gw.getRemainingSteps();
+
+        double bestVal = Qvalue[row][col][startDir];
+        int bestDir = startDir;
+        for (int dir = 1; dir < 4; dir++) {
+            startDir = (startDir + 1) % 4;
+            if (Qvalue[row][col][startDir] > bestVal) {
+                bestVal = Qvalue[row][col][startDir];
+                bestDir = startDir;
+            }
+        }
+        return bestDir;
     }
 
     @Override

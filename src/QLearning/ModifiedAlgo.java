@@ -25,7 +25,7 @@ public class ModifiedAlgo implements Algorithm {
 
     ModifiedAlgo(GridWorld gw) {
         this.gw = gw;
-        Qvalue = new double[gw.getRows()][gw.getCols()][gw.getFullBatterySteps()+1][4];
+        Qvalue = new double[gw.getRows()][gw.getCols()][gw.getFullBatterySteps() + 1][4];
         for (int i = 0; i < Qvalue.length; i++) {
             for (int j = 0; j < Qvalue[i].length; j++) {
                 for (int k = 0; k < Qvalue[i][j].length; k++) {
@@ -36,7 +36,7 @@ public class ModifiedAlgo implements Algorithm {
             }
         }
 
-        visited = new int[gw.getRows()][gw.getCols()][gw.getFullBatterySteps()+1][4];
+        visited = new int[gw.getRows()][gw.getCols()][gw.getFullBatterySteps() + 1][4];
         for (int i = 0; i < visited.length; i++) {
             for (int j = 0; j < visited[i].length; j++) {
                 for (int k = 0; k < visited[i][j].length; k++) {
@@ -46,8 +46,8 @@ public class ModifiedAlgo implements Algorithm {
                 }
             }
         }
-        
-        isOptimal = new boolean[gw.getRows()][gw.getCols()][gw.getFullBatterySteps()+1][4];
+
+        isOptimal = new boolean[gw.getRows()][gw.getCols()][gw.getFullBatterySteps() + 1][4];
         for (int i = 0; i < isOptimal.length; i++) {
             for (int j = 0; j < isOptimal[i].length; j++) {
                 for (int k = 0; k < isOptimal[i][j].length; k++) {
@@ -116,22 +116,22 @@ public class ModifiedAlgo implements Algorithm {
         for (int i = 0; i < count; i++) {
             double rand = Math.random();
             if (rand < greedyProb) {// act greedily
-                int startDir = (int) (Math.random() * 4);
-                int row = gw.getCurRow();
-                int col = gw.getCurCol();
-                int bat = gw.getRemainingSteps();
+//                int startDir = (int) (Math.random() * 4);
+//                int row = gw.getCurRow();
+//                int col = gw.getCurCol();
+//                int bat = gw.getRemainingSteps();
+//
+//                double bestVal = Qvalue[row][col][bat][startDir];
+//                int bestDir = startDir;
+//                for (int dir = 1; dir < 4; dir++) {
+//                    startDir = (startDir + 1) % 4;
+//                    if (Qvalue[row][col][bat][startDir] > bestVal) {
+//                        bestVal = Qvalue[row][col][bat][startDir];
+//                        bestDir = startDir;
+//                    }
+//                }
 
-                double bestVal = Qvalue[row][col][bat][startDir];
-                int bestDir = startDir;
-                for (int dir = 1; dir < 4; dir++) {
-                    startDir = (startDir + 1) % 4;
-                    if (Qvalue[row][col][bat][startDir] > bestVal) {
-                        bestVal = Qvalue[row][col][bat][startDir];
-                        bestDir = startDir;
-                    }
-                }
-
-                if (!moveToDir(bestDir)) {
+                if (!moveToDir(getOptimalDir(gw.getCurRow(), gw.getCurCol()))) {
                     return false;
                 }
             } else { // act randomly
@@ -141,6 +141,23 @@ public class ModifiedAlgo implements Algorithm {
             }
         }
         return true;
+    }
+
+    @Override
+    public int getOptimalDir(int row, int col) {
+        int startDir = (int) (Math.random() * 4);
+        int bat = gw.getRemainingSteps();
+
+        double bestVal = Qvalue[row][col][bat][startDir];
+        int bestDir = startDir;
+        for (int dir = 1; dir < 4; dir++) {
+            startDir = (startDir + 1) % 4;
+            if (Qvalue[row][col][bat][startDir] > bestVal) {
+                bestVal = Qvalue[row][col][bat][startDir];
+                bestDir = startDir;
+            }
+        }
+        return bestDir;
     }
 
     @Override
@@ -225,7 +242,7 @@ public class ModifiedAlgo implements Algorithm {
     private void printLocationValues() {
         for (int i = 0; i < Qvalue.length; i++) {
             for (int j = 0; j < Qvalue[i].length; j++) {
-                System.out.println("row " + i +" col " + j + ":");
+                System.out.println("row " + i + " col " + j + ":");
                 for (int k = 0; k < Qvalue[i][j].length; k++) {
                     for (int l = 0; l < Qvalue[i][j][k].length; l++) {
                         System.out.format("%6.2f | ", Qvalue[i][j][k][l]);

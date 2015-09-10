@@ -7,7 +7,6 @@ import static QLearning.GridWorld.Right;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.Format;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -32,7 +31,7 @@ public class DetailController implements Initializable {
     private Location loc;
     private GridController gridCtrl;
 
-    public void setAlgo(QLearnAlgo algo) {
+    public void setAlgo(Algorithm algo) {
         this.algo = algo;
     }
 
@@ -253,7 +252,7 @@ public class DetailController implements Initializable {
     public void update() {
         try {
             setTimeLabel(loc.getTravelTime(), loc.isBlock());
-            DecimalFormat form = new DecimalFormat("0.##");
+            DecimalFormat form = new DecimalFormat("0.####");
             locationValueLabel.setText("Location Value: " + form.format(loc.getLocationValue()));
             rowColLabel.setText("Row " + loc.getRow() + " - Col " + loc.getCol());
 
@@ -271,10 +270,10 @@ public class DetailController implements Initializable {
                 downField.setDisable(false);
                 leftField.setDisable(false);
                 rightField.setDisable(false);
-                upField.setText(form.format(loc.getTravelTime(Up)));
-                downField.setText(form.format(loc.getTravelTime(Down)));
-                leftField.setText(form.format(loc.getTravelTime(Left)));
-                rightField.setText(form.format(loc.getTravelTime(Right)));
+                upField.setText(form.format(algo.getQvalue(loc.getRow(),loc.getCol(),Up)));
+                downField.setText(form.format(algo.getQvalue(loc.getRow(),loc.getCol(),Down)));
+                leftField.setText(form.format(algo.getQvalue(loc.getRow(),loc.getCol(),Left)));
+                rightField.setText(form.format(algo.getQvalue(loc.getRow(),loc.getCol(),Right)));
             }
             rewardField.setText(form.format(loc.getReward()));
             blockCheckBox.setSelected(loc.isBlock());

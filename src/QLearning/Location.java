@@ -38,6 +38,7 @@ public class Location {
     private boolean isCharging = false;
     private boolean isGoal = false;
     private boolean duplicated = false;
+    private boolean isPath = false;
 
 //    private double[] qvalues = new double[4];
     private double locationValue;
@@ -180,6 +181,14 @@ public class Location {
 
     public void setIsBlock(boolean isBlock) {
         this.isBlock = isBlock;
+    }
+
+    public boolean isPath() {
+        return isPath;
+    }
+
+    public void setIsPath(boolean isPath) {
+        this.isPath = isPath;
     }
 
 //    public void setQvalue(int i, double v) {
@@ -417,10 +426,10 @@ public class Location {
         index = index < 0 ? 0 : index;
         index = index > 9 ? 9 : index;
         try {
-            if (reward > 0 && !isWall && !isStart && !isGoal) {
+            if (reward > 0 && !isWall && !isStart && !isGoal && !isCharging && !isPath) {
                 locPane.setBackground(new Background(new BackgroundFill(
                         Paint.valueOf(app.Color.Green[3]), CornerRadii.EMPTY, Insets.EMPTY)));
-            } else if (reward < -0.1 && !isWall && !isBlock) {
+            } else if (reward < algo.getGridWorld().getDefaultReward() && !isWall && !isBlock && !isPath) {
                 locPane.setBackground(new Background(new BackgroundFill(
                         Paint.valueOf(app.Color.Red[3]), CornerRadii.EMPTY, Insets.EMPTY)));
             } else if (isBlock) {
@@ -432,7 +441,10 @@ public class Location {
             } else if (isCharging) {
                 locPane.setBackground(new Background(new BackgroundFill(
                         Paint.valueOf(app.Color.Cyan[3]), CornerRadii.EMPTY, Insets.EMPTY)));
-            } else {
+            } else if (isPath) {
+                locPane.setBackground(new Background(new BackgroundFill(
+                        Paint.valueOf(app.Color.Teal[5]), CornerRadii.EMPTY, Insets.EMPTY)));
+            }else {
                 locPane.setBackground(new Background(new BackgroundFill(
                         Paint.valueOf(app.Color.Yellow[index]), CornerRadii.EMPTY, Insets.EMPTY)));
             }

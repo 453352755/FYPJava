@@ -1,6 +1,7 @@
 package QLearning;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -82,9 +83,9 @@ public class GridWorld {
             }
         }
 
-        //setStart(2, 0);
-        //setGoal(0, 4);
-        //setCharging(0, 1, true);
+        setStart(0, 0);
+        setGoal(2, 4);
+        setCharging(1, 2, true);
         //setCharging(6, 4, true);
 
 
@@ -208,6 +209,24 @@ public class GridWorld {
         return cols;
     }
 
+    public double getDefaultReward() {
+        return defaultReward;
+    }
+
+    public double getChargingReward() {
+        return ChargingReward;
+    }
+
+    public double getGoalReward() {
+        return GoalReward;
+    }
+
+    public double getDefaultTraveTime() {
+        return defaultTraveTime;
+    }
+    
+    
+
 //    public double getHighest() {
 //        return highest;
 //    }
@@ -278,6 +297,11 @@ public class GridWorld {
             return r;
         }
     }
+    
+    public void moveToStart(){
+        curRow = startRow;
+        curCol = startCol;
+    }
 
     public double move(int d) {
         int actualDirection = getActualDirection(d);
@@ -338,5 +362,13 @@ public class GridWorld {
         curCol = newCol;
 
         return reward;
+    }
+
+    public void resetPath() {
+        for (int i = 0; i < location.length; i++) {
+            for (int j = 0; j < location[i].length; j++) {
+                location[i][j].setIsPath(false);
+            }
+        }
     }
 }

@@ -147,6 +147,7 @@
                                         </ImageView>
                                     </graphic>
                                 </Button>
+                        <Button fx:id="simButton" mnemonicParsing="false" onAction="#simulateClicked" text="Sim" />
                                 <Button fx:id="resetButton" mnemonicParsing="false" onAction="#reset" text="Reset" />
                                 <Label fx:id="autorunStatus" text="Play to start auto run" />
                             </children>
