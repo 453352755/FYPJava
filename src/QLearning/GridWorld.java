@@ -22,15 +22,18 @@ public class GridWorld {
     public static final int Down = 1;
     public static final int Left = 2;
     public static final int Right = 3;
-    public static double DeadPenalty = -100;
 
+    public static double DeadPenalty = -100;
     private double DirectionProbability = 1;
-    private double WallPenalty = 0;
+    private double WallPenalty = -10;
     private double BlockPenalty = 0;
-    private double defaultReward = 0.0;
+    private double defaultReward = -2;
+    private double ChargingReward = 0.0;
+    private double GoalReward = 100.0;
     private double defaultTraveTime = 1;
     private boolean randomTravelTime = false;
     private boolean batteryEnabled = true;
+    private int fullBatterySteps = 4;
 
     private final int rows;
     private final int cols;
@@ -41,16 +44,18 @@ public class GridWorld {
 
     private int curRow;
     private int curCol;
-    private int fullBatterySteps;
+    private int startRow;
+    private int startCol;
+    private int goalRow;
+    private int goalCol;
     private int remainingSteps;
     private final Location[][] location;
-    private double range;
-    private double highest, lowest;
+//    private double range;
+//    private double highest, lowest;
 
     public GridWorld(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
-        this.fullBatterySteps = 10;
         remainingSteps = fullBatterySteps;
 //        curRow = (int) (Math.random() * rows);
 //        curCol = (int) (Math.random() * cols);
@@ -70,31 +75,30 @@ public class GridWorld {
                 }
 
                 //check walls
-                if (i == 0 || i == rows - 1 || j == 0 || j == cols - 1) {
-                    location[i][j].setIsWall(true);
-                    location[i][j].setReward(WallPenalty);
-                }
+//                if (i == 0 || i == rows - 1 || j == 0 || j == cols - 1) {
+//                    location[i][j].setIsWall(true);
+//                    location[i][j].setReward(WallPenalty);
+//                }
             }
         }
 
-        setStart(0, 0);
-        setGoal(9, 9);
-        setCharging(3, 6, true);
-        setCharging(6, 4, true);
+        //setStart(2, 0);
+        //setGoal(0, 4);
+        //setCharging(0, 1, true);
+        //setCharging(6, 4, true);
 
-        //set special location
-//        location[3][7].setReward(10);
-//        location[4][8].setReward(-3);
-//        setBlock(6, 4, true);
+
     }
 
     public void setStart(int row, int col) {
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
-                location[row][col].setIsStart(false);
+                location[i][j].setIsStart(false);
             }
         }
         location[row][col].setIsStart(true);
+        startRow = row;
+        startCol = col;
         curRow = row;
         curCol = col;
     }
@@ -102,16 +106,19 @@ public class GridWorld {
     public void setGoal(int row, int col) {
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
-                location[row][col].setIsGoal(false);
+                location[i][j].setIsGoal(false);
+                location[i][j].setReward(defaultReward);
             }
         }
         location[row][col].setIsGoal(true);
-        location[row][col].setReward(100);
+        goalRow = row;
+        goalCol = col;
+        location[row][col].setReward(GoalReward);
     }
 
     public void setCharging(int row, int col, boolean isCharging) {
         location[row][col].setIsCharging(isCharging);
-        location[row][col].setReward(10);
+        location[row][col].setReward(isCharging ? ChargingReward : defaultReward);
     }
 
     public void setBlock(int row, int col, boolean isBlock) {
@@ -121,7 +128,7 @@ public class GridWorld {
             location[row][col].setLocationValue(0);
             for (int k = 0; k < location[row][col].getTravelTime().length; k++) {
                 location[row][col].setTravelTime(k, 0);
-                location[row][col].setQvalue(k, 0);
+                //location[row][col].setQvalue(k, 0);
             }
         } else {
             location[row][col].setReward(defaultReward);
@@ -140,7 +147,7 @@ public class GridWorld {
     public void charge() {
         //TO DO
         //charge at location i,j charge to ? percent, charge for ? minutes, charge speed 
-        
+
         this.remainingSteps = fullBatterySteps;
     }
 
@@ -154,6 +161,10 @@ public class GridWorld {
 
     public double getBlockPenalty() {
         return BlockPenalty;
+    }
+
+    public int getFullBatterySteps() {
+        return fullBatterySteps;
     }
 
     public int getRemainingSteps() {
@@ -180,16 +191,15 @@ public class GridWorld {
         return location[row][col];
     }
 
-    public void reset() {
-        totalTravelTime = 0;
-        range = 0;
-        highest = 0;
-        lowest = 0;
-        remainingSteps = fullBatterySteps;
-        numberOfSteps = 0;
-        totalReward = 0.0;
-    }
-
+//    public void reset() {
+//        totalTravelTime = 0;
+////        range = 0;
+////        highest = 0;
+////        lowest = 0;
+//        remainingSteps = fullBatterySteps;
+//        numberOfSteps = 0;
+//        totalReward = 0.0;
+//    }
     public int getRows() {
         return rows;
     }
@@ -198,18 +208,13 @@ public class GridWorld {
         return cols;
     }
 
-    public double getRange() {
-        return range;
-    }
-
-    public double getHighest() {
-        return highest;
-    }
-
-    public double getLowest() {
-        return lowest;
-    }
-
+//    public double getHighest() {
+//        return highest;
+//    }
+//
+//    public double getLowest() {
+//        return lowest;
+//    }
     public double getTotalTravelTime() {
         return totalTravelTime;
     }
@@ -255,37 +260,12 @@ public class GridWorld {
         this.BlockPenalty = BlockPenalty;
     }
 
-    public double computeValueRange() {
-        double big = location[0][0].getLocationValue();
-        double small = location[0][0].getLocationValue();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                location[i][j].computeOptimal();
-                if (location[i][j].getLocationValue() > big) {
-                    big = location[i][j].getLocationValue();
-                } else if (location[i][j].getLocationValue() < small) {
-                    small = location[i][j].getLocationValue();
-                }
-            }
-        }
-        range = big - small;
-        highest = big;
-        lowest = small;
-        return range;
-    }
-
     public void setReward(int row, int col, double reward) {
         location[row][col].setReward(reward);
         System.out.print("New reward set to ");
         System.out.println(reward);
     }
 
-    /**
-     * 70% chance get original direction 10% chance for each other direction
-     *
-     * @param d
-     * @return
-     */
     public int getActualDirection(int d) {
         double rand = Math.random();
         if (rand < DirectionProbability) {
@@ -303,54 +283,60 @@ public class GridWorld {
         int actualDirection = getActualDirection(d);
         double reward;
         int newRow = curRow, newCol = curCol;
-
-        //calculate new postion
-        switch (actualDirection) {
-            case Up:
-                newRow = curRow - 1;
-                break;
-            case Right:
-                newCol = curCol + 1;
-                break;
-            case Down:
-                newRow = curRow + 1;
-                break;
-            case Left:
-                newCol = curCol - 1;
-                break;
-            default: // should never occur
-            {
-                newRow = 0;
-                newCol = 0;
-                //reward = 0.0;
+        if (location[curRow][curCol].isGoal()) {
+            newRow = startRow;
+            newCol = startCol;
+            reward = 0;
+            remainingSteps = fullBatterySteps;
+        } else {
+            //calculate new postion
+            switch (actualDirection) {
+                case Up:
+                    newRow = curRow - 1;
+                    break;
+                case Right:
+                    newCol = curCol + 1;
+                    break;
+                case Down:
+                    newRow = curRow + 1;
+                    break;
+                case Left:
+                    newCol = curCol - 1;
+                    break;
+                default: // should never occur
+                {
+                    newRow = 0;
+                    newCol = 0;
+                    //reward = 0.0;
+                }
+            }
+            if (batteryEnabled && remainingSteps <= 0) {
+                newRow = startRow;
+                newCol = startCol;
+                reward = DeadPenalty;
+                remainingSteps = fullBatterySteps + 1;
+            } else if (newCol < 0 || newCol > cols - 1 || newRow < 0 || newRow > rows - 1) {//wall
+                reward = WallPenalty;
+                newRow = curRow;
+                newCol = curCol;
+            } else if (location[newRow][newCol].isBlock()) {//block
+                reward = BlockPenalty;
+                newRow = curRow;
+                newCol = curCol;
+            } else {//move
+                reward = location[newRow][newCol].getReward();
+                totalTravelTime += location[curRow][curCol].getTravelTime(actualDirection);
+            }
+            numberOfSteps++;
+            remainingSteps--;
+            totalReward += reward;
+            if (location[newRow][newCol].isCharging()) {
+                charge();
             }
         }
-        if (batteryEnabled && remainingSteps <= 0) {
-            newRow = curRow;
-            newCol = curCol;
-            reward = DeadPenalty;
-        }else if (newCol < 0 || newCol > cols - 1 || newRow < 0 || newRow > rows - 1) {//wall
-            reward = WallPenalty;
-            newRow = curRow;
-            newCol = curCol;
-        } else if (location[newRow][newCol].isBlock()) {//block
-            reward = BlockPenalty;
-            newRow = curRow;
-            newCol = curCol;
-        } else {//move
-            reward = location[newRow][newCol].getReward();
-            totalTravelTime += location[curRow][curCol].getTravelTime(actualDirection);
-        }
-        
-        if (location[newRow][newCol].isCharging()) {
-            charge();
-        }
-
-        numberOfSteps++;
-        totalReward += reward;
         curRow = newRow;
         curCol = newCol;
-        remainingSteps--;
+
         return reward;
     }
 }

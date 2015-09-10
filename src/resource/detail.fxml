@@ -53,13 +53,13 @@
             <Label text="Down" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label text="Left" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Label text="Right" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <Label fx:id="locationValueLabel" prefHeight="38.0" prefWidth="255.0" text="Location Value: 0.00" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+            <Label fx:id="locationValueLabel" prefHeight="38.0" prefWidth="270.0" text="Location Value: 0.00" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
                <font>
-                  <Font size="26.0" />
+                  <Font size="20.0" />
                </font>
             </Label>
             <Label text="Reward" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <TextField fx:id="rewardField" disable="true" onAction="#rewardValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <TextField fx:id="rewardField" onAction="#rewardValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="6" />
             <Label fx:id="rowColLabel" prefHeight="38.0" prefWidth="204.0" text="Row 0 - Col 0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER">
                <font>
                   <Font size="26.0" />

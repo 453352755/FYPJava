@@ -7,6 +7,8 @@ import static QLearning.GridWorld.Right;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.Format;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,41 +27,22 @@ import javafx.scene.layout.VBox;
  */
 public class DetailController implements Initializable {
 
-    private QLearnAlgo algo;
+    private Algorithm algo;
     private GridWorld gw;
     private Location loc;
+    private GridController gridCtrl;
 
     public void setAlgo(QLearnAlgo algo) {
         this.algo = algo;
     }
-    
-    public void setGridWorld(GridWorld gw){
+
+    public void setGridWorld(GridWorld gw) {
         this.gw = gw;
     }
 
-    @FXML
-    private TextField rightField;
-
-    @FXML
-    private TextField upField;
-
-    @FXML
-    private TextField downField;
-
-    @FXML
-    private TextField leftField;
-
-    @FXML
-    private TextField rewardField;
-
-    @FXML
-    private StackPane locationPane;
-
-    @FXML
-    private VBox detailPane;
-
-    @FXML
-    private Label locationValueLabel;
+    public void setGridCtrl(GridController gridCtrl) {
+        this.gridCtrl = gridCtrl;
+    }
 
     public StackPane getLocationPane() {
         return locationPane;
@@ -99,66 +82,114 @@ public class DetailController implements Initializable {
     void upValueChanged(ActionEvent event) {
         gw.getLocation(loc.getRow(), loc.getCol()).
                 setTravelTime(Up, Double.valueOf(upField.getText()));
+        gridCtrl.repaintAll();
     }
 
     @FXML
     void leftValueChanged(ActionEvent event) {
         gw.getLocation(loc.getRow(), loc.getCol()).
                 setTravelTime(Left, Double.valueOf(leftField.getText()));
-
+        gridCtrl.repaintAll();
     }
 
     @FXML
     void downValueChanged(ActionEvent event) {
         gw.getLocation(loc.getRow(), loc.getCol()).
                 setTravelTime(Down, Double.valueOf(downField.getText()));
-
+        gridCtrl.repaintAll();
     }
 
     @FXML
     void rightValueChanged(ActionEvent event) {
         gw.getLocation(loc.getRow(), loc.getCol()).
                 setTravelTime(Right, Double.valueOf(rightField.getText()));
-
+        gridCtrl.repaintAll();
     }
 
     @FXML
     void rewardValueChanged(ActionEvent event) {
         gw.getLocation(loc.getRow(),
                 loc.getCol()).setReward(Double.valueOf(rewardField.getText()));
+        System.out.println("reward value changed");
+        gridCtrl.repaintAll();
+    }
+
+    public void updateReward() {
+        try {
+            rewardField.setText(String.valueOf(gw.getLocation(loc.getRow(), loc.getCol()).getReward()));
+        } catch (NullPointerException ne) {
+            rewardField.setText(null);
+            System.out.println("Null pointer catched");
+        }
     }
 
     @FXML
     void blockChecked(ActionEvent event) {
         if (blockCheckBox.isSelected()) {
-            gw.setBlock(loc.getRow(), loc.getCol(),true);
+            gw.setBlock(loc.getRow(), loc.getCol(), true);
         } else {
-            gw.setBlock(loc.getRow(), loc.getCol(),false);
+            gw.setBlock(loc.getRow(), loc.getCol(), false);
         }
+        gridCtrl.repaintAll();
+        updateReward();
     }
-    
+
     @FXML
     void startChecked(ActionEvent event) {
         if (startCheckBox.isSelected()) {
             gw.setStart(loc.getRow(), loc.getCol());
+            System.out.println("start changed");
         }
+        gridCtrl.repaintAll();
+        updateReward();
     }
-    
+
     @FXML
     void chargingChecked(ActionEvent event) {
         if (chargingCheckBox.isSelected()) {
-            gw.setCharging(loc.getRow(), loc.getCol(),true);
+            gw.setCharging(loc.getRow(), loc.getCol(), true);
+            System.out.println("charging station added");
         } else {
-            gw.setCharging(loc.getRow(), loc.getCol(),false);
+            gw.setCharging(loc.getRow(), loc.getCol(), false);
+            System.out.println("charging station removed");
         }
+        gridCtrl.repaintAll();
+        updateReward();
     }
-    
+
     @FXML
     void goalChecked(ActionEvent event) {
         if (goalCheckBox.isSelected()) {
             gw.setGoal(loc.getRow(), loc.getCol());
-        } 
+            System.out.println("goal changed");
+        }
+        gridCtrl.repaintAll();
+        updateReward();
     }
+
+    @FXML
+    private TextField rightField;
+
+    @FXML
+    private TextField upField;
+
+    @FXML
+    private TextField downField;
+
+    @FXML
+    private TextField leftField;
+
+    @FXML
+    private TextField rewardField;
+
+    @FXML
+    private StackPane locationPane;
+
+    @FXML
+    private VBox detailPane;
+
+    @FXML
+    private Label locationValueLabel;
 
     @FXML
     private GridPane locGridPane;
@@ -183,13 +214,13 @@ public class DetailController implements Initializable {
 
     @FXML
     private CheckBox blockCheckBox;
-    
+
     @FXML
     private CheckBox startCheckBox;
-    
+
     @FXML
     private CheckBox chargingCheckBox;
-    
+
     @FXML
     private CheckBox goalCheckBox;
 
@@ -216,46 +247,54 @@ public class DetailController implements Initializable {
 
         }
         locationPane.getChildren().add(loc.getLocPane());
-        setTimeLabel(loc.getTravelTime(), loc.isBlock());
+        update();
+    }
 
-        DecimalFormat form = new DecimalFormat("0.##");
-        locationValueLabel.setText("Location Value: " + form.format(loc.getLocationValue()));
-        rowColLabel.setText("Row " + loc.getRow() + " - Col " + loc.getCol());
+    public void update() {
+        try {
+            setTimeLabel(loc.getTravelTime(), loc.isBlock());
+            DecimalFormat form = new DecimalFormat("0.##");
+            locationValueLabel.setText("Location Value: " + form.format(loc.getLocationValue()));
+            rowColLabel.setText("Row " + loc.getRow() + " - Col " + loc.getCol());
 
-        if (loc.isBlock()) {
-            upField.setText(null);
-            downField.setText(null);
-            leftField.setText(null);
-            rightField.setText(null);
-            upField.setDisable(true);
-            downField.setDisable(true);
-            leftField.setDisable(true);
-            rightField.setDisable(true);
-        } else {
-            upField.setDisable(false);
-            downField.setDisable(false);
-            leftField.setDisable(false);
-            rightField.setDisable(false);
-            upField.setText(form.format(loc.getTravelTime(Up)));
-            downField.setText(form.format(loc.getTravelTime(Down)));
-            leftField.setText(form.format(loc.getTravelTime(Left)));
-            rightField.setText(form.format(loc.getTravelTime(Right)));
+            if (loc.isBlock()) {
+                upField.setText(null);
+                downField.setText(null);
+                leftField.setText(null);
+                rightField.setText(null);
+                upField.setDisable(true);
+                downField.setDisable(true);
+                leftField.setDisable(true);
+                rightField.setDisable(true);
+            } else {
+                upField.setDisable(false);
+                downField.setDisable(false);
+                leftField.setDisable(false);
+                rightField.setDisable(false);
+                upField.setText(form.format(loc.getTravelTime(Up)));
+                downField.setText(form.format(loc.getTravelTime(Down)));
+                leftField.setText(form.format(loc.getTravelTime(Left)));
+                rightField.setText(form.format(loc.getTravelTime(Right)));
+            }
+            rewardField.setText(form.format(loc.getReward()));
+            blockCheckBox.setSelected(loc.isBlock());
+            startCheckBox.setSelected(loc.isStart());
+            chargingCheckBox.setSelected(loc.isCharging());
+            goalCheckBox.setSelected(loc.isGoal());
+            locGridPane.setVisible(true);
+        } catch (NullPointerException ne) {
         }
-        rewardField.setText(form.format(loc.getReward()));
-        blockCheckBox.setSelected(loc.isBlock());
-        startCheckBox.setSelected(loc.isStart());
-        chargingCheckBox.setSelected(loc.isCharging());
-        goalCheckBox.setSelected(loc.isGoal());
-        locGridPane.setVisible(true);
 
     }
 
-    public void reset() {
+    public void reset(Algorithm algo, GridWorld gw) {
         if (!locationPane.getChildren().isEmpty()) {
             locationPane.getChildren().remove(0);
         }
         resetTimeLabel();
         locGridPane.setVisible(false);
+        this.algo = algo;
+        this.gw = gw;
     }
 
 }

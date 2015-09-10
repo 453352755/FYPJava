@@ -10,10 +10,14 @@ package QLearning;
  * @author dong
  */
 public interface Algorithm {
-    
-
 
     public void setGridWorld(GridWorld gw);
+
+    public GridWorld getGridWorld();
+
+    public double getRange();
+
+    public double getLowest();
 
     public boolean moveToDir(int Left);
 
@@ -28,5 +32,9 @@ public interface Algorithm {
     public void setDiscount(double dv);
 
     public void setGreedyProb(double gv);
-    
+
+    public double getQvalue(int row, int col, int dir);
+
+    public boolean isOptimal(int row, int col, int dir);
+
 }

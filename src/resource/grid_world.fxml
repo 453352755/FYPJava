@@ -99,14 +99,14 @@
                         <Label text="Direction Probability" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <TextField fx:id="directionProbability" disable="true" onAction="#changeDirectionProbability" prefHeight="25.0" prefWidth="106.0" promptText="0.7" text="1" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                         <TextField fx:id="alphaField" onAction="#changeAlphaValue" prefHeight="25.0" prefWidth="106.0" promptText="0.5" text="0.5" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                        <TextField fx:id="greedyValue" onAction="#updateGreedyValue" prefHeight="25.0" prefWidth="106.0" promptText="0.8" text="0.8" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                        <TextField fx:id="discountValue" onAction="#updateDiscountValue" prefHeight="25.0" prefWidth="106.0" promptText="0.9" text="0.9" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <TextField fx:id="greedyValue" onAction="#changeGreedyValue" prefHeight="25.0" prefWidth="106.0" promptText="0.8" text="0.2" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <TextField fx:id="discountValue" onAction="#changeDiscountValue" prefHeight="25.0" prefWidth="106.0" promptText="0.9" text="0.99" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                             <children>
-                                <CheckBox fx:id="alphaFixedBox" mnemonicParsing="false" onAction="#alphaFixed" text="Fixed Alpha" />
+                                <CheckBox fx:id="alphaFixedBox" mnemonicParsing="false" onAction="#checkFixedalpha" text="Fixed Alpha" />
                             </children>
                         </HBox>
-                  <CheckBox fx:id="batteryLifeCheckBox" mnemonicParsing="false" onAction="#batteryLifeEnabled" selected="true" text="Battery Life Enabled" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                  <CheckBox fx:id="batteryLifeCheckBox" mnemonicParsing="false" onAction="#checkBatteryLife" selected="true" text="Battery Life Enabled" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                     </children>
                 </GridPane>
                 <Separator prefWidth="200.0" />
@@ -154,12 +154,12 @@
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
                      <children>
                         <Label text="Algorithms" />
-                        <RadioButton fx:id="originalRadioButton" mnemonicParsing="false" onAction="#originalAlgoChosen" text="Original">
+                        <RadioButton fx:id="originalRadioButton" mnemonicParsing="false" onAction="#checkAlgo" selected="true" text="Original">
                            <toggleGroup>
                               <ToggleGroup fx:id="Algo" />
                            </toggleGroup>
                         </RadioButton>
-                        <RadioButton fx:id="modifiedRadioButton" mnemonicParsing="false" onAction="#modifiedAlgoChosen" selected="true" text="Modified" toggleGroup="$Algo" />
+                        <RadioButton fx:id="modifiedRadioButton" mnemonicParsing="false" onAction="#checkAlgo" text="Modified" toggleGroup="$Algo" />
                      </children>
                   </HBox>
                     </children>
@@ -205,9 +205,9 @@
                         <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                     </rowConstraints>
                     <children>
-                        <CheckBox fx:id="tracing" mnemonicParsing="false" onAction="#tracingChecked" text="Tracing" GridPane.columnIndex="1" />
-                        <CheckBox fx:id="randomTravelTimeCheckBox" mnemonicParsing="false" onAction="#randomTravelTimeChecked" text="Random Travel Time" GridPane.columnIndex="2" />
-                        <TextField fx:id="defaultTravelTimeField" disable="true" onAction="#defaultTravelTimeChanged" prefHeight="25.0" prefWidth="68.0" promptText="0.5" text="1" GridPane.columnIndex="3" />
+                        <CheckBox fx:id="tracing" mnemonicParsing="false" onAction="#checkTracing" text="Tracing" GridPane.columnIndex="1" />
+                        <CheckBox fx:id="randomTravelTimeCheckBox" mnemonicParsing="false" onAction="#checkRandomTravelTime" text="Random Travel Time" GridPane.columnIndex="2" />
+                        <TextField fx:id="defaultTravelTimeField" disable="true" onAction="#changeDefaultTravelTime" prefHeight="25.0" prefWidth="68.0" promptText="0.5" text="1" GridPane.columnIndex="3" />
                     </children>
                 </GridPane>
             </children>

@@ -11,10 +11,47 @@ public class QLearnAlgo implements Algorithm {
     private double greedyProb = 0.8;
     private double alpha = 0.5;
     private boolean tracing = false;
-    private GridWorld gridWorld;
+    private GridWorld gw;
+
+    private double[][][] Qvalue;
+    private int[][][] visited;
+    private double highest = 0, lowest = 0, range = 0;
+    private boolean[][][] isOptimal;
 
     public QLearnAlgo(GridWorld gridWorld) {
-        this.gridWorld = gridWorld;
+        this.gw = gridWorld;
+        Qvalue = new double[gw.getRows()][gw.getCols()][4];
+        for (int i = 0; i < Qvalue.length; i++) {
+            for (int j = 0; j < Qvalue[i].length; j++) {
+                for (int k = 0; k < Qvalue[i][j].length; k++) {
+
+                    Qvalue[i][j][k] = 0;
+
+                }
+            }
+        }
+
+        visited = new int[gw.getRows()][gw.getCols()][4];
+        for (int i = 0; i < visited.length; i++) {
+            for (int j = 0; j < visited[i].length; j++) {
+                for (int k = 0; k < visited[i][j].length; k++) {
+
+                    visited[i][j][k] = 0;
+
+                }
+            }
+        }
+
+        isOptimal = new boolean[gw.getRows()][gw.getCols()][4];
+        for (int i = 0; i < visited.length; i++) {
+            for (int j = 0; j < visited[i].length; j++) {
+                for (int k = 0; k < visited[i][j].length; k++) {
+
+                    isOptimal[i][j][k] = true;
+
+                }
+            }
+        }
     }
 
     public double getDiscount() {
@@ -38,7 +75,7 @@ public class QLearnAlgo implements Algorithm {
     }
 
     public GridWorld getGridWorld() {
-        return gridWorld;
+        return gw;
     }
 
     @Override
@@ -68,41 +105,36 @@ public class QLearnAlgo implements Algorithm {
 
     @Override
     public void setGridWorld(GridWorld gridWorld) {
-        this.gridWorld = gridWorld;
+        this.gw = gridWorld;
     }
 
     @Override
     public boolean moveToDir(int direction) {
-        int oldRow = gridWorld.getCurRow(), oldCol = gridWorld.getCurCol();
-        double reward = gridWorld.move(direction);
-        if (reward == GridWorld.DeadPenalty) {
-            return false;
-        }
-        int newRow = gridWorld.getCurRow(), newCol = gridWorld.getCurCol();
+        int oldRow = gw.getCurRow(), oldCol = gw.getCurCol();
+        double reward = gw.move(direction);
+//        if (reward == GridWorld.DeadPenalty) {
+//            return false;
+//        }
 
-        // update Q values
-        //double newVal = locValue(newRow, newCol);
-        double newVal = gridWorld.getLocation(newRow, newCol).getLocationValue();
+        int newRow = gw.getCurRow(), newCol = gw.getCurCol();
+        double newVal = gw.getLocation(newRow, newCol).getLocationValue();
         double newDatum = reward + discount * newVal;
-        gridWorld.getLocation(oldRow, oldCol).visited(direction);
+        visited[oldRow][oldCol][direction]++;
         if (!alphaFixed) {
-            alpha = 1.0 / gridWorld.getLocation(oldRow, oldCol).getVisit(direction);
-        }
-//	    alpha = 10.0/(9+visits[oldX][oldY][action]);
-
-        if (tracing) {
-            System.out.println("(" + oldRow + "," + oldCol + ") A=" + direction + " R=" + reward
-                    + " (" + newRow + "," + newCol + ") newDatum=" + newDatum);
-            System.out.print("     Qold=" + gridWorld.getLocation(oldRow, oldCol).getQvalue(direction)
-                    + " Visits=" + gridWorld.getLocation(oldRow, oldCol).getVisit(direction));
+            alpha = 1.0 / visited[oldRow][oldCol][direction];
         }
 
-        gridWorld.getLocation(oldRow, oldCol).setQvalue(direction, (1 - alpha)
-                * gridWorld.getLocation(oldRow, oldCol).getQvalue(direction) + alpha * newDatum);
+        Qvalue[oldRow][oldCol][direction] = (1 - alpha)
+                * Qvalue[oldRow][oldCol][direction] + alpha * newDatum;
+        updateRanges();
+        updateOptimal();
+
         if (tracing) {
-            System.out.println(" Qnew=" + gridWorld.getLocation(oldRow, oldCol).getQvalue(direction));
+            System.out.println("reward = " + reward);
+            System.out.println("new Qvalue: " + Qvalue[oldRow][oldCol][direction]);
         }
         return true;
+
     }
 
 //    public double locValue(int row, int col) {
@@ -117,22 +149,50 @@ public class QLearnAlgo implements Algorithm {
     @Override
     public boolean doSteps(int count) {
 
+//        for (int i = 0; i < count; i++) {
+//            double rand = Math.random();
+//            if (rand < greedyProb) {// act greedily
+//                int startDir = (int) (Math.random() * 4);
+//                double bestVal = gridWorld.getLocation(gridWorld.getCurRow(),
+//                        gridWorld.getCurCol()).getQvalue(startDir);
+//                int bestDir = startDir;
+//                for (int dir = 1; dir < 4; dir++) {
+//                    startDir = (startDir + 1) % 4;
+//                    if (gridWorld.getLocation(gridWorld.getCurRow(),
+//                            gridWorld.getCurCol()).getQvalue(startDir) > bestVal) {
+//                        bestVal = gridWorld.getLocation(gridWorld.getCurRow(),
+//                                gridWorld.getCurCol()).getQvalue(startDir);
+//                        bestDir = startDir;
+//                    }
+//                }
+//                if (!moveToDir(bestDir)) {
+//                    return false;
+//                }
+//            } else { // act randomly
+//                if (!moveToDir((int) (Math.random() * 4))) {
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
         for (int i = 0; i < count; i++) {
             double rand = Math.random();
             if (rand < greedyProb) {// act greedily
                 int startDir = (int) (Math.random() * 4);
-                double bestVal = gridWorld.getLocation(gridWorld.getCurRow(),
-                        gridWorld.getCurCol()).getQvalue(startDir);
+                int row = gw.getCurRow();
+                int col = gw.getCurCol();
+                int bat = gw.getRemainingSteps();
+
+                double bestVal = Qvalue[row][col][startDir];
                 int bestDir = startDir;
                 for (int dir = 1; dir < 4; dir++) {
                     startDir = (startDir + 1) % 4;
-                    if (gridWorld.getLocation(gridWorld.getCurRow(),
-                            gridWorld.getCurCol()).getQvalue(startDir) > bestVal) {
-                        bestVal = gridWorld.getLocation(gridWorld.getCurRow(),
-                                gridWorld.getCurCol()).getQvalue(startDir);
+                    if (Qvalue[row][col][startDir] > bestVal) {
+                        bestVal = Qvalue[row][col][startDir];
                         bestDir = startDir;
                     }
                 }
+
                 if (!moveToDir(bestDir)) {
                     return false;
                 }
@@ -143,6 +203,55 @@ public class QLearnAlgo implements Algorithm {
             }
         }
         return true;
+    }
+
+    @Override
+    public double getRange() {
+        return range;
+    }
+
+    @Override
+    public double getLowest() {
+        return lowest;
+    }
+
+    @Override
+    public double getQvalue(int row, int col, int dir) {
+        return Qvalue[row][col][dir];
+    }
+
+    @Override
+    public boolean isOptimal(int row, int col, int dir) {
+        return isOptimal[row][col][dir];
+    }
+
+    private void updateRanges() {
+        for (int i = 0; i < Qvalue.length; i++) {
+            for (int j = 0; j < Qvalue[i].length; j++) {
+                for (int k = 0; k < Qvalue[i][j].length; k++) {
+
+                    double value = Qvalue[i][j][k];
+                    highest = value > highest ? value : highest;
+                    lowest = value < lowest ? value : lowest;
+
+                }
+            }
+        }
+        range = highest - lowest;
+    }
+
+    private void updateOptimal() {
+        double[] qvalues = Qvalue[gw.getCurRow()][gw.getCurCol()];
+        double big = qvalues[0];
+        for (int i = 0; i < qvalues.length; i++) {
+            if (qvalues[i] > big) {
+                big = qvalues[i];
+            }
+        }
+        gw.getLocation(gw.getCurRow(), gw.getCurCol()).setLocationValue(big);
+        for (int i = 0; i < qvalues.length; i++) {
+            isOptimal[gw.getCurRow()][gw.getCurCol()][i] = qvalues[i] == big;
+        }
     }
 
 }

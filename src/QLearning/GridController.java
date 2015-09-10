@@ -44,25 +44,26 @@ public class GridController {
     private boolean play;
     private static Thread algoThread;
     private long startTime;
-    private AnalysisController analysisController;
+    
 
-    private GridWorld gw = new GridWorld(10, 10);
+    private GridWorld gw = new GridWorld(3, 5);
     //private Algorithm algo = new ModifiedAlgo(gw);
     private Algorithm algo = new QLearnAlgo(gw);
     private GridPane gridPane;
     private GridPane selectedLocationPane;
     private VBox detailPane;
     private DetailController detailCtrl;
+    private AnalysisController analysisCtrl;
 
     public void setGridWorld(int row, int col) {
-        gw = new GridWorld(10, 10);
+        gw = new GridWorld(row, col);
         algo.setGridWorld(gw);
         System.out.println("New grid world set");
         System.out.format("Rows: %d, Cols: %d\n", row, col);
     }
 
     public void setAnalysisController(AnalysisController a) {
-        this.analysisController = a;
+        this.analysisCtrl = a;
     }
 
     public Algorithm getAlgo() {
@@ -70,11 +71,6 @@ public class GridController {
     }
 
     public void initialize() {
-//        mapCanvas.setHeight(640);
-//        mapCanvas.setWidth(640);
-//        gc = mapCanvas.getGraphicsContext2D();
-//        drawtest();
-//        graphPane.getChildren().remove(0);
         gridPaneInit();
         Label test = new Label();
         test.setText("test");
@@ -82,13 +78,13 @@ public class GridController {
 
         graphPane.getChildren().add(gridPane);
         rowBox.setItems(FXCollections.observableArrayList(
-                10, 15, 20)
+                3,4,5,6,7,8,9,10, 15, 20)
         );
         colBox.setItems(FXCollections.observableArrayList(
-                10, 15, 20)
+                3,4,5,6,7,8,9,10, 15, 20)
         );
-        rowBox.setValue(10);
-        colBox.setValue(10);
+        rowBox.setValue(3);
+        colBox.setValue(5);
 //        alphaField.setText(String.valueOf(algo.getAlpha()));
 //        greedyValue.setText(String.valueOf(algo.getGreedyProb()));
 //        discountValue.setText(String.valueOf(algo.getDiscount()));
@@ -103,6 +99,7 @@ public class GridController {
             //System.out.println(detailPane.getChildrenUnmodifiable().size());
             detailCtrl = detailLoader.getController();
             detailCtrl.setGridWorld(gw);
+            detailCtrl.setGridCtrl(this);
             //System.out.println("Detail loaded");
         } catch (IOException ex) {
             Logger.getLogger(GridController.class.getName()).log(Level.SEVERE, null, ex);
@@ -124,6 +121,8 @@ public class GridController {
                 }
             }
         });
+        
+        checkSettings();
 
         repaintAll();
     }
@@ -169,7 +168,7 @@ public class GridController {
                     Location loc = gw.getLocation(row, col).copy();
                     //loc.print();
                     //GridPane loc = Location.newNode();
-                    loc.repaint(gw);
+                    loc.repaint(algo);
                     detailCtrl.init(loc);
 //                    try {
 //                        detailCtrl.getLocationPane().getChildren().remove(0);
@@ -219,21 +218,20 @@ public class GridController {
 //    }
     public void repaintAll() {
         //System.out.print("Repainting...");
-        GridPane loc;
         for (int i = 0; i < gw.getRows(); i++) {
             for (int j = 0; j < gw.getCols(); j++) {
-                gw.computeValueRange();
-                gw.getLocation(i, j).repaint(gw);
+                gw.getLocation(i, j).repaint(algo);
             }
         }
+        //detailCtrl.updateReward();
 
         //System.out.println("finished");
     }
 
     private void addDataToChart() {
-        analysisController.addRewardData(gw.getNumberOfSteps(),
+        analysisCtrl.addRewardData(gw.getNumberOfSteps(),
                 gw.getTotalReward());
-        analysisController.addTimeData(gw.getNumberOfSteps(),
+        analysisCtrl.addTimeData(gw.getNumberOfSteps(),
                 gw.getTotalTravelTime());
         //System.out.println("New data: ");
     }
@@ -303,7 +301,7 @@ public class GridController {
     }
 
     @FXML
-    void updateDiscountValue(ActionEvent event) {
+    void changeDiscountValue(ActionEvent event) {
         double dv = Double.parseDouble(discountValue.getText());
         algo.setDiscount(dv);
 
@@ -313,7 +311,7 @@ public class GridController {
     }
 
     @FXML
-    void updateGreedyValue(ActionEvent event) {
+    void changeGreedyValue(ActionEvent event) {
         double gv = Double.parseDouble(greedyValue.getText());
         algo.setGreedyProb(gv);
 
@@ -338,13 +336,14 @@ public class GridController {
             col = 10;
         }
         setGridWorld(row, col);
+        checkSettings();
         graphPane.getChildren().remove(gridPane);
-        detailCtrl.reset();
+        detailCtrl.reset(algo,gw);
         gridPaneInit();
         graphPane.getChildren().add(gridPane);
         repaintAll();
         updatePerformance();
-        analysisController.reset();
+        analysisCtrl.reset(algo,gw);
     }
 
     @FXML
@@ -358,6 +357,22 @@ public class GridController {
         System.out.print("speed value = ");
         System.out.println(sv);
 
+    }
+
+    private void checkSettings() {
+        //algo reset
+        ActionEvent event = new ActionEvent();
+        checkAlgo(event);
+        checkBatteryLife(event);
+        checkFixedalpha(event);
+        checkRandomTravelTime(event);
+        checkTracing(event);
+        
+        changeAlphaValue(event);
+        changeDirectionProbability(event);
+        changeDiscountValue(event);
+        changeGreedyValue(event);
+        changeDefaultTravelTime(event);
     }
 
     private class RunMap implements Runnable {
@@ -379,7 +394,7 @@ public class GridController {
             while (play) {
                 try {
                     boolean move = algo.doSteps(1);
-                    if (move == false) play = false;
+                    //if (move == false) play = false;
 //                    play = move;
                     //algo.doSteps(1);
                     if (interval > 100) {
@@ -467,7 +482,7 @@ public class GridController {
     }
 
     @FXML
-    void tracingChecked(ActionEvent event) {
+    void checkTracing(ActionEvent event) {
         if (tracing.isSelected()) {
             System.out.println("Tracing started");
             algo.setTracing(true);
@@ -494,7 +509,7 @@ public class GridController {
     }
 
     @FXML
-    void defaultTravelTimeChanged(ActionEvent event) {
+    void changeDefaultTravelTime(ActionEvent event) {
         double dv = Double.parseDouble(defaultTravelTimeField.getText());
         gw.setDefaultTraveTime(dv);
         System.out.print("Default Travel Time set to ");
@@ -502,7 +517,7 @@ public class GridController {
     }
 
     @FXML
-    void alphaFixed(ActionEvent event) {
+    void checkFixedalpha(ActionEvent event) {
         if (alphaFixedBox.isSelected()) {
             algo.setAlphaFixed(true);
             System.out.println("Alpha fixed");
@@ -513,7 +528,7 @@ public class GridController {
     }
 
     @FXML
-    void randomTravelTimeChecked(ActionEvent event) {
+    void checkRandomTravelTime(ActionEvent event) {
         if (randomTravelTimeCheckBox.isSelected()) {
             defaultTravelTimeField.setDisable(true);
             gw.setRandomTravelTime(true);
@@ -525,27 +540,24 @@ public class GridController {
     }
     
     @FXML
-    void batteryLifeEnabled(ActionEvent event) {
+    void checkBatteryLife(ActionEvent event) {
         if (batteryLifeCheckBox.isSelected()) {
             gw.setBatteryEnabled(true);
+            System.out.println("Battery life enabled");
         }else{
             gw.setBatteryEnabled(false);
+            System.out.println("Battery life disabled");
         }
     }
     
     @FXML
-    void originalAlgoChosen(ActionEvent event) {
-        System.out.println("Original Algo selected");
+    void checkAlgo(ActionEvent event) {
         if (originalRadioButton.isSelected()) {
             algo = new QLearnAlgo(gw);
-        }
-    }
-
-    @FXML
-    void modifiedAlgoChosen(ActionEvent event) {
-        System.out.println("Modified Algo selected");
-        if (modifiedRadioButton.isSelected()) {
+            System.out.println("Original Algo selected");
+        }else if (modifiedRadioButton.isSelected()) {
             algo = new ModifiedAlgo(gw);
+            System.out.println("Modified Algo selected");
         }
     }
 
