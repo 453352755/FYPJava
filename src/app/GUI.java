@@ -95,7 +95,7 @@ public class GUI extends Application {
     }
 
     public static void importContext() {
-       
+
     }
 
     public static void switchToAnalysis() {

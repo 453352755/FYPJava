@@ -83,12 +83,10 @@ public class GridWorld {
             }
         }
 
-        setStart(0, 0);
-        setGoal(2, 4);
-        setCharging(1, 2, true);
+//        setStart(0, 0);
+//        setGoal(2, 4);
+//        setCharging(1, 2, true);
         //setCharging(6, 4, true);
-
-
     }
 
     public void setStart(int row, int col) {
@@ -164,6 +162,19 @@ public class GridWorld {
         return BlockPenalty;
     }
 
+    public void setRemainingSteps(int remainingSteps) {
+        if (remainingSteps > this.fullBatterySteps) {
+            this.remainingSteps = this.fullBatterySteps;
+        } else {
+            this.remainingSteps = remainingSteps;
+        }
+    }
+
+    public void setFullBatterySteps(int fullBatterySteps) {
+        this.fullBatterySteps = fullBatterySteps;
+        this.remainingSteps = fullBatterySteps;
+    }
+
     public int getFullBatterySteps() {
         return fullBatterySteps;
     }
@@ -224,8 +235,6 @@ public class GridWorld {
     public double getDefaultTraveTime() {
         return defaultTraveTime;
     }
-    
-    
 
 //    public double getHighest() {
 //        return highest;
@@ -298,7 +307,19 @@ public class GridWorld {
         }
     }
     
-    public void moveToStart(){
+    public void reset(){
+        for (int i = 0; i < location.length; i++) {
+            for (int j = 0; j < location[i].length; j++) {
+                location[i][j].setLocationValue(0);
+            }
+        }
+        totalReward = 0;
+        totalTravelTime = 0;
+        numberOfSteps = 0;
+        remainingSteps = fullBatterySteps;
+    }
+
+    public void moveToStart() {
         curRow = startRow;
         curCol = startCol;
     }

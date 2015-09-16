@@ -5,9 +5,12 @@ package QLearning;
  * @author Dong Yubo
  */
 import analysis.AnalysisController;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -44,12 +47,13 @@ import javafx.scene.paint.Paint;
 public class GridController {
 
     private boolean play;
+    private boolean stochastic;
     private static Thread algoThread;
     private long startTime;
 
-    private GridWorld gw = new GridWorld(3, 5);
+    private GridWorld gw;
     //private Algorithm algo = new ModifiedAlgo(gw);
-    private Algorithm algo = new QLearnAlgo(gw);
+    private Algorithm algo;
     private GridPane gridPane;
     private GridPane selectedLocationPane;
     private VBox detailPane;
@@ -72,6 +76,47 @@ public class GridController {
     }
 
     public void initialize() {
+        int rows = 5, cols = 5;
+        try {
+            BufferedReader in = new BufferedReader(new FileReader("GridWorldConfig.txt"));
+            String[] str = in.readLine().split(":");
+            rows = Integer.parseInt(str[1]);
+            str = in.readLine().split(":");
+            cols = Integer.parseInt(str[1]);
+            System.out.println(rows + " " + cols);
+            gw = new GridWorld(rows, cols);
+            str = in.readLine().split(":");
+            int steps = Integer.parseInt(str[1]);
+            gw.setFullBatterySteps(steps);
+            System.out.println("FullBatterySteps: " + steps);
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    str = in.readLine().split(",");
+                    if (str[0].equals("true")) {
+                        gw.setStart(i, j);
+                        System.out.println("Start: " + i + "," + j);
+                    }
+                    if (str[1].equals("true")) {
+                        gw.setCharging(i, j, true);
+                        System.out.println("Charging: " + i + "," + j);
+                    }
+                    if (str[2].equals("true")) {
+                        gw.setGoal(i, j);
+                        System.out.println("Goal: " + i + "," + j);
+                    }
+                }
+            }
+
+        } catch (FileNotFoundException fe) {
+            System.out.println("GridWorldConfig.txt not found");
+        } catch (IOException ex) {
+            System.out.println("IO exception");
+        }catch (Exception e){
+            System.out.println("Exception catched");
+            gw = new GridWorld(5, 5);
+        }
+
+        algo = new QLearnAlgo(gw);
         gridPaneInit();
 //        Label test = new Label();
 //        test.setText("test");
@@ -89,8 +134,9 @@ public class GridController {
         colBox.setItems(FXCollections.observableArrayList(
                 3, 4, 5, 6, 7, 8, 9, 10, 15, 20)
         );
-        rowBox.setValue(3);
-        colBox.setValue(5);
+        rowBox.setValue(rows);
+        colBox.setValue(cols);
+        remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
 //        alphaField.setText(String.valueOf(algo.getAlpha()));
 //        greedyValue.setText(String.valueOf(algo.getGreedyProb()));
 //        discountValue.setText(String.valueOf(algo.getDiscount()));
@@ -251,7 +297,8 @@ public class GridController {
         totalRewards.setText(form.format(reward));
         totalSteps.setText(form.format(step));
         totalTravelTime.setText(form.format(time) + " mins");
-        remainingStepsLabel.setText(String.valueOf(gw.getRemainingSteps()));
+        //remainingStepsLabel.setText(String.valueOf(gw.getRemainingSteps()));
+        remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
         addDataToChart();
     }
 
@@ -271,6 +318,31 @@ public class GridController {
 
     public void stop() {
         //System.out.println("Application stopped");
+        //backup configurations
+        FileWriter out = null;
+
+        try {
+            //StringBuilder out = new StringBuilder();
+            out = new FileWriter("GridWorldConfig.txt");
+            out.append("rows:" + gw.getRows());
+            out.append("\ncols:" + gw.getCols());
+            out.append("\nfullBatterySteps:"+ gw.getFullBatterySteps());
+            for (int i = 0; i < gw.getRows(); i++) {
+                for (int j = 0; j < gw.getCols(); j++) {
+                    Location loc = gw.getLocation(i, j);
+                    out.append("\n" + loc.isStart()
+                            + "," + loc.isCharging()
+                            + "," + loc.isGoal());
+                }
+            }
+            //out = new FileWriter("GridWorldConfig.txt");
+            out.close();
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("File GridWorldConfig.txt not found");
+        } catch (IOException ex) {
+            System.out.println("IO exception");
+        }
 
     }
 
@@ -331,9 +403,9 @@ public class GridController {
     void reset(ActionEvent event) {
         System.out.println("reset");
         autorunStatus.setText("Play to start auto run");
-        totalSteps.setText(null);
-        totalRewards.setText(null);
-        totalTravelTime.setText(null);
+//        totalSteps.setText(null);
+//        totalRewards.setText(null);
+//        totalTravelTime.setText(null);
         int row, col;
         try {
             row = rowBox.getValue();
@@ -345,12 +417,15 @@ public class GridController {
 
         if (!(row == gw.getRows() && col == gw.getCols())) {
             setGridWorld(row, col);
+        } else {
+            gw.reset();
         }
         checkSettings();
         graphPane.getChildren().remove(gridPane);
         detailCtrl.reset(algo, gw);
         gridPaneInit();
         graphPane.getChildren().add(gridPane);
+        gw.resetPath();
         repaintAll();
         updatePerformance();
         analysisCtrl.reset(algo, gw);
@@ -374,6 +449,7 @@ public class GridController {
         ActionEvent event = new ActionEvent();
         checkAlgo(event);
         checkBatteryLife(event);
+        checkStochasticThread(event);
         checkFixedalpha(event);
         checkRandomTravelTime(event);
         checkTracing(event);
@@ -389,21 +465,22 @@ public class GridController {
 
         @Override
         public void run() {
+            System.out.println("simulating actual run");
             int interval = 5000 / (gw.getCols() + gw.getRows());
             System.out.println(interval);
             gw.moveToStart();
             gw.getLocation(gw.getCurRow(), gw.getCurCol()).setIsPath(true);
 
-            while (!gw.getLocation(gw.getCurRow(), gw.getCurCol()).isGoal()) {
+            while (!gw.getLocation(gw.getCurRow(), gw.getCurCol()).isGoal() && !play) {
                 try {
                     //repaintAll();
                     Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                repaintAll();
-                                updatePerformance();
-                            }
-                        });
+                        @Override
+                        public void run() {
+                            repaintAll();
+                            updatePerformance();
+                        }
+                    });
                     gw.move(algo.getOptimalDir(gw.getCurRow(), gw.getCurCol()));
                     gw.getLocation(gw.getCurRow(), gw.getCurCol()).setIsPath(true);
                     Thread.sleep(interval);
@@ -411,8 +488,7 @@ public class GridController {
                     System.out.println("simulation sleep exception");
                 }
             }
-            
-            
+
         }
     }
 
@@ -464,6 +540,16 @@ public class GridController {
         }
     }
 
+    private class StochasticThread implements Runnable {
+
+        @Override
+        public void run() {
+            while (stochastic) {
+
+            }
+        }
+    }
+
     @FXML
     void playClicked(ActionEvent event) {
         //System.out.println("play button clicked");
@@ -490,8 +576,21 @@ public class GridController {
     }
 
     @FXML
+    void checkStochasticThread(ActionEvent event) {
+        if (stochasticThreadCheckBox.isSelected()) {
+            stochastic = true;
+            Thread t = new Thread(new StochasticThread());
+            t.start();
+            System.out.println("stochastic thread running");
+        } else {
+            stochastic = false;
+            System.out.println("stochastic thread stopped");
+        }
+    }
+
+    @FXML
     void simulateClicked(ActionEvent event) {
-        System.out.println("simulating actual run");
+
         Thread t = new Thread(new RunSim());
         t.start();
 //        try {
@@ -559,7 +658,7 @@ public class GridController {
     void changeDirectionProbability(ActionEvent event) {
         double dv = Double.parseDouble(directionProbability.getText());
         gw.setDirectionProbability(dv);
-        System.out.print("DIrection Probability set to ");
+        System.out.print("Direction Probability set to ");
         System.out.println(dv);
     }
 
@@ -569,6 +668,24 @@ public class GridController {
         gw.setDefaultTraveTime(dv);
         System.out.print("Default Travel Time set to ");
         System.out.println(dv);
+    }
+
+    @FXML
+    void changeRemainingSteps(ActionEvent event) {
+        Integer iv;
+        try {
+            iv = Integer.parseInt(remainingStepsField.getText());
+            System.out.println("change remaining steps to " + iv);
+            gw.setRemainingSteps(iv);
+            remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
+        } catch (NumberFormatException ne) {
+            iv = Integer.parseInt(remainingStepsField.getText(1, remainingStepsField.getLength()));
+            System.out.println("change full battery steps to " + iv);
+            gw.setFullBatterySteps(iv);
+            gw.setRemainingSteps(iv);
+            checkAlgo(event);
+            remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
+        }
     }
 
     @FXML
@@ -635,6 +752,9 @@ public class GridController {
     private CheckBox randomTravelTimeCheckBox;
 
     @FXML
+    private CheckBox stochasticThreadCheckBox;
+
+    @FXML
     private TextField alphaField;
 
     @FXML
@@ -689,9 +809,6 @@ public class GridController {
     private Label totalTravelTime;
 
     @FXML
-    private Label remainingStepsLabel;
-
-    @FXML
     private TextField greedyValue;
 
     @FXML
@@ -705,6 +822,9 @@ public class GridController {
 
     @FXML
     private TextField defaultTravelTimeField;
+
+    @FXML
+    private TextField remainingStepsField;
 
     @FXML
     private ChoiceBox<Integer> rowBox;
