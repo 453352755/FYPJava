@@ -101,6 +101,10 @@ public class GridController {
                         System.out.println("Charging: " + i + "," + j);
                     }
                     if (str[2].equals("true")) {
+                        gw.setBlock(i, j, true);
+                        System.out.println("Block: " + i + "," + j);
+                    }
+                    if (str[3].equals("true")) {
                         gw.setGoal(i, j);
                         System.out.println("Goal: " + i + "," + j);
                     }
@@ -111,7 +115,7 @@ public class GridController {
             System.out.println("GridWorldConfig.txt not found");
         } catch (IOException ex) {
             System.out.println("IO exception");
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Exception catched");
             gw = new GridWorld(5, 5);
         }
@@ -326,12 +330,13 @@ public class GridController {
             out = new FileWriter("GridWorldConfig.txt");
             out.append("rows:" + gw.getRows());
             out.append("\ncols:" + gw.getCols());
-            out.append("\nfullBatterySteps:"+ gw.getFullBatterySteps());
+            out.append("\nfullBatterySteps:" + gw.getFullBatterySteps());
             for (int i = 0; i < gw.getRows(); i++) {
                 for (int j = 0; j < gw.getCols(); j++) {
                     Location loc = gw.getLocation(i, j);
                     out.append("\n" + loc.isStart()
                             + "," + loc.isCharging()
+                            + "," + loc.isBlock()
                             + "," + loc.isGoal());
                 }
             }
@@ -734,6 +739,20 @@ public class GridController {
     }
 
     @FXML
+    void checkHighestLV(ActionEvent event) {
+        if (algo.getClass() == ModifiedAlgo.class) {
+            if (showHighestLVCheckBox.isSelected()) {
+                System.out.println("Showing Highest Location Value");
+                algo.setHighestLV(true);
+            } else {
+                System.out.println("Showing Location Value of Remaining Steps");
+                algo.setHighestLV(false);
+            }
+        }
+        repaintAll();
+    }
+
+    @FXML
     private ToggleGroup Algo;
 
     @FXML
@@ -753,6 +772,9 @@ public class GridController {
 
     @FXML
     private CheckBox stochasticThreadCheckBox;
+
+    @FXML
+    private CheckBox showHighestLVCheckBox;
 
     @FXML
     private TextField alphaField;

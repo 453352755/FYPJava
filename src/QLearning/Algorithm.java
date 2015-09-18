@@ -32,6 +32,8 @@ public interface Algorithm {
     public void setDiscount(double dv);
 
     public void setGreedyProb(double gv);
+    
+    public void setHighestLV(boolean b);
 
     public double getQvalue(int row, int col, int dir);
 

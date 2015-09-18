@@ -256,4 +256,9 @@ public class QLearnAlgo implements Algorithm {
         }
     }
 
+    @Override
+    public void setHighestLV(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

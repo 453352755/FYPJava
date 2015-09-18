@@ -27,7 +27,7 @@ public class GridWorld {
     public static double DeadPenalty = -100;
     private double DirectionProbability = 1;
     private double WallPenalty = -10;
-    private double BlockPenalty = 0;
+    private double BlockPenalty = -5;
     private double defaultReward = -2;
     private double ChargingReward = 0.0;
     private double GoalReward = 100.0;
@@ -306,8 +306,8 @@ public class GridWorld {
             return r;
         }
     }
-    
-    public void reset(){
+
+    public void reset() {
         for (int i = 0; i < location.length; i++) {
             for (int j = 0; j < location[i].length; j++) {
                 location[i][j].setLocationValue(0);
@@ -322,6 +322,9 @@ public class GridWorld {
     public void moveToStart() {
         curRow = startRow;
         curCol = startCol;
+        if (batteryEnabled) {
+            remainingSteps = fullBatterySteps;
+        }
     }
 
     public double move(int d) {

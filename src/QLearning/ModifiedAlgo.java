@@ -16,6 +16,7 @@ public class ModifiedAlgo implements Algorithm {
     private double greedyProb = 0.8;
     private double alpha = 0.5;
     private boolean tracing = false;
+    private boolean highestLocationValue = false;
 
     private GridWorld gw;
     private double[][][][] Qvalue;
@@ -200,9 +201,23 @@ public class ModifiedAlgo implements Algorithm {
         return lowest;
     }
 
+    public boolean isHighestLocationValue() {
+        return highestLocationValue;
+    }
+
+    public void setHighestLocationValue(boolean highestLocationValue) {
+        this.highestLocationValue = highestLocationValue;
+    }
+
     @Override
     public double getQvalue(int row, int col, int dir) {
-        return Qvalue[row][col][gw.getRemainingSteps()][dir];
+        double qv = Qvalue[row][col][0][dir];
+        for (int i = 0; i < Qvalue[row][col].length; i++) {
+            if (Qvalue[row][col][i][dir] > qv) {
+                qv = Qvalue[row][col][i][dir];
+            }
+        }
+        return highestLocationValue ? qv : Qvalue[row][col][gw.getRemainingSteps()][dir];
     }
 
     @Override
@@ -233,9 +248,22 @@ public class ModifiedAlgo implements Algorithm {
                 big = qvalues[i];
             }
         }
-        gw.getLocation(gw.getCurRow(), gw.getCurCol()).setLocationValue(big);
+
         for (int i = 0; i < qvalues.length; i++) {
             isOptimal[gw.getCurRow()][gw.getCurCol()][gw.getRemainingSteps()][i] = qvalues[i] == big;
+        }
+        if (highestLocationValue) {
+            double lv = Qvalue[gw.getCurRow()][gw.getCurCol()][0][0];
+            for (int i = 0; i < gw.getFullBatterySteps(); i++) {
+                for (int j = 0; j < 4; j++) {
+                    if (Qvalue[gw.getCurRow()][gw.getCurCol()][i][j] > lv) {
+                        lv = Qvalue[gw.getCurRow()][gw.getCurCol()][i][j];
+                    }
+                }
+            }
+            gw.getLocation(gw.getCurRow(), gw.getCurCol()).setLocationValue(lv);
+        } else {
+            gw.getLocation(gw.getCurRow(), gw.getCurCol()).setLocationValue(big);
         }
     }
 
@@ -252,5 +280,11 @@ public class ModifiedAlgo implements Algorithm {
                 System.out.println("");
             }
         }
+    }
+
+    @Override
+    public void setHighestLV(boolean b) {
+        highestLocationValue = b;
+        updateOptimal();
     }
 }
