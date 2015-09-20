@@ -6,7 +6,6 @@ package QLearning;
  */
 import java.text.DecimalFormat;
 import java.text.Format;
-import java.util.Random;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -45,8 +44,6 @@ public class Location {
     private double locationValue;
 //    private boolean[] isOptimal = new boolean[4];
 //    private int[] visits = new int[4];
-    private double[] meanTravelTime = new double[4];
-    private double[] stddev = new double[4];
     private double[] travelTime = new double[4];
 
     private final GridPane locPane;
@@ -85,8 +82,6 @@ public class Location {
 //        newLocation.visits = this.visits.clone();
         newLocation.locationValue = this.locationValue;
         newLocation.duplicated = true;
-        newLocation.meanTravelTime = this.meanTravelTime.clone();
-        newLocation.stddev = this.stddev.clone();
         newLocation.travelTime = this.travelTime.clone();
 
         return newLocation;
@@ -207,32 +202,6 @@ public class Location {
     public void setTravelTime(int direction, double time) {
         this.travelTime[direction] = time;
     }
-
-    public void setMeanTravelTime(double[] meanTravelTime) {
-        this.meanTravelTime = meanTravelTime;
-    }
-    
-    public void setMeanTravelTime(int dir, double meanTravelTime) {
-        this.meanTravelTime[dir] = meanTravelTime;
-    }
-
-    public void setStddev(double[] stddev) {
-        this.stddev = stddev;
-    }
-    
-    public void setStddev(int dir, double stddev) {
-        this.stddev[dir] = stddev;
-    }
-
-    public double getMeanTravelTime(int dir) {
-        return meanTravelTime[dir];
-    }
-
-    public double getStddev(int dir) {
-        return stddev[dir];
-    }
-    
-    
 
 //    public void visited(int i) {
 //        this.visits[i]++;
@@ -475,7 +444,7 @@ public class Location {
             } else if (isPath) {
                 locPane.setBackground(new Background(new BackgroundFill(
                         Paint.valueOf(app.Color.Teal[5]), CornerRadii.EMPTY, Insets.EMPTY)));
-            } else {
+            }else {
                 locPane.setBackground(new Background(new BackgroundFill(
                         Paint.valueOf(app.Color.Yellow[index]), CornerRadii.EMPTY, Insets.EMPTY)));
             }

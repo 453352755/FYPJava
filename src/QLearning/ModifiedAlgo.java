@@ -66,11 +66,6 @@ public class ModifiedAlgo implements Algorithm {
     }
 
     @Override
-    public double[][] getQvalue(int row, int col) {
-        return Qvalue[row][col];
-    }
-
-    @Override
     public boolean moveToDir(int direction) {
         int oldRow = gw.getCurRow(), oldCol = gw.getCurCol(), oldBat = gw.getRemainingSteps();
         double reward = gw.move(direction);

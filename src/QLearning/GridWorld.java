@@ -1,7 +1,6 @@
 package QLearning;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -33,10 +32,9 @@ public class GridWorld {
     private double ChargingReward = 0.0;
     private double GoalReward = 100.0;
     private double defaultTraveTime = 1;
-    private double defaultMean = 8;
     private boolean randomTravelTime = false;
     private boolean batteryEnabled = true;
-    private int fullBattery = 4;
+    private int fullBatterySteps = 4;
 
     private final int rows;
     private final int cols;
@@ -51,7 +49,7 @@ public class GridWorld {
     private int startCol;
     private int goalRow;
     private int goalCol;
-    private int remainingBattery;
+    private int remainingSteps;
     private final Location[][] location;
 //    private double range;
 //    private double highest, lowest;
@@ -59,7 +57,7 @@ public class GridWorld {
     public GridWorld(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
-        remainingBattery = fullBattery;
+        remainingSteps = fullBatterySteps;
 //        curRow = (int) (Math.random() * rows);
 //        curCol = (int) (Math.random() * cols);
         location = new Location[rows][cols];
@@ -67,16 +65,28 @@ public class GridWorld {
             for (int j = 0; j < cols; j++) {
                 location[i][j] = new Location(i, j);
                 location[i][j].setReward(defaultReward);
-                for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
-//                    location[i][j].setMeanTravelTime(k, defaultMean);
-//                    location[i][j].setStddev(k, 0);
-                    location[i][j].setTravelTime(k, defaultTraveTime);
-                }
                 if (randomTravelTime) {
-                    generateTravelTime();
+                    for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
+                        location[i][j].setTravelTime(k, Math.random() * 10);
+                    }
+                } else {
+                    for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
+                        location[i][j].setTravelTime(k, defaultTraveTime);
+                    }
                 }
+
+                //check walls
+//                if (i == 0 || i == rows - 1 || j == 0 || j == cols - 1) {
+//                    location[i][j].setIsWall(true);
+//                    location[i][j].setReward(WallPenalty);
+//                }
             }
         }
+
+//        setStart(0, 0);
+//        setGoal(2, 4);
+//        setCharging(1, 2, true);
+        //setCharging(6, 4, true);
     }
 
     public void setStart(int row, int col) {
@@ -122,7 +132,9 @@ public class GridWorld {
         } else {
             location[row][col].setReward(defaultReward);
             if (randomTravelTime) {
-                generateTravelTime();
+                for (int k = 0; k < location[row][col].getTravelTime().length; k++) {
+                    location[row][col].setTravelTime(k, Math.random() * 10);
+                }
             } else {
                 for (int k = 0; k < location[row][col].getTravelTime().length; k++) {
                     location[row][col].setTravelTime(k, defaultTraveTime);
@@ -135,7 +147,7 @@ public class GridWorld {
         //TO DO
         //charge at location i,j charge to ? percent, charge for ? minutes, charge speed 
 
-        this.remainingBattery = fullBattery;
+        this.remainingSteps = fullBatterySteps;
     }
 
     public double getDirectionProbability() {
@@ -151,24 +163,24 @@ public class GridWorld {
     }
 
     public void setRemainingSteps(int remainingSteps) {
-        if (remainingSteps > this.fullBattery) {
-            this.remainingBattery = this.fullBattery;
+        if (remainingSteps > this.fullBatterySteps) {
+            this.remainingSteps = this.fullBatterySteps;
         } else {
-            this.remainingBattery = remainingSteps;
+            this.remainingSteps = remainingSteps;
         }
     }
 
     public void setFullBatterySteps(int fullBatterySteps) {
-        this.fullBattery = fullBatterySteps;
-        this.remainingBattery = fullBatterySteps;
+        this.fullBatterySteps = fullBatterySteps;
+        this.remainingSteps = fullBatterySteps;
     }
 
     public int getFullBatterySteps() {
-        return fullBattery;
+        return fullBatterySteps;
     }
 
     public int getRemainingSteps() {
-        return remainingBattery;
+        return remainingSteps;
     }
 
     public int getNumberOfSteps() {
@@ -249,19 +261,6 @@ public class GridWorld {
 
     public void setRandomTravelTime(boolean randomTravelTime) {
         this.randomTravelTime = randomTravelTime;
-        if (randomTravelTime) {
-            generateTravelTime();
-        } else {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
-                        location[i][j].setTravelTime(k, defaultTraveTime);
-//                        location[i][j].setMeanTravelTime(k, defaultMean);
-//                        location[i][j].setStddev(k, 0);
-                    }
-                }
-            }
-        }
     }
 
     public void setDirectionProbability(double DirectionProbability) {
@@ -270,28 +269,6 @@ public class GridWorld {
 
     public void setDefaultTraveTime(double defaultTraveTime) {
         this.defaultTraveTime = defaultTraveTime;
-    }
-
-    public void setTraveTime(double traveTime) {
-        if (randomTravelTime) {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
-                        location[i][j].setMeanTravelTime(k, traveTime);
-                    }
-                }
-            }
-        } else {
-            this.defaultTraveTime = traveTime;
-             for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
-                        location[i][j].setTravelTime(k, traveTime);
-                    }
-                }
-            }
-        }
-
     }
 
     public void setCurrentPosition(int row, int col) {
@@ -339,31 +316,14 @@ public class GridWorld {
         totalReward = 0;
         totalTravelTime = 0;
         numberOfSteps = 0;
-        remainingBattery = fullBattery;
+        remainingSteps = fullBatterySteps;
     }
 
     public void moveToStart() {
         curRow = startRow;
         curCol = startCol;
         if (batteryEnabled) {
-            remainingBattery = fullBattery;
-        }
-    }
-
-    public void generateTravelTime() {
-        Random rand = new Random();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
-                    double time = rand.nextGaussian() * location[i][j].getStddev(k)
-                            + location[i][j].getMeanTravelTime(k);
-                    if (time < 0) {
-                        System.out.println("generate time < 0");
-                        time = 1;
-                    }
-                    location[i][j].setTravelTime(k, time);
-                }
-            }
+            remainingSteps = fullBatterySteps;
         }
     }
 
@@ -371,14 +331,11 @@ public class GridWorld {
         int actualDirection = getActualDirection(d);
         double reward;
         int newRow = curRow, newCol = curCol;
-        if (randomTravelTime) {
-            generateTravelTime();
-        }
         if (location[curRow][curCol].isGoal()) {
             newRow = startRow;
             newCol = startCol;
             reward = 0;
-            remainingBattery = fullBattery;
+            remainingSteps = fullBatterySteps;
         } else {
             //calculate new postion
             switch (actualDirection) {
@@ -401,13 +358,11 @@ public class GridWorld {
                     //reward = 0.0;
                 }
             }
-            int batUsed = (int) Math.round(location[curRow][curCol].getTravelTime(actualDirection));
-            remainingBattery = remainingBattery - batUsed < 0 ? 0 : remainingBattery - batUsed;
-            if (batteryEnabled && remainingBattery <= 0) {
+            if (batteryEnabled && remainingSteps <= 0) {
                 newRow = startRow;
                 newCol = startCol;
                 reward = DeadPenalty;
-                remainingBattery = fullBattery;
+                remainingSteps = fullBatterySteps + 1;
             } else if (newCol < 0 || newCol > cols - 1 || newRow < 0 || newRow > rows - 1) {//wall
                 reward = WallPenalty;
                 newRow = curRow;
@@ -421,7 +376,7 @@ public class GridWorld {
                 totalTravelTime += location[curRow][curCol].getTravelTime(actualDirection);
             }
             numberOfSteps++;
-
+            remainingSteps--;
             totalReward += reward;
             if (location[newRow][newCol].isCharging()) {
                 charge();
