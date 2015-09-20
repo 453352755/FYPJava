@@ -2,6 +2,7 @@ package app;
 
 import QLearning.GridController;
 import analysis.AnalysisController;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -16,6 +17,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -37,6 +39,7 @@ public class GUI extends Application {
 
     private static URL analysisURL;
     private static URL QLearnURL;
+    private static FileChooser fileChooser = new FileChooser();
 
     @Override
     public void start(Stage myStage) throws IOException {
@@ -90,15 +93,36 @@ public class GUI extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
+    public static void configFileChooser(){
+        fileChooser.setTitle("Load GridWorld Configration");
+        fileChooser.setInitialDirectory(
+                new File("C:\\Dropbox\\FYP\\FYPJava")
+        );
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All files", "*.*"),
+                new FileChooser.ExtensionFilter("CSV", "*.csv")
+        );
+        fileChooser.setInitialFileName("GridWorldConfig.csv");
+        fileChooser.setSelectedExtensionFilter(fileChooser.getExtensionFilters().get(1));
+    }
 
     public static void saveContext() {
-        
-        
-        
+        configFileChooser();
+        File file = fileChooser.showSaveDialog(new Stage());
+        if (file != null) {
+            System.out.println(file.getAbsolutePath());
+            QLearnCtrl.saveGridWorldConfig(file.getAbsolutePath());
+        }
     }
 
     public static void importContext() {
-
+        configFileChooser();
+        File file = fileChooser.showOpenDialog(new Stage());
+        if (file != null) {
+            System.out.println(file.getAbsolutePath());
+            QLearnCtrl.loadGridWorld(file.getAbsolutePath());
+        }
     }
 
     public static void switchToAnalysis() {

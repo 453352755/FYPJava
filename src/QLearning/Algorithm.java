@@ -41,4 +41,6 @@ public interface Algorithm {
 
     public int getOptimalDir(int row, int col);
 
+    public double[][] getQvalue(int row, int col);
+
 }
