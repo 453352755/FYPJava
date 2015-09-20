@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
@@ -8,35 +9,33 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="vbox" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="320.0" styleClass="detail-pane" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="QLearning.DetailController">
+<VBox fx:id="vbox" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="320.0" styleClass="detail-pane" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="QLearning.DetailController">
    <children>
       <StackPane fx:id="locationTimePane" prefHeight="150.0" prefWidth="200.0">
          <children>
             <StackPane fx:id="locationPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" />
             <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="320.0">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="80.0" layoutX="120.0" layoutY="120.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="80.0" />
-                  <Label fx:id="upTimeLabel" layoutX="135.0" layoutY="105.0" styleClass="detail-time-label" text="0.00" visible="false" />
-                  <Label fx:id="leftTimeLabel" layoutX="102.0" layoutY="145.0" rotate="270.0" styleClass="detail-time-label" text="0.00" visible="false" />
-                  <Label fx:id="downTimeLabel" layoutX="142.0" layoutY="185.0" styleClass="detail-time-label" text="0.00" visible="false" />
-                  <Label fx:id="rightTimeLabel" layoutX="175.0" layoutY="145.0" rotate="90.0" styleClass="detail-time-label" text="0.00" visible="false" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#183e61" height="80.0" layoutX="120.0" layoutY="120.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="80.0" />
+                  <Label fx:id="upTimeLabel" layoutX="155.0" layoutY="105.0" styleClass="detail-time-label" text="0" visible="false" />
+                  <Label fx:id="leftTimeLabel" layoutX="115.0" layoutY="145.0" rotate="270.0" styleClass="detail-time-label" text="0" visible="false" />
+                  <Label fx:id="downTimeLabel" layoutX="155.0" layoutY="185.0" styleClass="detail-time-label" text="0" visible="false" />
+                  <Label fx:id="rightTimeLabel" layoutX="195.0" layoutY="145.0" rotate="90.0" styleClass="detail-time-label" text="0" visible="false" />
                </children>
             </Pane>
          </children>
       </StackPane>
-      <GridPane fx:id="locGridPane" maxHeight="320.0" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="320.0" VBox.vgrow="ALWAYS">
+      <GridPane fx:id="locGridPane" maxHeight="200.0" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="181.0" prefWidth="320.0" VBox.vgrow="ALWAYS">
         <columnConstraints>
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0" prefWidth="30.0" />
-          <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="221.0" minWidth="10.0" prefWidth="133.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.0" minWidth="10.0" prefWidth="144.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.0" minWidth="10.0" prefWidth="29.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0" prefWidth="22.0" />
+          <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="221.0" minWidth="10.0" prefWidth="61.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.0" minWidth="10.0" prefWidth="75.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.0" minWidth="10.0" prefWidth="76.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.0" minWidth="10.0" prefWidth="73.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.0" minWidth="10.0" prefWidth="21.0" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -45,35 +44,67 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Up" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="upField" disable="true" onAction="#upValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <TextField fx:id="leftField" disable="true" onAction="#leftValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-            <TextField fx:id="downField" disable="true" onAction="#downValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <TextField fx:id="rightField" disable="true" onAction="#rightValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-            <Label text="Down" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Label text="Left" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Label text="Right" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <Label fx:id="locationValueLabel" prefHeight="38.0" prefWidth="270.0" text="Location Value: 0.00" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+            <Label fx:id="locationValueLabel" alignment="CENTER" prefHeight="30.0" prefWidth="283.0" text="Location Value: 0.00" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
                <font>
                   <Font size="20.0" />
                </font>
             </Label>
-            <Label text="Reward" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <TextField fx:id="rewardField" onAction="#rewardValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-            <Label fx:id="rowColLabel" prefHeight="38.0" prefWidth="204.0" text="Row 0 - Col 0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER">
+            <Label text="Reward" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="rewardField" onAction="#rewardValueChanged" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <Label fx:id="rowColLabel" alignment="CENTER" prefHeight="38.0" prefWidth="298.0" text="Row 0 - Col 0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <font>
                   <Font size="26.0" />
                </font>
             </Label>
-            <Label text="Block" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <CheckBox fx:id="blockCheckBox" graphicTextGap="0.0" mnemonicParsing="false" onAction="#blockChecked" prefHeight="17.0" prefWidth="0.0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-            <Label text="Start" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <Label text="Charging" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <Label text="Goal" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <CheckBox fx:id="startCheckBox" graphicTextGap="0.0" mnemonicParsing="false" onAction="#startChecked" prefHeight="17.0" prefWidth="0.0" GridPane.columnIndex="2" GridPane.rowIndex="8" />
-            <CheckBox fx:id="chargingCheckBox" graphicTextGap="0.0" mnemonicParsing="false" onAction="#chargingChecked" prefHeight="17.0" prefWidth="0.0" GridPane.columnIndex="2" GridPane.rowIndex="9" />
-            <CheckBox fx:id="goalCheckBox" graphicTextGap="0.0" mnemonicParsing="false" onAction="#goalChecked" prefHeight="17.0" prefWidth="0.0" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+            <Label text="Block" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+            <CheckBox fx:id="blockCheckBox" graphicTextGap="0.0" mnemonicParsing="false" onAction="#blockChecked" prefHeight="17.0" prefWidth="0.0" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+            <Label text="Start" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label text="Charging" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label text="Goal" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+            <CheckBox fx:id="startCheckBox" graphicTextGap="0.0" mnemonicParsing="false" onAction="#startChecked" prefHeight="17.0" prefWidth="0.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <CheckBox fx:id="chargingCheckBox" graphicTextGap="0.0" mnemonicParsing="false" onAction="#chargingChecked" prefHeight="17.0" prefWidth="0.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <CheckBox fx:id="goalCheckBox" graphicTextGap="0.0" mnemonicParsing="false" onAction="#goalChecked" prefHeight="17.0" prefWidth="0.0" GridPane.columnIndex="4" GridPane.rowIndex="5" />
          </children>
       </GridPane>
+      <Accordion prefHeight="352.0" prefWidth="320.0">
+         <panes>
+            <TitledPane animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Q Value">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="QvalueTable" layoutX="47.0" layoutY="8.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                           <columns>
+                              <TableColumn fx:id="batteryLevelColumn" prefWidth="51.000001549720764" text="Battery&#10;Level" />
+                              <TableColumn prefWidth="235.80002288818355" text="Q Values">
+                                 <columns>
+                                    <TableColumn fx:id="upColumn" prefWidth="58.00000762939453" text="up" />
+                                    <TableColumn fx:id="downColumn" prefWidth="51.99999237060547" text="down" />
+                                    <TableColumn fx:id="leftColumn" prefWidth="60.0" text="left" />
+                                    <TableColumn fx:id="rightColumn" prefWidth="61.0" text="right" />
+                                 </columns>
+                              </TableColumn>
+                           </columns>
+                        </TableView>
+                     </children></AnchorPane>
+              </content>
+            </TitledPane>
+            <TitledPane animated="false" prefHeight="505.0" prefWidth="320.0" text="Random Travel Time">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="travelTimeTable" editable="true" layoutX="21.0" layoutY="14.0" prefHeight="200.0" prefWidth="283.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                          <columns>
+                              <TableColumn fx:id="dirColumn" editable="false" prefWidth="44.0" text="Dir" />
+                            <TableColumn fx:id="travelTimeColumn" text="Travel Time" />
+                            <TableColumn fx:id="meanColumn" onEditCommit="#changeMean" prefWidth="76.0" text="Mean" />
+                              <TableColumn fx:id="stdDevColumn" prefWidth="77.80003051757808" text="StdDev" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
+         </panes>
+      </Accordion>
    </children>
 </VBox>

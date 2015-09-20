@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.canvas.*?>
 <?import java.lang.*?>
@@ -9,118 +11,206 @@
 <?import javafx.scene.layout.*?>
 
 <HBox id="gridworld-root" fx:id="root" maxHeight="1080.0" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" style="-fx-opacity: 1;" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="QLearning.GridController">
-   <children>
-      <VBox id="grid-world-menu" prefHeight="640.0" prefWidth="320.0" styleClass="qlearn-control-pane">
-         <children>
-            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="320.0">
-               <children>
-                  <Button fx:id="leftButton" layoutX="10.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveLeft" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="left">
-                     <graphic>
-                        <ImageView fx:id="leftImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
-                           <image>
-                              <Image url="@arrow.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="rightButton" layoutX="210.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveRight" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="right">
-                     <graphic>
-                        <ImageView fx:id="rightImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@arrow.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="upButton" layoutX="110.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveUp" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="up">
-                     <graphic>
-                        <ImageView fx:id="upImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="270.0">
-                           <image>
-                              <Image url="@arrow.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="downButton" layoutX="110.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveDown" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="down">
-                     <graphic>
-                        <ImageView fx:id="downImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
-                           <image>
-                              <Image url="@arrow.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-               </children>
-            </AnchorPane>
-            <Separator prefWidth="200.0" />
-            <AnchorPane prefHeight="157.0" prefWidth="320.0">
-               <children>
-                  <Label layoutX="5.0" layoutY="5.0" text="Algorithm setting" />
-                  <Label layoutX="10.0" layoutY="63.0" text="Discount" />
-                  <TextField fx:id="discountValue" layoutX="131.0" layoutY="59.0" onAction="#updateDiscountValue" prefHeight="25.0" prefWidth="106.0" promptText="0.9" />
-                  <TextField fx:id="greedyValue" layoutX="131.0" layoutY="91.0" onAction="#updateGreedyValue" prefHeight="25.0" prefWidth="106.0" promptText="0.8" />
-                  <Label layoutX="10.0" layoutY="93.0" text="Greedy" />
-                  <Label layoutX="10.0" layoutY="31.0" text="Size" />
-                  <ChoiceBox fx:id="rowBox" layoutX="131.0" layoutY="26.0" prefHeight="25.0" prefWidth="50.0" />
-                  <ChoiceBox fx:id="colBox" layoutX="185.0" layoutY="26.0" prefHeight="25.0" prefWidth="50.0" />
-                  <Label layoutX="10.0" layoutY="125.0" text="Fixed Alpha" />
-                  <TextField fx:id="alphaField" layoutX="131.0" layoutY="121.0" onAction="#changeAlphaValue" prefHeight="25.0" prefWidth="106.0" promptText="0.5" />
-                  <CheckBox fx:id="alphaFixedBox" layoutX="97.0" layoutY="125.0" mnemonicParsing="false" onAction="#alphaFixed" />
-               </children>
-            </AnchorPane>
-            <Separator prefWidth="200.0" />
-            <AnchorPane prefHeight="100.0" prefWidth="320.0">
-               <children>
-                  <Label layoutX="5.0" layoutY="5.0" text="Run" />
-                  <Button fx:id="resetButton" layoutX="233.0" layoutY="57.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
-                  <Label layoutX="10.0" layoutY="29.0" text="Speed" />
-                  <TextField fx:id="speedValue" layoutX="58.0" layoutY="26.0" onAction="#updateSpeedValue" prefHeight="25.0" prefWidth="126.0" promptText="1" />
-                  <Label fx:id="autorunStatus" layoutX="84.0" layoutY="61.0" text="Play to start auto run" />
-                  <Button fx:id="pause" alignment="CENTER" contentDisplay="CENTER" layoutX="46.0" layoutY="57.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pauseClicked" prefHeight="25.0" prefWidth="25.0" styleClass="play-pause-button">
-                     <graphic>
-                        <ImageView fx:id="pauseIcon" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#pauseClicked" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@pause.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="play" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="57.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playClicked" prefHeight="25.0" prefWidth="25.0" styleClass="play-pause-button">
-                     <graphic>
-                        <ImageView fx:id="playIcon" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#playClicked" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@play.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Label layoutX="196.0" layoutY="29.0" text="Steps per second" />
-               </children>
-            </AnchorPane>
-            <Separator prefWidth="200.0" />
-            <AnchorPane prefHeight="99.0" prefWidth="320.0">
-               <children>
-                  <Label layoutX="5.0" layoutY="5.0" text="Result" />
-                  <Label layoutX="10.0" layoutY="32.0" styleClass="result-label" text="Total Steps：" />
-                  <Label layoutX="10.0" layoutY="53.0" styleClass="result-label" text="Total Rewards：" />
-                  <Label fx:id="totalSteps" layoutX="119.0" layoutY="32.0" styleClass="result-label" text="0" />
-                  <Label fx:id="totalRewards" layoutX="119.0" layoutY="53.0" styleClass="result-label" text="0" />
-                  <Label layoutX="10.0" layoutY="73.0" styleClass="result-label" text="Total Travel Time:" />
-                  <Label fx:id="totalTravelTime" layoutX="119.0" layoutY="73.0" styleClass="result-label" text="0" />
-               </children>
-            </AnchorPane>
-            <Separator prefWidth="200.0" />
-            <AnchorPane prefHeight="64.0" prefWidth="320.0">
-               <children>
-                  <Label layoutX="5.0" layoutY="10.0" text="Brightness" />
-                  <Slider fx:id="brightness" blockIncrement="0.1" layoutX="79.0" layoutY="22.0" majorTickUnit="0.5" max="1.0" minorTickCount="1" prefHeight="14.0" prefWidth="126.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-                  <Label fx:id="brightnessValue" layoutX="244.0" layoutY="12.0" text="0" />
-                  <CheckBox fx:id="tracing" layoutX="5.0" layoutY="41.0" mnemonicParsing="false" onAction="#tracingChecked" text="Tracing" />
-               </children>
-            </AnchorPane>
-         </children>
-      </VBox>
-      <StackPane fx:id="graphPane" maxHeight="1000.0" maxWidth="1000.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="640.0" HBox.hgrow="ALWAYS" />
-      <Separator orientation="VERTICAL" prefHeight="200.0" prefWidth="1.0" />
-   </children>
+    <children>
+        <VBox id="grid-world-menu" maxHeight="1.7976931348623157E308" maxWidth="480.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="320.0" styleClass="qlearn-control-pane" HBox.hgrow="SOMETIMES">
+            <children>
+          <TitledPane animated="false" expanded="false" minHeight="15.0" styleClass="qlearn-control-pane" text="Mannual Control">
+               <content>
+                      <GridPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="220.0" prefWidth="320.0" styleClass="qlearn-control-pane">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="4.0" minWidth="-Infinity" prefWidth="1.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="109.0" minWidth="-Infinity" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="109.0" minWidth="-Infinity" prefWidth="101.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="108.0" minWidth="-Infinity" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="71.0" minWidth="0.0" prefWidth="8.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="34.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="34.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                          <children>
+                              <Button fx:id="upButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveUp" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="up" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                  <graphic>
+                                      <ImageView fx:id="upImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="270.0">
+                                          <image>
+                                              <Image url="@arrow.png" />
+                                          </image>
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+                              <Button fx:id="leftButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveLeft" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="left" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                  <graphic>
+                                      <ImageView fx:id="leftImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                                          <image>
+                                              <Image url="@arrow.png" />
+                                          </image>
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+                              <Button fx:id="rightButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveRight" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="right" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                  <graphic>
+                                      <ImageView fx:id="rightImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                              <Image url="@arrow.png" />
+                                          </image>
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+                              <Button fx:id="downButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#moveDown" prefHeight="100.0" prefWidth="100.0" styleClass="direction-button" text="down" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                  <graphic>
+                                      <ImageView fx:id="downImage" fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+                                          <image>
+                                              <Image url="@arrow.png" />
+                                          </image>
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+                          </children>
+                      </GridPane>
+               </content>
+            </TitledPane>
+                <Separator prefWidth="200.0" />
+                <GridPane alignment="CENTER" maxHeight="320.0" prefHeight="276.0" prefWidth="320.0" VBox.vgrow="ALWAYS">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="10.0" prefWidth="12.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="211.0" minWidth="10.0" prefWidth="102.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="0.0" prefWidth="48.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="166.0" minWidth="4.0" prefWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="166.0" minWidth="10.0" prefWidth="89.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="47.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="14.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                  <RowConstraints maxHeight="50.0" minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS" />
+                    </rowConstraints>
+                    <children>
+                        <Label text="  Algorithm setting" GridPane.columnSpan="2147483647" />
+                        <Label text="Size" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="1">
+                            <children>
+                                <ChoiceBox fx:id="rowBox" prefHeight="25.0" prefWidth="50.0" />
+                                <ChoiceBox fx:id="colBox" prefHeight="25.0" prefWidth="50.0" />
+                            </children>
+                        </HBox>
+                        <Label text="Discount" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label text="Greedy" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label text="Direction Probability" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                        <TextField fx:id="directionProbability" alignment="CENTER_RIGHT" disable="true" maxWidth="-Infinity" onAction="#changeDirectionProbability" prefHeight="25.0" prefWidth="35.0" promptText="0.7" text="1" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+                        <TextField fx:id="alphaField" onAction="#changeAlphaValue" prefHeight="25.0" prefWidth="106.0" promptText="0.5" text="0.5" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <TextField fx:id="greedyValue" onAction="#changeGreedyValue" prefHeight="25.0" prefWidth="106.0" promptText="0.8" text="0.2" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <TextField fx:id="discountValue" onAction="#changeDiscountValue" prefHeight="25.0" prefWidth="106.0" promptText="0.9" text="0.99" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                            <children>
+                                <CheckBox fx:id="alphaFixedBox" mnemonicParsing="false" onAction="#checkFixedalpha" text="Fixed Alpha" />
+                            </children>
+                        </HBox>
+                  <CheckBox fx:id="batteryLifeCheckBox" mnemonicParsing="false" onAction="#checkBatteryLife" selected="true" text="Battery Life Enabled" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                  <CheckBox fx:id="stochasticThreadCheckBox" mnemonicParsing="false" onAction="#checkStochasticThread" prefHeight="17.0" prefWidth="129.0" text="Stochastic Thread" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                  <CheckBox fx:id="showHighestLVCheckBox" mnemonicParsing="false" onAction="#checkHighestLV" prefHeight="17.0" prefWidth="135.0" text="Show Highest LV" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                        <CheckBox fx:id="randomTravelTimeCheckBox" mnemonicParsing="false" onAction="#checkRandomTravelTime" text="Random Travel Time" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
+                        <TextField fx:id="defaultTravelTimeField" onAction="#changeDefaultTravelTime" prefHeight="25.0" prefWidth="68.0" promptText="0.5" text="1" GridPane.columnIndex="5" GridPane.rowIndex="6" />
+                        <CheckBox fx:id="tracing" mnemonicParsing="false" onAction="#checkTracing" text="Tracing" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                  <Label fx:id="travelTimeLabel" text="Mean" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+                    </children>
+                </GridPane>
+                <Separator prefWidth="200.0" />
+                <GridPane alignment="CENTER" maxHeight="200.0" prefHeight="159.0" prefWidth="320.0" VBox.vgrow="ALWAYS">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="10.0" prefWidth="19.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0" prefWidth="211.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="75.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="93.0" minWidth="10.0" prefWidth="16.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                  <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                    </rowConstraints>
+                    <children>
+                        <Label text="  Run" GridPane.columnSpan="2147483647" />
+                        <Label text="Speed (Steps per second)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="speedValue" onAction="#updateSpeedValue" prefHeight="25.0" prefWidth="62.0" promptText="1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="39.0" prefWidth="302.0" spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+                            <children>
+                                <Button fx:id="play" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="57.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playClicked" prefHeight="25.0" prefWidth="25.0" styleClass="play-pause-button">
+                                    <graphic>
+                                        <ImageView fx:id="playIcon" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#playClicked" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@play.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="pause" alignment="CENTER" contentDisplay="CENTER" layoutX="46.0" layoutY="57.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pauseClicked" prefHeight="25.0" prefWidth="25.0" styleClass="play-pause-button">
+                                    <graphic>
+                                        <ImageView fx:id="pauseIcon" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#pauseClicked" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@pause.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                        <Button fx:id="simButton" mnemonicParsing="false" onAction="#simulateClicked" text="Sim" />
+                                <Button fx:id="resetButton" mnemonicParsing="false" onAction="#reset" text="Reset" />
+                                <Label fx:id="autorunStatus" text="Play to start auto run" />
+                            </children>
+                        </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                     <children>
+                        <Label text="Algorithms" />
+                        <RadioButton fx:id="originalRadioButton" mnemonicParsing="false" onAction="#checkAlgo" selected="true" text="Original">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="Algo" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="modifiedRadioButton" mnemonicParsing="false" onAction="#checkAlgo" text="Modified" toggleGroup="$Algo" />
+                     </children>
+                  </HBox>
+                    </children>
+                </GridPane>
+                <Separator prefWidth="200.0" />
+                <GridPane alignment="CENTER" maxHeight="250.0" prefHeight="99.0" prefWidth="320.0" VBox.vgrow="ALWAYS">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="10.0" prefWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="217.0" minWidth="10.0" prefWidth="107.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="172.0" minWidth="10.0" prefWidth="46.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="172.0" minWidth="10.0" prefWidth="107.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="172.0" minWidth="10.0" prefWidth="35.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="93.0" minWidth="10.0" prefWidth="16.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="25.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="23.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="25.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="25.0" vgrow="ALWAYS" />
+                    </rowConstraints>
+                    <children>
+                        <Label text="  Result" GridPane.columnSpan="2147483647" />
+                        <Label styleClass="result-label" text="Total Steps：" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="totalSteps" prefHeight="17.0" prefWidth="180.0" styleClass="result-label" text="0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label styleClass="result-label" text="Total Rewards：" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="totalRewards" prefHeight="17.0" prefWidth="180.0" styleClass="result-label" text="0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Label styleClass="result-label" text="Total Travel Time:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="totalTravelTime" prefHeight="17.0" prefWidth="180.0" styleClass="result-label" text="0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                  <Label text="Remaining Steps:" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <TextField fx:id="remainingStepsField" onAction="#changeRemainingSteps" prefHeight="25.0" prefWidth="13.0" text="10" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                  <Label fx:id="fullBatteryLifeLabel" text="0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                  <Label text="Full Battery Life" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                    </children>
+                </GridPane>
+                <Separator prefWidth="200.0" />
+            </children>
+        </VBox>
+        <StackPane fx:id="graphPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="640.0" style="-fx-background-color: lightblue;" HBox.hgrow="ALWAYS" />
+    </children>
 </HBox>

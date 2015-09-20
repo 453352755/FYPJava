@@ -109,6 +109,18 @@ public class QLearnAlgo implements Algorithm {
     }
 
     @Override
+    public double[][] getQvalue(int row, int col) {
+
+        double[][] qvalue = new double[1][4];
+        qvalue[0] = Qvalue[row][col].clone();
+//        for (int i = 0; i < 4; i++) {
+//            System.out.println(Qvalue[row][col][i]);
+//            System.out.println(qvalue[0][i]);
+//        }
+        return qvalue;
+    }
+
+    @Override
     public boolean moveToDir(int direction) {
         int oldRow = gw.getCurRow(), oldCol = gw.getCurCol();
         double reward = gw.move(direction);
@@ -189,7 +201,7 @@ public class QLearnAlgo implements Algorithm {
         }
         return true;
     }
-    
+
     @Override
     public int getOptimalDir(int row, int col) {
         int startDir = (int) (Math.random() * 4);

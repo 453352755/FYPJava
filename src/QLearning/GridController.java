@@ -4,6 +4,10 @@ package QLearning;
  *
  * @author Dong Yubo
  */
+import static QLearning.GridWorld.Down;
+import static QLearning.GridWorld.Left;
+import static QLearning.GridWorld.Right;
+import static QLearning.GridWorld.Up;
 import analysis.AnalysisController;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -74,52 +78,65 @@ public class GridController {
     public Algorithm getAlgo() {
         return algo;
     }
-
-    public void initialize() {
+    
+    public void loadGridWorld(String file){
         int rows = 5, cols = 5;
         try {
-            BufferedReader in = new BufferedReader(new FileReader("GridWorldConfig.txt"));
-            String[] str = in.readLine().split(":");
+            BufferedReader in = new BufferedReader(new FileReader(file));
+            String[] str = in.readLine().split(",");
             rows = Integer.parseInt(str[1]);
-            str = in.readLine().split(":");
+            str = in.readLine().split(",");
             cols = Integer.parseInt(str[1]);
             System.out.println(rows + " " + cols);
             gw = new GridWorld(rows, cols);
-            str = in.readLine().split(":");
+            str = in.readLine().split(",");
             int steps = Integer.parseInt(str[1]);
             gw.setFullBatterySteps(steps);
             System.out.println("FullBatterySteps: " + steps);
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
+                    int k = 2;
                     str = in.readLine().split(",");
-                    if (str[0].equals("true")) {
+                    if (str[k++].toLowerCase().equals("true")) {
                         gw.setStart(i, j);
                         System.out.println("Start: " + i + "," + j);
                     }
-                    if (str[1].equals("true")) {
+                    if (str[k++].toLowerCase().equals("true")) {
                         gw.setCharging(i, j, true);
                         System.out.println("Charging: " + i + "," + j);
                     }
-                    if (str[2].equals("true")) {
+                    if (str[k++].toLowerCase().equals("true")) {
                         gw.setBlock(i, j, true);
                         System.out.println("Block: " + i + "," + j);
                     }
-                    if (str[3].equals("true")) {
+                    if (str[k++].toLowerCase().equals("true")) {
                         gw.setGoal(i, j);
                         System.out.println("Goal: " + i + "," + j);
                     }
+                    gw.getLocation(i, j).setMeanTravelTime(Up, Double.valueOf(str[k++]));
+                    gw.getLocation(i, j).setMeanTravelTime(Down, Double.valueOf(str[k++]));
+                    gw.getLocation(i, j).setMeanTravelTime(Left, Double.valueOf(str[k++]));
+                    gw.getLocation(i, j).setMeanTravelTime(Right, Double.valueOf(str[k++]));
+                    gw.getLocation(i, j).setStddev(Up, Double.valueOf(str[k++]));
+                    gw.getLocation(i, j).setStddev(Down, Double.valueOf(str[k++]));
+                    gw.getLocation(i, j).setStddev(Left, Double.valueOf(str[k++]));
+                    gw.getLocation(i, j).setStddev(Right, Double.valueOf(str[k++]));
                 }
             }
+            gw.generateTravelTime();
 
         } catch (FileNotFoundException fe) {
-            System.out.println("GridWorldConfig.txt not found");
+            System.out.println("GridWorldConfig not found");
         } catch (IOException ex) {
             System.out.println("IO exception");
         } catch (Exception e) {
             System.out.println("Exception catched");
             gw = new GridWorld(5, 5);
         }
+    }
 
+    public void initialize() {
+        loadGridWorld("GridWorldConfig.csv");
         algo = new QLearnAlgo(gw);
         gridPaneInit();
 //        Label test = new Label();
@@ -138,8 +155,9 @@ public class GridController {
         colBox.setItems(FXCollections.observableArrayList(
                 3, 4, 5, 6, 7, 8, 9, 10, 15, 20)
         );
-        rowBox.setValue(rows);
-        colBox.setValue(cols);
+        rowBox.setValue(gw.getRows());
+        colBox.setValue(gw.getCols());
+        fullBatteryLifeLabel.setText(String.valueOf(gw.getFullBatterySteps()));
         remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
 //        alphaField.setText(String.valueOf(algo.getAlpha()));
 //        greedyValue.setText(String.valueOf(algo.getGreedyProb()));
@@ -303,6 +321,7 @@ public class GridController {
         totalTravelTime.setText(form.format(time) + " mins");
         //remainingStepsLabel.setText(String.valueOf(gw.getRemainingSteps()));
         remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
+        fullBatteryLifeLabel.setText(String.valueOf(gw.getFullBatterySteps()));
         addDataToChart();
     }
 
@@ -319,25 +338,33 @@ public class GridController {
         }
         return result;
     }
-
-    public void stop() {
-        //System.out.println("Application stopped");
-        //backup configurations
+    
+    public void saveGridWorldConfig(String file){
         FileWriter out = null;
 
         try {
             //StringBuilder out = new StringBuilder();
-            out = new FileWriter("GridWorldConfig.txt");
-            out.append("rows:" + gw.getRows());
-            out.append("\ncols:" + gw.getCols());
-            out.append("\nfullBatterySteps:" + gw.getFullBatterySteps());
+            out = new FileWriter(file);
+            out.append("rows," + gw.getRows());
+            out.append("\ncols," + gw.getCols());
+            out.append("\nfullBatterySteps," + gw.getFullBatterySteps());
             for (int i = 0; i < gw.getRows(); i++) {
                 for (int j = 0; j < gw.getCols(); j++) {
                     Location loc = gw.getLocation(i, j);
-                    out.append("\n" + loc.isStart()
+                    out.append("\n" + i + "," + j 
+                            + "," + loc.isStart()
                             + "," + loc.isCharging()
                             + "," + loc.isBlock()
-                            + "," + loc.isGoal());
+                            + "," + loc.isGoal()
+                            + "," + loc.getMeanTravelTime(Up)
+                            + "," + loc.getMeanTravelTime(Down)
+                            + "," + loc.getMeanTravelTime(Left)
+                            + "," + loc.getMeanTravelTime(Right)
+                            + "," + loc.getStddev(Up)
+                            + "," + loc.getStddev(Down)
+                            + "," + loc.getStddev(Left)
+                            + "," + loc.getStddev(Right)
+                    );
                 }
             }
             //out = new FileWriter("GridWorldConfig.txt");
@@ -348,6 +375,12 @@ public class GridController {
         } catch (IOException ex) {
             System.out.println("IO exception");
         }
+    }
+
+    public void stop() {
+        //System.out.println("Application stopped");
+        //backup configurations
+        saveGridWorldConfig("GridWorldConfig.csv");
 
     }
 
@@ -670,7 +703,7 @@ public class GridController {
     @FXML
     void changeDefaultTravelTime(ActionEvent event) {
         double dv = Double.parseDouble(defaultTravelTimeField.getText());
-        gw.setDefaultTraveTime(dv);
+        gw.setTraveTime(dv);
         System.out.print("Default Travel Time set to ");
         System.out.println(dv);
     }
@@ -691,6 +724,7 @@ public class GridController {
             checkAlgo(event);
             remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
         }
+        updatePerformance();
     }
 
     @FXML
@@ -707,12 +741,14 @@ public class GridController {
     @FXML
     void checkRandomTravelTime(ActionEvent event) {
         if (randomTravelTimeCheckBox.isSelected()) {
-            defaultTravelTimeField.setDisable(true);
+
             gw.setRandomTravelTime(true);
             System.out.println("Random travel time");
+            travelTimeLabel.setText("Mean Time");
         } else {
-            defaultTravelTimeField.setDisable(false);
+
             gw.setRandomTravelTime(false);
+            travelTimeLabel.setText("Default Time");
         }
     }
 
@@ -736,6 +772,7 @@ public class GridController {
             algo = new ModifiedAlgo(gw);
             System.out.println("Modified Algo selected");
         }
+        detailCtrl.setAlgo(algo);
     }
 
     @FXML
@@ -829,6 +866,12 @@ public class GridController {
 
     @FXML
     private Label totalTravelTime;
+
+    @FXML
+    private Label fullBatteryLifeLabel;
+
+    @FXML
+    private Label travelTimeLabel;
 
     @FXML
     private TextField greedyValue;

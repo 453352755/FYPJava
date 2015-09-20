@@ -73,7 +73,6 @@ public class RootController implements Initializable {
     @FXML
     void importClicked(ActionEvent event) {
         GUI.importContext();
-        System.out.println("Switch to analysis, showing performance detail");
         status.setText("Simulation Imported");
     }
 
