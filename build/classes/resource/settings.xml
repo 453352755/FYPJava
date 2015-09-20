@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+-->
+
+
+<Qlearning>
+    <Algo  dicount = "0.9" alphaFixed = "false" greedyProb= "0.8" alpha = "0.5" tracing = "false" />
+    <GridWorld DirectionProbability = "4" WallPenalty = "-0.1" BlockPenalty = "-0.1" />
+        
+    
+</Qlearning>
