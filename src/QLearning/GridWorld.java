@@ -274,13 +274,13 @@ public class GridWorld {
 
     public void setTraveTime(double traveTime) {
         if (randomTravelTime) {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
-                        location[i][j].setMeanTravelTime(k, traveTime);
-                    }
-                }
-            }
+//            for (int i = 0; i < rows; i++) {
+//                for (int j = 0; j < cols; j++) {
+//                    for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
+//                        location[i][j].setMeanTravelTime(k, traveTime);
+//                    }
+//                }
+//            }
         } else {
             this.defaultTraveTime = traveTime;
              for (int i = 0; i < rows; i++) {
@@ -357,9 +357,10 @@ public class GridWorld {
                 for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
                     double time = rand.nextGaussian() * location[i][j].getStddev(k)
                             + location[i][j].getMeanTravelTime(k);
-                    if (time < 0) {
-                        System.out.println("generate time < 0");
-                        time = 1;
+                    while (time < 0) {
+                        //System.out.println("generate time < 0");
+                        time = rand.nextGaussian() * location[i][j].getStddev(k)
+                            + location[i][j].getMeanTravelTime(k);
                     }
                     location[i][j].setTravelTime(k, time);
                 }
@@ -402,8 +403,8 @@ public class GridWorld {
                 }
             }
             int batUsed = (int) Math.round(location[curRow][curCol].getTravelTime(actualDirection));
-            remainingBattery = remainingBattery - batUsed < 0 ? 0 : remainingBattery - batUsed;
-            if (batteryEnabled && remainingBattery <= 0) {
+            remainingBattery = remainingBattery - batUsed;// < 0 ? 0 : remainingBattery - batUsed;
+            if (batteryEnabled && remainingBattery < 0) {
                 newRow = startRow;
                 newCol = startCol;
                 reward = DeadPenalty;

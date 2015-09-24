@@ -15,6 +15,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -51,6 +53,7 @@ import javafx.scene.paint.Paint;
 public class GridController {
 
     private boolean play;
+    private boolean sim;
     private boolean stochastic;
     private static Thread algoThread;
     private long startTime;
@@ -78,8 +81,8 @@ public class GridController {
     public Algorithm getAlgo() {
         return algo;
     }
-    
-    public void loadGridWorld(String file){
+
+    public void loadGridWorld(String file) {
         int rows = 5, cols = 5;
         try {
             BufferedReader in = new BufferedReader(new FileReader(file));
@@ -133,37 +136,35 @@ public class GridController {
             System.out.println("Exception catched");
             gw = new GridWorld(5, 5);
         }
+        
+        
+        rowBox.setValue(gw.getRows());
+        colBox.setValue(gw.getCols());
+        fullBatteryLifeLabel.setText(String.valueOf(gw.getFullBatterySteps()));
+        remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
+        checkSettings();
+        graphPane.getChildren().remove(gridPane);
+        gridPaneInit();
+        graphPane.getChildren().add(gridPane);
+        repaintAll();
+        
     }
 
     public void initialize() {
         loadGridWorld("GridWorldConfig.csv");
-        algo = new QLearnAlgo(gw);
-        gridPaneInit();
-//        Label test = new Label();
-//        test.setText("test");
-//        test.setStyle("-fx-text-fill:#FFEB3B;-fx-font-size:40;");
-        upButton.setOnKeyTyped((KeyEvent ke) -> {
-            if (ke.getCode() == KeyCode.UP) {
-                System.out.println("key up pressed");
-                moveUp(null);
-            }
-        });
-        graphPane.getChildren().add(gridPane);
+        //graphPane.getChildren().add(gridPane);
         rowBox.setItems(FXCollections.observableArrayList(
                 3, 4, 5, 6, 7, 8, 9, 10, 15, 20)
         );
         colBox.setItems(FXCollections.observableArrayList(
                 3, 4, 5, 6, 7, 8, 9, 10, 15, 20)
         );
-        rowBox.setValue(gw.getRows());
-        colBox.setValue(gw.getCols());
-        fullBatteryLifeLabel.setText(String.valueOf(gw.getFullBatterySteps()));
-        remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
-//        alphaField.setText(String.valueOf(algo.getAlpha()));
-//        greedyValue.setText(String.valueOf(algo.getGreedyProb()));
-//        discountValue.setText(String.valueOf(algo.getDiscount()));
-//        directionProbability.setText(String.valueOf(gw.getDirectionProbability()));
+        loadDetailPane();
+        checkAlgo(new ActionEvent());
+        repaintAll();
+    }
 
+    public void loadDetailPane() {
         //initialize deatail pane
         FXMLLoader detailLoader = new FXMLLoader();
         detailLoader.setLocation(getClass().getClassLoader().getResource("resource/detail.fxml"));
@@ -197,9 +198,6 @@ public class GridController {
             }
         });
 
-        checkSettings();
-
-        repaintAll();
     }
 
     public void gridPaneInit() {
@@ -214,15 +212,6 @@ public class GridController {
         gridPane.setHgap(1);
         gridPane.setVgap(1);
 
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getClassLoader().getResource("QLearning/location.fxml"));
-//        System.out.println("Loading FXML from ");
-//        System.out.println(loader.getLocation());
-//        try {
-//            location = (GridPane) loader.load();
-//        } catch (Exception e) {
-//            System.out.println("location fxml load failed");
-//        }
         for (int i = 0; i < gw.getRows(); i++) {
             for (int j = 0; j < gw.getCols(); j++) {
                 //GridPane location = Location.newNode();
@@ -230,67 +219,37 @@ public class GridController {
 
                 //location on mouse click
                 location.setOnMouseClicked((MouseEvent me) -> {
+                    detailCtrl.setAlgo(algo);
+                    detailCtrl.setGridWorld(gw);
                     selectedLocationPane = (GridPane) me.getSource();
                     int row = GridPane.getRowIndex(selectedLocationPane);
                     int col = GridPane.getColumnIndex(selectedLocationPane);
-                    String s = "-fx-border-color: " + app.Color.Blue[5] + ";-fx-border-width:2;";
-                    selectedLocationPane.setStyle(s);
+//                    for (int k = 0; k < gw.getRows(); k++) {
+//                        for (int l = 0; l < gw.getCols(); l++) {
+//                            
+//                            
+//                        }
+//                        
+//                    }
+                    for (int k = 0; k < gridPane.getChildren().size(); k++) {
+                        gridPane.getChildren().get(k).setStyle("-fx-border-width:2;");
+                    }
+                    String addBorder = "-fx-border-color: " + app.Color.Blue[5] + ";-fx-border-width:2;";
+                    selectedLocationPane.setStyle(addBorder);
 //                    System.out.print("location detail: row ");
 //                    System.out.print(row);
 //                    System.out.print(" col ");
-//                    System.out.println(col);
-                    //gw.getLocation(row, col).print();
                     Location loc = gw.getLocation(row, col).copy();
-                    //loc.print();
-                    //GridPane loc = Location.newNode();
                     loc.repaint(algo);
                     detailCtrl.init(loc);
-//                    try {
-//                        detailCtrl.getLocationPane().getChildren().remove(0);
-//                    } catch (Exception n) {
-//
-//                    }
-//                    detailCtrl.getLocationPane().getChildren().add(loc.getLocPane());
-//                    detailCtrl.setTimeLabel(loc.getTravelTime(), loc.isBlock());
-//                    DecimalFormat form = new DecimalFormat("0.##");
-//                    detailCtrl.getLocationValueLabel().setText("Location Value: " + form.format(
-//                            gw.getLocation(row, col).getLocationValue()));
-
                 });
-
                 gridPane.add(location, j, i);
-
-                //ColumnConstraints col = new ColumnConstraints();
-                //col.setPercentWidth(100 / gw.getCols());
-                //col.setHgrow(Priority.ALWAYS);
-                //grid.getColumnConstraints().add(col);
-                //RowConstraints row = new RowConstraints();
-                //row.setPercentHeight(100 / gw.getRows());
-                //row.setVgrow(Priority.ALWAYS);
-                //grid.getRowConstraints().add(row);
             }
         }
         //System.out.println("location loaded");
 
     }
 
-//    public void paint(GridPane loc) {
-//        int row = GridPane.getRowIndex(loc);
-//        int col = GridPane.getColumnIndex(loc);
-//        gw.getLocation(row, col).repaint(loc);
-//        for (int i = 0; i < loc.getChildren().size(); i++) {
-//            try {
-//                Circle c = (Circle) loc.getChildren().get(i);
-//                if (row == gw.getCurRow() && col == gw.getCurCol()) {
-//                    c.setVisible(true);
-//                } else {
-//                    c.setVisible(false);
-//                }
-//            } catch (Exception e) {
-//            }
-//        }
-//
-//    }
     public void repaintAll() {
         //System.out.print("Repainting...");
         for (int i = 0; i < gw.getRows(); i++) {
@@ -338,8 +297,8 @@ public class GridController {
         }
         return result;
     }
-    
-    public void saveGridWorldConfig(String file){
+
+    public void saveGridWorldConfig(String file) {
         FileWriter out = null;
 
         try {
@@ -351,7 +310,7 @@ public class GridController {
             for (int i = 0; i < gw.getRows(); i++) {
                 for (int j = 0; j < gw.getCols(); j++) {
                     Location loc = gw.getLocation(i, j);
-                    out.append("\n" + i + "," + j 
+                    out.append("\n" + i + "," + j
                             + "," + loc.isStart()
                             + "," + loc.isCharging()
                             + "," + loc.isBlock()
@@ -483,7 +442,6 @@ public class GridController {
     }
 
     private void checkSettings() {
-        //algo reset
         ActionEvent event = new ActionEvent();
         checkAlgo(event);
         checkBatteryLife(event);
@@ -509,7 +467,7 @@ public class GridController {
             gw.moveToStart();
             gw.getLocation(gw.getCurRow(), gw.getCurCol()).setIsPath(true);
 
-            while (!gw.getLocation(gw.getCurRow(), gw.getCurCol()).isGoal() && !play) {
+            while (!gw.getLocation(gw.getCurRow(), gw.getCurCol()).isGoal() && sim) {
                 try {
                     //repaintAll();
                     Platform.runLater(new Runnable() {
@@ -628,7 +586,7 @@ public class GridController {
 
     @FXML
     void simulateClicked(ActionEvent event) {
-
+        sim = true;
         Thread t = new Thread(new RunSim());
         t.start();
 //        try {
@@ -656,6 +614,7 @@ public class GridController {
         autorunStatus.setText("Paused, single step");
 
         play = false;
+        sim = false;
         try {
             algoThread.join();
             long time = System.nanoTime() - startTime;
@@ -764,7 +723,7 @@ public class GridController {
     }
 
     @FXML
-    void checkAlgo(ActionEvent event) {
+    public void checkAlgo(ActionEvent event) {
         if (originalRadioButton.isSelected()) {
             algo = new QLearnAlgo(gw);
             System.out.println("Original Algo selected");
@@ -772,7 +731,7 @@ public class GridController {
             algo = new ModifiedAlgo(gw);
             System.out.println("Modified Algo selected");
         }
-        detailCtrl.setAlgo(algo);
+        //detailCtrl.setAlgo(algo);
     }
 
     @FXML

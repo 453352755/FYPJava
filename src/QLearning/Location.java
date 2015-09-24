@@ -207,17 +207,9 @@ public class Location {
     public void setTravelTime(int direction, double time) {
         this.travelTime[direction] = time;
     }
-
-    public void setMeanTravelTime(double[] meanTravelTime) {
-        this.meanTravelTime = meanTravelTime;
-    }
     
     public void setMeanTravelTime(int dir, double meanTravelTime) {
         this.meanTravelTime[dir] = meanTravelTime;
-    }
-
-    public void setStddev(double[] stddev) {
-        this.stddev = stddev;
     }
     
     public void setStddev(int dir, double stddev) {

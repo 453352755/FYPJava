@@ -135,9 +135,12 @@ public class QLearnAlgo implements Algorithm {
         if (!alphaFixed) {
             alpha = 1.0 / visited[oldRow][oldCol][direction];
         }
-
-        Qvalue[oldRow][oldCol][direction] = (1 - alpha)
-                * Qvalue[oldRow][oldCol][direction] + alpha * newDatum;
+        if (gw.getLocation(newRow, newCol).isGoal()) {
+            Qvalue[oldRow][oldCol][direction] = reward;
+        } else {
+            Qvalue[oldRow][oldCol][direction] = (1 - alpha)
+                    * Qvalue[oldRow][oldCol][direction] + alpha * newDatum;
+        }
         updateRanges();
         updateOptimal();
 

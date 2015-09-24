@@ -93,9 +93,14 @@ public class ModifiedAlgo implements Algorithm {
 //            System.out.print("     Qold=" + gw.getLocation(oldRow, oldCol).getQvalue(direction)
 //                    + " Visits=" + gw.getLocation(oldRow, oldCol).getVisit(direction));
 //        }
-
-        Qvalue[oldRow][oldCol][oldBat][direction] = (1 - alpha)
-                * Qvalue[oldRow][oldCol][oldBat][direction] + alpha * newDatum;
+        if (gw.getLocation(newRow, newCol).isGoal()) {
+            Qvalue[oldRow][oldCol][oldBat][direction] = (1 - alpha)
+                    * Qvalue[oldRow][oldCol][oldBat][direction] + alpha*reward;
+        } else 
+        {
+            Qvalue[oldRow][oldCol][oldBat][direction] = (1 - alpha)
+                    * Qvalue[oldRow][oldCol][oldBat][direction] + alpha * newDatum;
+        }
         updateRanges();
         updateOptimal();
         if (tracing) {
