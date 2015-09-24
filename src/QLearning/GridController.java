@@ -136,8 +136,7 @@ public class GridController {
             System.out.println("Exception catched");
             gw = new GridWorld(5, 5);
         }
-        
-        
+
         rowBox.setValue(gw.getRows());
         colBox.setValue(gw.getCols());
         fullBatteryLifeLabel.setText(String.valueOf(gw.getFullBatterySteps()));
@@ -147,7 +146,7 @@ public class GridController {
         gridPaneInit();
         graphPane.getChildren().add(gridPane);
         repaintAll();
-        
+
     }
 
     public void initialize() {
@@ -672,15 +671,15 @@ public class GridController {
         Integer iv;
         try {
             iv = Integer.parseInt(remainingStepsField.getText());
-            System.out.println("change remaining steps to " + iv);
-            gw.setRemainingSteps(iv);
-            remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
-        } catch (NumberFormatException ne) {
-            iv = Integer.parseInt(remainingStepsField.getText(1, remainingStepsField.getLength()));
             System.out.println("change full battery steps to " + iv);
             gw.setFullBatterySteps(iv);
             gw.setRemainingSteps(iv);
             checkAlgo(event);
+            remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
+        } catch (NumberFormatException ne) {
+            iv = Integer.parseInt(remainingStepsField.getText(1, remainingStepsField.getLength()));
+            System.out.println("change remaining steps to " + iv);
+            gw.setRemainingSteps(iv);
             remainingStepsField.setText(String.valueOf(gw.getRemainingSteps()));
         }
         updatePerformance();
@@ -703,11 +702,11 @@ public class GridController {
 
             gw.setRandomTravelTime(true);
             System.out.println("Random travel time");
-            travelTimeLabel.setText("Mean Time");
+            travelTimeLabel.setText("Default Mean");
         } else {
 
             gw.setRandomTravelTime(false);
-            travelTimeLabel.setText("Default Time");
+            travelTimeLabel.setText("Travel Time");
         }
     }
 

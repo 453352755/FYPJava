@@ -86,7 +86,7 @@ public class DetailController implements Initializable {
         }
 
         public int getTime() {
-            return (int)Math.round(time.getValue());
+            return (int) Math.round(time.getValue());
         }
 
         public void setTime(SimpleDoubleProperty time) {
@@ -416,16 +416,18 @@ public class DetailController implements Initializable {
         } catch (Exception n) {
             //System.out.println("detailcontroller init exception");
         }
-
-        //travel time table
         travelTimes.remove(0, travelTimes.size());
-        travelTimes.add(new TimeEntry("up", loc.getTravelTime(Up), loc.getMeanTravelTime(Up), loc.getStddev(Up)));
-        travelTimes.add(new TimeEntry("down", loc.getTravelTime(Down), loc.getMeanTravelTime(Down), loc.getStddev(Down)));
-        travelTimes.add(new TimeEntry("left", loc.getTravelTime(Left), loc.getMeanTravelTime(Left), loc.getStddev(Left)));
-        travelTimes.add(new TimeEntry("right", loc.getTravelTime(Right), loc.getMeanTravelTime(Right), loc.getStddev(Right)));
+        qvalueList.remove(0, qvalueList.size());
+        if (!loc.isGoal()) {
+            //travel time table
 
-        dirColumn.setCellValueFactory(new PropertyValueFactory<>("dir"));
-        travelTimeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
+            travelTimes.add(new TimeEntry("up", loc.getTravelTime(Up), loc.getMeanTravelTime(Up), loc.getStddev(Up)));
+            travelTimes.add(new TimeEntry("down", loc.getTravelTime(Down), loc.getMeanTravelTime(Down), loc.getStddev(Down)));
+            travelTimes.add(new TimeEntry("left", loc.getTravelTime(Left), loc.getMeanTravelTime(Left), loc.getStddev(Left)));
+            travelTimes.add(new TimeEntry("right", loc.getTravelTime(Right), loc.getMeanTravelTime(Right), loc.getStddev(Right)));
+
+            dirColumn.setCellValueFactory(new PropertyValueFactory<>("dir"));
+            travelTimeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
 //        travelTimeColumn.setCellFactory(TextFieldTableCell.<TimeEntry, Double>forTableColumn(new DoubleStringConverter()));
 //        travelTimeColumn.setOnEditCommit((TableColumn.CellEditEvent<TimeEntry, Double> t) -> {
 //            int row = t.getTablePosition().getRow();
@@ -433,37 +435,37 @@ public class DetailController implements Initializable {
 //            time.setTime(new SimpleDoubleProperty(t.getNewValue()));
 //            algo.getGridWorld().getLocation(loc.getRow(), loc.getCol()).setTravelTime(time.getIntDir(), t.getNewValue());
 //        });
-        meanColumn.setCellValueFactory(new PropertyValueFactory<>("mean"));
-        meanColumn.setCellFactory(TextFieldTableCell.<TimeEntry, Double>forTableColumn(new DoubleStringConverter()));
-        meanColumn.setOnEditCommit((TableColumn.CellEditEvent<TimeEntry, Double> t) -> {
-            int row = t.getTablePosition().getRow();
-            TimeEntry time = (TimeEntry) t.getTableView().getItems().get(row);
-            time.setMean(new SimpleDoubleProperty(t.getNewValue()));
-            algo.getGridWorld().getLocation(loc.getRow(), loc.getCol()).setMeanTravelTime(time.getIntDir(), t.getNewValue());
-        });
-        stdDevColumn.setCellValueFactory(new PropertyValueFactory<>("stddev"));
-        stdDevColumn.setCellFactory(TextFieldTableCell.<TimeEntry, Double>forTableColumn(new DoubleStringConverter()));
-        stdDevColumn.setOnEditCommit((TableColumn.CellEditEvent<TimeEntry, Double> t) -> {
-            int row = t.getTablePosition().getRow();
-            TimeEntry time = (TimeEntry) t.getTableView().getItems().get(row);
-            time.setStddev(new SimpleDoubleProperty(t.getNewValue()));
-            algo.getGridWorld().getLocation(loc.getRow(), loc.getCol()).setStddev(time.getIntDir(), t.getNewValue());
-        });
-        travelTimeTable.setItems(travelTimes);
+            meanColumn.setCellValueFactory(new PropertyValueFactory<>("mean"));
+            meanColumn.setCellFactory(TextFieldTableCell.<TimeEntry, Double>forTableColumn(new DoubleStringConverter()));
+            meanColumn.setOnEditCommit((TableColumn.CellEditEvent<TimeEntry, Double> t) -> {
+                int row = t.getTablePosition().getRow();
+                TimeEntry time = (TimeEntry) t.getTableView().getItems().get(row);
+                time.setMean(new SimpleDoubleProperty(t.getNewValue()));
+                algo.getGridWorld().getLocation(loc.getRow(), loc.getCol()).setMeanTravelTime(time.getIntDir(), t.getNewValue());
+            });
+            stdDevColumn.setCellValueFactory(new PropertyValueFactory<>("stddev"));
+            stdDevColumn.setCellFactory(TextFieldTableCell.<TimeEntry, Double>forTableColumn(new DoubleStringConverter()));
+            stdDevColumn.setOnEditCommit((TableColumn.CellEditEvent<TimeEntry, Double> t) -> {
+                int row = t.getTablePosition().getRow();
+                TimeEntry time = (TimeEntry) t.getTableView().getItems().get(row);
+                time.setStddev(new SimpleDoubleProperty(t.getNewValue()));
+                algo.getGridWorld().getLocation(loc.getRow(), loc.getCol()).setStddev(time.getIntDir(), t.getNewValue());
+            });
+            travelTimeTable.setItems(travelTimes);
 
-        //q value table
-        double[][] qvalue = algo.getQvalue(loc.getRow(), loc.getCol());
-        qvalueList.remove(0, qvalueList.size());
-        for (int i = 0; i < qvalue.length; i++) {
-            qvalueList.add(new QValueEntry(Double.valueOf(i), qvalue[i][Up], qvalue[i][Down], qvalue[i][Left], qvalue[i][Right]));
+            //q value table
+            double[][] qvalue = algo.getQvalue(loc.getRow(), loc.getCol());
+
+            for (int i = 0; i < qvalue.length; i++) {
+                qvalueList.add(new QValueEntry(Double.valueOf(i), qvalue[i][Up], qvalue[i][Down], qvalue[i][Left], qvalue[i][Right]));
+            }
+            batteryLevelColumn.setCellValueFactory(new PropertyValueFactory<>("batteryLevel"));
+            upColumn.setCellValueFactory(new PropertyValueFactory<>("upValue"));
+            downColumn.setCellValueFactory(new PropertyValueFactory<>("downValue"));
+            leftColumn.setCellValueFactory(new PropertyValueFactory<>("leftValue"));
+            rightColumn.setCellValueFactory(new PropertyValueFactory<>("rightValue"));
+            QvalueTable.setItems(qvalueList);
         }
-        batteryLevelColumn.setCellValueFactory(new PropertyValueFactory<>("batteryLevel"));
-        upColumn.setCellValueFactory(new PropertyValueFactory<>("upValue"));
-        downColumn.setCellValueFactory(new PropertyValueFactory<>("downValue"));
-        leftColumn.setCellValueFactory(new PropertyValueFactory<>("leftValue"));
-        rightColumn.setCellValueFactory(new PropertyValueFactory<>("rightValue"));
-        QvalueTable.setItems(qvalueList);
-
         locationPane.getChildren().add(loc.getLocPane());
         update();
     }

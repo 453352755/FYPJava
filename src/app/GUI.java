@@ -130,6 +130,7 @@ public class GUI extends Application {
         if (analysisLayout != null) {
             rootLayout.setCenter(analysisLayout);
         }
+        analysisCtrl.setAlgo(QLearnCtrl.getAlgo());
 //        System.out.println(analysisLayout.getWidth());
 //        System.out.println(analysisCtrl.chartFlowPane.getWidth());
     }

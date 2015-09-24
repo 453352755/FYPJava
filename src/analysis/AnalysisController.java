@@ -10,6 +10,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,14 +24,17 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.imageio.ImageIO;
+import org.apache.commons.math3.distribution.NormalDistribution;
 
 /**
  *
@@ -38,6 +42,11 @@ import javax.imageio.ImageIO;
  */
 public class AnalysisController implements Initializable {
 
+    double path1mean = 48, path1steps = 6, path1dev = 2;
+    double path2mean = 50, path2steps = 8, path2dev = 0.3;
+    double stddev;
+
+    private QLearning.Algorithm algo;
     private LineChart aLineChart;
     private LineChart bLineChart;
     private LineChart cLineChart;
@@ -47,24 +56,30 @@ public class AnalysisController implements Initializable {
             = "-fx-border-width: 2;"
             + "-fx-border-color: black;"
             + "-fx-background-color: lightyellow;"
-            + "-fx-max-height: 640;"
-            + "-fx-max-width: 800;"
+            + "-fx-pref-height: 1000;"
+            + "-fx-pref-width: 1900;"
+            + "-fx-max-height: 1000;"
+            + "-fx-max-width: 1900;"
             + "-fx-min-height: 320;"
-            + "-fx-min-width: 400;"
-            + "-fx-pref-height: 320;"
-            + "-fx-pref-width: 400;";
+            + "-fx-min-width: 400;";
+
+    public void setAlgo(Algorithm algo) {
+        this.algo = algo;
+    }
 
     private void addChart(Chart c) {
-        if (chartFlowPane.getChildren().size() < 4) {
-            chartFlowPane.getChildren().add(c);
+
+        if (chartHBox.getChildren().size() < 4) {
+            chartHBox.getChildren().add(c);
+
         } else {
             System.out.println("Max Chart number reached");
         }
     }
 
     private void removeChart(Chart c) {
-        if (chartFlowPane.getChildren().contains(c)) {
-            chartFlowPane.getChildren().remove(c);
+        if (chartHBox.getChildren().contains(c)) {
+            chartHBox.getChildren().remove(c);
         }
     }
 
@@ -103,6 +118,7 @@ public class AnalysisController implements Initializable {
             xAxis.setLabel("Number of Steps");
             //creating the chart
             bLineChart = new LineChart<>(xAxis, yAxis);
+            bLineChart.setManaged(true);
             bLineChart.setTitle("Total Time Taken");
             bLineChart.setStyle(chartStyle);
             timeSeries = new XYChart.Series();
@@ -123,16 +139,54 @@ public class AnalysisController implements Initializable {
         if (cLineChart == null) {
             final NumberAxis xAxis = new NumberAxis();
             final NumberAxis yAxis = new NumberAxis();
-            xAxis.setLabel("Number of Month");
+            xAxis.setLabel("Remaining Battery");
+            xAxis.setAutoRanging(false);
+            xAxis.setLowerBound(algo.getGridWorld().getFullBatterySteps() * 0.5);
+            xAxis.setUpperBound(algo.getGridWorld().getFullBatterySteps() * 1.1);
+            yAxis.setLabel("Probability");
+            yAxis.setLowerBound(0);
+            yAxis.setUpperBound(1);
             //creating the chart
             cLineChart = new LineChart<>(xAxis, yAxis);
-
-            cLineChart.setTitle("Stock Monitoring, 2010");
+            cLineChart.setTitle("PDF - CDF of routes");
+            cLineChart.setManaged(true);
             cLineChart.setStyle(chartStyle);
-            XYChart.Series series = new XYChart.Series();
-            series.setName("My portfolio");
-            //populating the series with data
-            cLineChart.getData().add(series);
+
+            //path1
+            XYChart.Series PDF1 = new XYChart.Series();
+            PDF1.setName("PDF1");
+            XYChart.Series CDF1 = new XYChart.Series();
+            CDF1.setName("CDF1");
+            
+            stddev = Math.sqrt(Math.pow(path1dev, 2) * path1steps);
+            NormalDistribution nd1 = new NormalDistribution(path1mean, stddev);
+            for (int i = 0; i < algo.getGridWorld().getFullBatterySteps() * 15; i++) {
+                double p = i / 10.0;
+                PDF1.getData().add(new XYChart.Data(p, nd1.density(p)));
+                CDF1.getData().add(new XYChart.Data(p, nd1.cumulativeProbability(p)));
+                //System.out.println(nd1.density(p));
+            }
+
+            //path2
+            XYChart.Series PDF2 = new XYChart.Series();
+            PDF2.setName("PDF2");
+            XYChart.Series CDF2 = new XYChart.Series();
+            CDF2.setName("CDF2");
+           
+            stddev = Math.sqrt(Math.pow(path2dev, 2) * path2steps);
+            NormalDistribution nd2 = new NormalDistribution(path2mean, stddev);
+            for (int i = 0; i < algo.getGridWorld().getFullBatterySteps() * 15; i++) {
+                double p = i / 10.0;
+                PDF2.getData().add(new XYChart.Data(p, nd2.density(p)));
+                CDF2.getData().add(new XYChart.Data(p, nd2.cumulativeProbability(p)));
+                System.out.println(p+","+nd2.density(p));
+            }
+
+            cLineChart.getData().add(PDF1);
+            cLineChart.getData().add(CDF1);
+            cLineChart.getData().add(PDF2);
+            cLineChart.getData().add(CDF2);
+            cLineChart.setCreateSymbols(false);
         }
     }
 
@@ -140,7 +194,7 @@ public class AnalysisController implements Initializable {
     private CheckBox qLearnCChart;
 
     @FXML
-    public FlowPane chartFlowPane;
+    public HBox chartHBox;
 
     @FXML
     private CheckBox qLearnBChart;
@@ -192,8 +246,9 @@ public class AnalysisController implements Initializable {
         //construct file name
         Format form = new SimpleDateFormat("yyyyMMdd");
         String name = "";
-        for (int i = 0; i < chartFlowPane.getChildren().size(); i++) {
-            name += ((Chart) chartFlowPane.getChildren().get(i)).getTitle();
+        for (int i = 0; i < chartHBox.getChildrenUnmodifiable().size(); i++) {
+            name += ((Chart) ((AnchorPane) chartHBox.getChildrenUnmodifiable().
+                    get(i)).getChildren().get(0)).getTitle();
         }
         name += " " + form.format(new Date()) + ".png";
         System.out.println(name);
@@ -212,7 +267,7 @@ public class AnalysisController implements Initializable {
         //select file location
         if (file != null) {
             try {
-                WritableImage snapshot = chartFlowPane.snapshot(new SnapshotParameters(), null);
+                WritableImage snapshot = chartHBox.snapshot(new SnapshotParameters(), null);
                 ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", file);
             } catch (IOException ex) {
                 System.out.println("IO exception");
@@ -259,7 +314,6 @@ public class AnalysisController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        chartFlowPane.setOrientation(Orientation.HORIZONTAL);
 
         //chartFlowPane.
 //        chartFlowPane.setHgap(20);

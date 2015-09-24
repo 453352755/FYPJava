@@ -69,41 +69,41 @@
       <Accordion prefHeight="352.0" prefWidth="320.0">
          <panes>
             <TitledPane animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Q Value">
-              <content>
+        <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
+               <children>
                         <TableView fx:id="QvalueTable" layoutX="47.0" layoutY="8.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                     <columns>
+                        <TableColumn fx:id="batteryLevelColumn" prefWidth="51.000001549720764" text="Battery&#10;Level" />
+                        <TableColumn prefWidth="235.80002288818355" text="Q Values">
                            <columns>
-                              <TableColumn fx:id="batteryLevelColumn" prefWidth="51.000001549720764" text="Battery&#10;Level" />
-                              <TableColumn prefWidth="235.80002288818355" text="Q Values">
-                                 <columns>
-                                    <TableColumn fx:id="upColumn" prefWidth="58.00000762939453" text="up" />
-                                    <TableColumn fx:id="downColumn" prefWidth="51.99999237060547" text="down" />
-                                    <TableColumn fx:id="leftColumn" prefWidth="60.0" text="left" />
-                                    <TableColumn fx:id="rightColumn" prefWidth="61.0" text="right" />
-                                 </columns>
-                              </TableColumn>
+                              <TableColumn fx:id="upColumn" prefWidth="58.00000762939453" text="up" />
+                              <TableColumn fx:id="downColumn" prefWidth="51.99999237060547" text="down" />
+                              <TableColumn fx:id="leftColumn" prefWidth="60.0" text="left" />
+                              <TableColumn fx:id="rightColumn" prefWidth="61.0" text="right" />
                            </columns>
-                        </TableView>
+                        </TableColumn>
+                     </columns>
+                  </TableView>
                      </children></AnchorPane>
-              </content>
-            </TitledPane>
+        </content>
+      </TitledPane>
             <TitledPane animated="false" prefHeight="505.0" prefWidth="320.0" text="Random Travel Time">
-              <content>
+        <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
+               <children>
                         <TableView fx:id="travelTimeTable" editable="true" layoutX="21.0" layoutY="14.0" prefHeight="200.0" prefWidth="283.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-                          <columns>
-                              <TableColumn fx:id="dirColumn" editable="false" prefWidth="44.0" text="Dir" />
-                            <TableColumn fx:id="travelTimeColumn" text="Travel Time" />
-                            <TableColumn fx:id="meanColumn" onEditCommit="#changeMean" prefWidth="76.0" text="Mean" />
-                              <TableColumn fx:id="stdDevColumn" prefWidth="77.80003051757808" text="StdDev" />
-                          </columns>
-                        </TableView>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </TitledPane>
+                    <columns>
+                        <TableColumn fx:id="dirColumn" editable="false" prefWidth="44.0" text="Dir" />
+                      <TableColumn fx:id="travelTimeColumn" text="Travel Time" />
+                      <TableColumn fx:id="meanColumn" onEditCommit="#changeMean" prefWidth="76.0" text="Mean" />
+                        <TableColumn fx:id="stdDevColumn" prefWidth="77.80003051757808" text="StdDev" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
          </panes>
       </Accordion>
    </children>

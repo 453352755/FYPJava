@@ -9,15 +9,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox fx:id="analysisPane" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" styleClass="analysis-pane" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="analysis.AnalysisController">
+<HBox fx:id="analysisPane" alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" styleClass="analysis-pane" stylesheets="@default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="analysis.AnalysisController">
    <children>
-      <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="640.0" prefWidth="160.0" styleClass="analysis-control-pane">
+      <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="160.0" styleClass="analysis-control-pane" HBox.hgrow="NEVER">
          <children>
             <Button fx:id="floatButton" mnemonicParsing="false" onAction="#floatButtonClicked" text="float" />
             <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonClicked" text="save" />
             <Pane fx:id="qLearnControlPane" prefHeight="187.0" prefWidth="100.0">
                <children>
-                  <CheckBox fx:id="qLearnCChart" layoutX="7.0" layoutY="115.0" mnemonicParsing="false" onAction="#cChartChecked" text="C" />
+                  <CheckBox fx:id="qLearnCChart" layoutX="7.0" layoutY="115.0" mnemonicParsing="false" onAction="#cChartChecked" prefHeight="17.0" prefWidth="89.0" text="PDF-CDF" />
                   <CheckBox fx:id="qLearnAChart" layoutX="7.0" layoutY="49.0" mnemonicParsing="false" onAction="#aChartChecked" text="Step-Reward" />
                   <CheckBox fx:id="qLearnBChart" layoutX="7.0" layoutY="83.0" mnemonicParsing="false" onAction="#bChartChecked" text="Total Time Taken" />
                   <Label layoutX="29.0" layoutY="14.0" text="QLearning" />
@@ -31,17 +31,6 @@
             <Insets top="20.0" />
          </padding>
       </VBox>
-      <FlowPane fx:id="chartFlowPane" alignment="CENTER" columnHalignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="800.0" prefWrapLength="800.0" styleClass="analysis-chart-pane" HBox.hgrow="ALWAYS">
-         <children>
-            <LineChart maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="320.0" minWidth="400.0" prefHeight="320.0" prefWidth="400.0" style="-fx-border-color: #ffffff; -fx-border-width: 10;">
-               <xAxis>
-                  <CategoryAxis side="BOTTOM" />
-               </xAxis>
-               <yAxis>
-                  <NumberAxis side="LEFT" />
-               </yAxis>
-            </LineChart>
-         </children>
-      </FlowPane>
+      <HBox fx:id="chartHBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="810.0" styleClass="analysis-control-pane" HBox.hgrow="ALWAYS" />
    </children>
 </HBox>

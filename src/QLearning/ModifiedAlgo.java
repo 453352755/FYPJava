@@ -9,29 +9,26 @@ package QLearning;
  *
  * @author dong
  */
-public class ModifiedAlgo implements Algorithm {
+public class ModifiedAlgo extends Algorithm {
+    private double warmStartK = 0.1;
 
-    private double discount = 0.99;
-    private boolean alphaFixed = false;
-    private double greedyProb = 0.8;
-    private double alpha = 0.5;
-    private boolean tracing = false;
     private boolean highestLocationValue = false;
-
-    private GridWorld gw;
     private double[][][][] Qvalue;
     private int[][][][] visited;
-    private double highest = 0, lowest = 0, range = 0;
     private boolean[][][][] isOptimal;
 
     ModifiedAlgo(GridWorld gw) {
-        this.gw = gw;
+        super(gw);
         Qvalue = new double[gw.getRows()][gw.getCols()][gw.getFullBatterySteps() + 1][4];
-        for (int i = 0; i < Qvalue.length; i++) {
-            for (int j = 0; j < Qvalue[i].length; j++) {
-                for (int k = 0; k < Qvalue[i][j].length; k++) {
-                    for (int l = 0; l < Qvalue[i][j][k].length; l++) {
-                        Qvalue[i][j][k][l] = 0;
+        if (gw.getGoal() != null) {
+            warmStart();
+        } else {
+            for (int i = 0; i < Qvalue.length; i++) {
+                for (int j = 0; j < Qvalue[i].length; j++) {
+                    for (int k = 0; k < Qvalue[i][j].length; k++) {
+                        for (int l = 0; l < Qvalue[i][j][k].length; l++) {
+                            Qvalue[i][j][k][l] = 0;
+                        }
                     }
                 }
             }
@@ -60,9 +57,20 @@ public class ModifiedAlgo implements Algorithm {
         }
     }
 
-    @Override
-    public void setGridWorld(GridWorld gw) {
-        this.gw = gw;
+    public void warmStart() {
+        int row = gw.getGoalRow();
+        int col = gw.getGoalCol();
+        for (int i = 0; i < Qvalue.length; i++) {
+            for (int j = 0; j < Qvalue[i].length; j++) {
+                for (int k = 0; k < Qvalue[i][j].length; k++) {//battery dimension 
+                    for (int l = 0; l < Qvalue[i][j][k].length; l++) {
+                        double diff_expectedTime = k - (Math.abs(row - i) + Math.abs(col - j))
+                                * gw.getDefaultMean();
+                        Qvalue[i][j][k][l] = gw.getGoalReward()/(1+Math.exp(-warmStartK*diff_expectedTime));
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -95,9 +103,8 @@ public class ModifiedAlgo implements Algorithm {
 //        }
         if (gw.getLocation(newRow, newCol).isGoal()) {
             Qvalue[oldRow][oldCol][oldBat][direction] = (1 - alpha)
-                    * Qvalue[oldRow][oldCol][oldBat][direction] + alpha*reward;
-        } else 
-        {
+                    * Qvalue[oldRow][oldCol][oldBat][direction] + alpha * reward;
+        } else {
             Qvalue[oldRow][oldCol][oldBat][direction] = (1 - alpha)
                     * Qvalue[oldRow][oldCol][oldBat][direction] + alpha * newDatum;
         }
@@ -169,46 +176,6 @@ public class ModifiedAlgo implements Algorithm {
             }
         }
         return bestDir;
-    }
-
-    @Override
-    public void setTracing(boolean b) {
-        this.tracing = b;
-    }
-
-    @Override
-    public void setAlpha(double av) {
-        this.alpha = av;
-    }
-
-    @Override
-    public void setAlphaFixed(boolean b) {
-        this.alphaFixed = b;
-    }
-
-    @Override
-    public void setDiscount(double dv) {
-        this.discount = dv;
-    }
-
-    @Override
-    public void setGreedyProb(double gv) {
-        this.greedyProb = gv;
-    }
-
-    @Override
-    public GridWorld getGridWorld() {
-        return gw;
-    }
-
-    @Override
-    public double getRange() {
-        return range;
-    }
-
-    @Override
-    public double getLowest() {
-        return lowest;
     }
 
     public boolean isHighestLocationValue() {

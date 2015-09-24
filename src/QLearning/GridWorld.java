@@ -27,11 +27,11 @@ public class GridWorld {
 
     public static double DeadPenalty = -100;
     private double DirectionProbability = 1;
-    private double WallPenalty = -10;
-    private double BlockPenalty = -5;
-    private double defaultReward = -2;
+    private double WallPenalty = 0;
+    private double BlockPenalty = 0;
+    private double defaultReward = 0;
     private double ChargingReward = 0.0;
-    private double GoalReward = 100.0;
+    private double GoalReward = 100;
     private double defaultTraveTime = 1;
     private double defaultMean = 8;
     private boolean randomTravelTime = false;
@@ -187,6 +187,14 @@ public class GridWorld {
         return curCol;
     }
 
+    public int getGoalRow() {
+        return goalRow;
+    }
+
+    public int getGoalCol() {
+        return goalCol;
+    }
+
     public Location getLocation(int row, int col) {
         return location[row][col];
     }
@@ -235,6 +243,10 @@ public class GridWorld {
         return totalTravelTime;
     }
 
+    public double getDefaultMean() {
+        return defaultMean;
+    }
+
     public boolean isRandomTravelTime() {
         return randomTravelTime;
     }
@@ -268,12 +280,10 @@ public class GridWorld {
         this.DirectionProbability = DirectionProbability;
     }
 
-    public void setDefaultTraveTime(double defaultTraveTime) {
-        this.defaultTraveTime = defaultTraveTime;
-    }
-
-    public void setTraveTime(double traveTime) {
+    public void setTraveTime(double travelTime) {
         if (randomTravelTime) {
+            this.defaultMean = travelTime;
+            generateTravelTime();
 //            for (int i = 0; i < rows; i++) {
 //                for (int j = 0; j < cols; j++) {
 //                    for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
@@ -282,16 +292,24 @@ public class GridWorld {
 //                }
 //            }
         } else {
-            this.defaultTraveTime = traveTime;
-             for (int i = 0; i < rows; i++) {
+            this.defaultTraveTime = travelTime;
+            for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
                     for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
-                        location[i][j].setTravelTime(k, traveTime);
+                        location[i][j].setTravelTime(k, travelTime);
                     }
                 }
             }
         }
 
+    }
+
+    public Location getGoal() {
+        try {
+            return location[goalRow][goalCol];
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void setCurrentPosition(int row, int col) {
@@ -360,7 +378,7 @@ public class GridWorld {
                     while (time < 0) {
                         //System.out.println("generate time < 0");
                         time = rand.nextGaussian() * location[i][j].getStddev(k)
-                            + location[i][j].getMeanTravelTime(k);
+                                + location[i][j].getMeanTravelTime(k);
                     }
                     location[i][j].setTravelTime(k, time);
                 }

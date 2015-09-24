@@ -4,22 +4,13 @@ package QLearning;
  *
  * @author Dong Yubo
  */
-public class QLearnAlgo implements Algorithm {
-
-    private double discount = 0.9;
-    private boolean alphaFixed = false;
-    private double greedyProb = 0.8;
-    private double alpha = 0.5;
-    private boolean tracing = false;
-    private GridWorld gw;
-
+public class QLearnAlgo extends Algorithm {
     private double[][][] Qvalue;
     private int[][][] visited;
-    private double highest = 0, lowest = 0, range = 0;
     private boolean[][][] isOptimal;
 
-    public QLearnAlgo(GridWorld gridWorld) {
-        this.gw = gridWorld;
+    public QLearnAlgo(GridWorld gw) {
+        super(gw);
         Qvalue = new double[gw.getRows()][gw.getCols()][4];
         for (int i = 0; i < Qvalue.length; i++) {
             for (int j = 0; j < Qvalue[i].length; j++) {
@@ -52,60 +43,6 @@ public class QLearnAlgo implements Algorithm {
                 }
             }
         }
-    }
-
-    public double getDiscount() {
-        return discount;
-    }
-
-    public boolean isAlphaFixed() {
-        return alphaFixed;
-    }
-
-    public double getGreedyProb() {
-        return greedyProb;
-    }
-
-    public double getAlpha() {
-        return alpha;
-    }
-
-    public boolean isTracing() {
-        return tracing;
-    }
-
-    public GridWorld getGridWorld() {
-        return gw;
-    }
-
-    @Override
-    public void setDiscount(double discount) {
-        this.discount = discount;
-    }
-
-    @Override
-    public void setAlphaFixed(boolean alphaFixed) {
-        this.alphaFixed = alphaFixed;
-    }
-
-    @Override
-    public void setGreedyProb(double greedyProb) {
-        this.greedyProb = greedyProb;
-    }
-
-    @Override
-    public void setAlpha(double alpha) {
-        this.alpha = alpha;
-    }
-
-    @Override
-    public void setTracing(boolean tracing) {
-        this.tracing = tracing;
-    }
-
-    @Override
-    public void setGridWorld(GridWorld gridWorld) {
-        this.gw = gridWorld;
     }
 
     @Override
@@ -152,35 +89,12 @@ public class QLearnAlgo implements Algorithm {
 
     }
 
-//    public double locValue(int row, int col) {
-//        double val = gridWorld.location[row][col].qvalues[3];
-//        for (int i = 2; i >= 0; i--) {
-//            if (gridWorld.location[row][col].qvalues[i] > val) {
-//                val = gridWorld.location[row][col].qvalues[i];
-//            }
-//        }
-//        return val;
-//    }
-    @Override
-    public boolean doSteps(int count) {
-
+//    @Override
+//    public boolean doSteps(int count) {
 //        for (int i = 0; i < count; i++) {
 //            double rand = Math.random();
 //            if (rand < greedyProb) {// act greedily
-//                int startDir = (int) (Math.random() * 4);
-//                double bestVal = gridWorld.getLocation(gridWorld.getCurRow(),
-//                        gridWorld.getCurCol()).getQvalue(startDir);
-//                int bestDir = startDir;
-//                for (int dir = 1; dir < 4; dir++) {
-//                    startDir = (startDir + 1) % 4;
-//                    if (gridWorld.getLocation(gridWorld.getCurRow(),
-//                            gridWorld.getCurCol()).getQvalue(startDir) > bestVal) {
-//                        bestVal = gridWorld.getLocation(gridWorld.getCurRow(),
-//                                gridWorld.getCurCol()).getQvalue(startDir);
-//                        bestDir = startDir;
-//                    }
-//                }
-//                if (!moveToDir(bestDir)) {
+//                if (!moveToDir(getOptimalDir(gw.getCurRow(), gw.getCurCol()))) {
 //                    return false;
 //                }
 //            } else { // act randomly
@@ -190,20 +104,7 @@ public class QLearnAlgo implements Algorithm {
 //            }
 //        }
 //        return true;
-        for (int i = 0; i < count; i++) {
-            double rand = Math.random();
-            if (rand < greedyProb) {// act greedily
-                if (!moveToDir(getOptimalDir(gw.getCurRow(), gw.getCurCol()))) {
-                    return false;
-                }
-            } else { // act randomly
-                if (!moveToDir((int) (Math.random() * 4))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+//    }
 
     @Override
     public int getOptimalDir(int row, int col) {
@@ -220,16 +121,6 @@ public class QLearnAlgo implements Algorithm {
             }
         }
         return bestDir;
-    }
-
-    @Override
-    public double getRange() {
-        return range;
-    }
-
-    @Override
-    public double getLowest() {
-        return lowest;
     }
 
     @Override
