@@ -452,6 +452,70 @@ public class GridWorld {
         return reward;
     }
 
+    public double[] getPathMean() {
+        double mean = 0, stddev = 0;
+        if (location[startRow][startCol].isPath() && location[goalRow][goalCol].isPath()) {
+            int cRow = startRow, cCol = startCol;
+            int lRow = startRow, lCol = startCol;
+
+            while (!location[cRow][cCol].isGoal()) {
+
+                try {
+                    if (location[cRow - 1][cCol].isPath() && (!(cRow - 1 == lRow && cCol == lCol))) {
+                        lRow = cRow;
+                        lCol = cCol;
+                        cRow -= 1;
+                        mean += location[lRow][lCol].getMeanTravelTime(Up);
+                        stddev += Math.pow(location[lRow][lCol].getStddev(Up), 2);
+                        continue;
+                    }
+                } catch (ArrayIndexOutOfBoundsException ae) {
+                }
+                try {
+                    if (location[cRow + 1][cCol].isPath() && (!(cRow + 1 == lRow && cCol == lCol))) {
+                        lRow = cRow;
+                        lCol = cCol;
+                        cRow += 1;
+                        mean += location[lRow][lCol].getMeanTravelTime(Down);
+                        stddev += Math.pow(location[lRow][lCol].getStddev(Down), 2);
+                        continue;
+                    }
+                } catch (ArrayIndexOutOfBoundsException ae) {
+                }
+                try {
+                    if (location[cRow][cCol - 1].isPath() && (!(cRow == lRow && cCol - 1 == lCol))) {
+                        lRow = cRow;
+                        lCol = cCol;
+                        cCol -= 1;
+                        mean += location[lRow][lCol].getMeanTravelTime(Left);
+                        stddev += Math.pow(location[lRow][lCol].getStddev(Left), 2);
+                        continue;
+                    }
+                } catch (ArrayIndexOutOfBoundsException ae) {
+                }
+                try {
+                    if (location[cRow][cCol + 1].isPath() && (!(cRow == lRow && cCol + 1 == lCol))) {
+                        lRow = cRow;
+                        lCol = cCol;
+                        cCol += 1;
+                        mean += location[lRow][lCol].getMeanTravelTime(Right);
+                        stddev += Math.pow(location[lRow][lCol].getStddev(Right), 2);
+                        continue;
+                    }
+                } catch (ArrayIndexOutOfBoundsException ae) {
+                }
+                if (cRow == lRow && cCol == lCol) {
+                    return null;
+                }
+            }
+        }
+        double[] d = new double[2];
+        d[0] = mean;
+        d[1] = Math.sqrt(stddev);
+        System.out.println(mean + "," + stddev);
+        return d;
+    }
+
     public void resetPath() {
         for (int i = 0; i < location.length; i++) {
             for (int j = 0; j < location[i].length; j++) {
@@ -459,4 +523,5 @@ public class GridWorld {
             }
         }
     }
+
 }

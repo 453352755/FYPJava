@@ -290,6 +290,16 @@ public class DetailController implements Initializable {
         gridCtrl.repaintAll();
         updateReward();
     }
+    
+    @FXML
+    void pathChecked(ActionEvent event) {
+        if(pathCheckBox.isSelected()){
+            gw.getLocation(loc.getRow(), loc.getCol()).setIsPath(true);
+        }else{
+            gw.getLocation(loc.getRow(), loc.getCol()).setIsPath(false);
+        }
+        gridCtrl.repaintAll();
+    }
 
     @FXML
     private TextField rightField;
@@ -338,6 +348,9 @@ public class DetailController implements Initializable {
 
     @FXML
     private CheckBox blockCheckBox;
+    
+    @FXML
+    private CheckBox pathCheckBox;
 
     @FXML
     private CheckBox startCheckBox;
@@ -477,6 +490,7 @@ public class DetailController implements Initializable {
             locationValueLabel.setText("Location Value: " + form.format(loc.getLocationValue()));
             rowColLabel.setText("Row " + loc.getRow() + " - Col " + loc.getCol());
             System.out.println("showing " + "Row " + loc.getRow() + " - Col " + loc.getCol());
+            System.out.println(loc.isPath());
 
 //            if (loc.isBlock()) {
 //                upField.setText(null);
@@ -502,6 +516,7 @@ public class DetailController implements Initializable {
             startCheckBox.setSelected(loc.isStart());
             chargingCheckBox.setSelected(loc.isCharging());
             goalCheckBox.setSelected(loc.isGoal());
+            pathCheckBox.setSelected(loc.isPath());
             locGridPane.setVisible(true);
         } catch (NullPointerException ne) {
             System.out.println("Detailcontroller.update: Null pointer");

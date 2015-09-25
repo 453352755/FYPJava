@@ -35,6 +35,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.imageio.ImageIO;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
 /**
  *
@@ -44,7 +45,7 @@ public class AnalysisController implements Initializable {
 
     double path1mean = 48, path1steps = 6, path1dev = 2;
     double path2mean = 50, path2steps = 8, path2dev = 0.3;
-    double stddev;
+    double stddev = 1;
 
     private QLearning.Algorithm algo;
     private LineChart aLineChart;
@@ -136,58 +137,63 @@ public class AnalysisController implements Initializable {
     }
 
     private void chartCInit() {
-        if (cLineChart == null) {
-            final NumberAxis xAxis = new NumberAxis();
-            final NumberAxis yAxis = new NumberAxis();
-            xAxis.setLabel("Remaining Battery");
-            xAxis.setAutoRanging(false);
-            xAxis.setLowerBound(algo.getGridWorld().getFullBatterySteps() * 0.5);
-            xAxis.setUpperBound(algo.getGridWorld().getFullBatterySteps() * 1.1);
-            yAxis.setLabel("Probability");
-            yAxis.setLowerBound(0);
-            yAxis.setUpperBound(1);
-            //creating the chart
-            cLineChart = new LineChart<>(xAxis, yAxis);
-            cLineChart.setTitle("PDF - CDF of routes");
-            cLineChart.setManaged(true);
-            cLineChart.setStyle(chartStyle);
 
-            //path1
-            XYChart.Series PDF1 = new XYChart.Series();
-            PDF1.setName("PDF1");
-            XYChart.Series CDF1 = new XYChart.Series();
-            CDF1.setName("CDF1");
-            
-            stddev = Math.sqrt(Math.pow(path1dev, 2) * path1steps);
-            NormalDistribution nd1 = new NormalDistribution(path1mean, stddev);
-            for (int i = 0; i < algo.getGridWorld().getFullBatterySteps() * 15; i++) {
-                double p = i / 10.0;
-                PDF1.getData().add(new XYChart.Data(p, nd1.density(p)));
-                CDF1.getData().add(new XYChart.Data(p, nd1.cumulativeProbability(p)));
-                //System.out.println(nd1.density(p));
-            }
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Remaining Battery");
+        xAxis.setAutoRanging(false);
+        xAxis.setLowerBound(algo.getGridWorld().getFullBatterySteps() * 0.1);
+        xAxis.setUpperBound(algo.getGridWorld().getFullBatterySteps() * 1.5);
+        yAxis.setLabel("Probability");
+        yAxis.setLowerBound(0);
+        yAxis.setUpperBound(1);
+        //creating the chart
+        cLineChart = new LineChart<>(xAxis, yAxis);
+        cLineChart.setTitle("PDF - CDF of routes");
+        cLineChart.setManaged(true);
+        cLineChart.setStyle(chartStyle);
 
-            //path2
-            XYChart.Series PDF2 = new XYChart.Series();
-            PDF2.setName("PDF2");
-            XYChart.Series CDF2 = new XYChart.Series();
-            CDF2.setName("CDF2");
-           
-            stddev = Math.sqrt(Math.pow(path2dev, 2) * path2steps);
-            NormalDistribution nd2 = new NormalDistribution(path2mean, stddev);
-            for (int i = 0; i < algo.getGridWorld().getFullBatterySteps() * 15; i++) {
-                double p = i / 10.0;
-                PDF2.getData().add(new XYChart.Data(p, nd2.density(p)));
-                CDF2.getData().add(new XYChart.Data(p, nd2.cumulativeProbability(p)));
-                System.out.println(p+","+nd2.density(p));
-            }
-
-            cLineChart.getData().add(PDF1);
-            cLineChart.getData().add(CDF1);
-            cLineChart.getData().add(PDF2);
-            cLineChart.getData().add(CDF2);
-            cLineChart.setCreateSymbols(false);
+        //path1
+        XYChart.Series PDF1 = new XYChart.Series();
+        PDF1.setName("PDF1");
+        XYChart.Series CDF1 = new XYChart.Series();
+        CDF1.setName("CDF1");
+        try {
+            path1mean = algo.getGridWorld().getPathMean()[0];
+            stddev = algo.getGridWorld().getPathMean()[1];
+            System.out.println(path1mean + "," + stddev);
+        } catch (NullPointerException ne) {
+            System.out.println("No Path");
         }
+        //stddev = Math.sqrt(Math.pow(path1dev, 2) * path1steps);
+        NormalDistribution nd1 = new NormalDistribution(path1mean, stddev);
+        for (int i = 0; i < algo.getGridWorld().getFullBatterySteps() * 15; i++) {
+            double p = i / 10.0;
+            PDF1.getData().add(new XYChart.Data(p, nd1.density(p)));
+            CDF1.getData().add(new XYChart.Data(p, nd1.cumulativeProbability(p)));
+            //System.out.println(nd1.density(p));
+        }
+
+        //path2
+        XYChart.Series PDF2 = new XYChart.Series();
+        PDF2.setName("PDF2");
+        XYChart.Series CDF2 = new XYChart.Series();
+        CDF2.setName("CDF2");
+
+        stddev = Math.sqrt(Math.pow(path2dev, 2) * path2steps);
+        NormalDistribution nd2 = new NormalDistribution(path2mean, stddev);
+        for (int i = 0; i < algo.getGridWorld().getFullBatterySteps() * 15; i++) {
+            double p = i / 10.0;
+            PDF2.getData().add(new XYChart.Data(p, nd2.density(p)));
+            CDF2.getData().add(new XYChart.Data(p, nd2.cumulativeProbability(p)));
+            //System.out.println(p + "," + nd2.density(p));
+        }
+
+        cLineChart.getData().add(PDF1);
+        cLineChart.getData().add(CDF1);
+//            cLineChart.getData().add(PDF2);
+//            cLineChart.getData().add(CDF2);
+        cLineChart.setCreateSymbols(false);
     }
 
     @FXML

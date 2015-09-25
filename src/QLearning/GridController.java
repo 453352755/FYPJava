@@ -116,6 +116,10 @@ public class GridController {
                         gw.setGoal(i, j);
                         System.out.println("Goal: " + i + "," + j);
                     }
+                    if (str[k++].toLowerCase().equals("true")) {
+                        gw.getLocation(i, j).setIsPath(true);
+                        System.out.println("Path: " + i + "," + j);
+                    }
                     gw.getLocation(i, j).setMeanTravelTime(Up, Double.valueOf(str[k++]));
                     gw.getLocation(i, j).setMeanTravelTime(Down, Double.valueOf(str[k++]));
                     gw.getLocation(i, j).setMeanTravelTime(Left, Double.valueOf(str[k++]));
@@ -314,6 +318,7 @@ public class GridController {
                             + "," + loc.isCharging()
                             + "," + loc.isBlock()
                             + "," + loc.isGoal()
+                            + "," + loc.isPath()
                             + "," + loc.getMeanTravelTime(Up)
                             + "," + loc.getMeanTravelTime(Down)
                             + "," + loc.getMeanTravelTime(Left)

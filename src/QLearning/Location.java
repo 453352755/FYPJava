@@ -76,6 +76,7 @@ public class Location {
         newLocation.isStart = this.isStart;
         newLocation.isCharging = this.isCharging;
         newLocation.isGoal = this.isGoal;
+        newLocation.isPath = this.isPath;
 
         newLocation.isWall = this.isWall;
         newLocation.setReward(this.reward);
