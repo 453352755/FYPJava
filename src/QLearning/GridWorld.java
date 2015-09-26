@@ -79,6 +79,10 @@ public class GridWorld {
         }
     }
 
+    public void setGoalReward(double GoalReward) {
+        this.GoalReward = GoalReward;
+    }
+
     public void setStart(int row, int col) {
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {

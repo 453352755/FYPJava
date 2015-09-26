@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -234,6 +235,9 @@ public class DetailController implements Initializable {
     void rewardValueChanged(ActionEvent event) {
         gw.getLocation(loc.getRow(),
                 loc.getCol()).setReward(Double.valueOf(rewardField.getText()));
+        if (gw.getLocation(loc.getRow(), loc.getCol()).isGoal()) {
+            gw.setGoalReward(Double.valueOf(rewardField.getText()));
+        }
         System.out.println("reward value changed");
         gridCtrl.repaintAll();
     }
@@ -290,12 +294,12 @@ public class DetailController implements Initializable {
         gridCtrl.repaintAll();
         updateReward();
     }
-    
+
     @FXML
     void pathChecked(ActionEvent event) {
-        if(pathCheckBox.isSelected()){
+        if (pathCheckBox.isSelected()) {
             gw.getLocation(loc.getRow(), loc.getCol()).setIsPath(true);
-        }else{
+        } else {
             gw.getLocation(loc.getRow(), loc.getCol()).setIsPath(false);
         }
         gridCtrl.repaintAll();
@@ -348,7 +352,7 @@ public class DetailController implements Initializable {
 
     @FXML
     private CheckBox blockCheckBox;
-    
+
     @FXML
     private CheckBox pathCheckBox;
 
