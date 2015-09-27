@@ -15,7 +15,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -162,6 +164,9 @@ public class GridController {
         colBox.setItems(FXCollections.observableArrayList(
                 3, 4, 5, 6, 7, 8, 9, 10, 15, 20)
         );
+        greedyChoiceBox.setItems(FXCollections.observableArrayList("E Greedy", "Softmax"));
+        greedyChoiceBox.setValue(greedyChoiceBox.getItems().get(0));
+
         loadDetailPane();
         checkAlgo(new ActionEvent());
         repaintAll();
@@ -396,11 +401,14 @@ public class GridController {
     @FXML
     void changeGreedyValue(ActionEvent event) {
         double gv = Double.parseDouble(greedyValue.getText());
-        algo.setGreedyProb(gv);
-
-        System.out.print("greedy value = ");
+        if (algo.isGreedy()) {
+            algo.setGreedyProb(gv);
+            System.out.print("greedy E = ");
+        } else {
+            algo.softmaxT = gv;
+            System.out.print("soft max T = ");
+        }
         System.out.println(gv);
-
     }
 
     @FXML
@@ -423,8 +431,19 @@ public class GridController {
             setGridWorld(row, col);
         } else {
             gw.reset();
-        }
+        }        
         checkSettings();
+        try {
+            if (greedyChoiceBox.getValue().equals(greedyChoiceBox.getItems().get(0))) {
+                algo.setGreedy(true);
+                System.out.println("E greedy selected");
+            } else {
+                algo.setGreedy(false);
+                System.out.println("Soft max selected");
+            }
+        } catch (Exception e) {
+            System.out.println("reset exception");
+        }
         graphPane.getChildren().remove(gridPane);
         detailCtrl.reset(algo, gw);
         gridPaneInit();
@@ -697,9 +716,11 @@ public class GridController {
     void checkFixedalpha(ActionEvent event) {
         if (alphaFixedBox.isSelected()) {
             algo.setAlphaFixed(true);
+            alphaField.setDisable(false);
             System.out.println("Alpha fixed");
         } else {
             algo.setAlphaFixed(false);
+            alphaField.setDisable(true);
             System.out.println("Alpha Unfixed");
         }
     }
@@ -862,6 +883,9 @@ public class GridController {
 
     @FXML
     private ChoiceBox<Integer> colBox;
+
+    @FXML
+    private ChoiceBox greedyChoiceBox;
 
     @FXML
     private Canvas mapCanvas;

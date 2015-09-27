@@ -102,12 +102,11 @@
                             </children>
                         </HBox>
                         <Label text="Discount" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label text="Greedy" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label text="Direction Probability" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                         <TextField fx:id="directionProbability" alignment="CENTER_RIGHT" disable="true" maxWidth="-Infinity" onAction="#changeDirectionProbability" prefHeight="25.0" prefWidth="35.0" promptText="0.7" text="1" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-                        <TextField fx:id="alphaField" onAction="#changeAlphaValue" prefHeight="25.0" prefWidth="106.0" promptText="0.5" text="0.5" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <TextField fx:id="alphaField" disable="true" onAction="#changeAlphaValue" prefHeight="25.0" prefWidth="106.0" promptText="0.5" text="0.5" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                         <TextField fx:id="greedyValue" onAction="#changeGreedyValue" prefHeight="25.0" prefWidth="106.0" promptText="0.8" text="0.2" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                        <TextField fx:id="discountValue" onAction="#changeDiscountValue" prefHeight="25.0" prefWidth="106.0" promptText="0.9" text="0.99" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <TextField fx:id="discountValue" onAction="#changeDiscountValue" prefHeight="25.0" prefWidth="106.0" promptText="0.9" text="1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                             <children>
                                 <CheckBox fx:id="alphaFixedBox" mnemonicParsing="false" onAction="#checkFixedalpha" text="Fixed Alpha" />
@@ -116,10 +115,11 @@
                   <CheckBox fx:id="batteryLifeCheckBox" mnemonicParsing="false" onAction="#checkBatteryLife" selected="true" text="Battery Life Enabled" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                   <CheckBox fx:id="stochasticThreadCheckBox" mnemonicParsing="false" onAction="#checkStochasticThread" prefHeight="17.0" prefWidth="129.0" text="Stochastic Thread" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                   <CheckBox fx:id="showHighestLVCheckBox" mnemonicParsing="false" onAction="#checkHighestLV" prefHeight="17.0" prefWidth="135.0" text="Show Highest LV" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                        <CheckBox fx:id="randomTravelTimeCheckBox" mnemonicParsing="false" onAction="#checkRandomTravelTime" text="Random Travel Time" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
+                        <CheckBox fx:id="randomTravelTimeCheckBox" mnemonicParsing="false" onAction="#checkRandomTravelTime" selected="true" text="Random Travel Time" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
                         <TextField fx:id="defaultTravelTimeField" onAction="#changeDefaultTravelTime" prefHeight="25.0" prefWidth="68.0" promptText="0.5" text="8" GridPane.columnIndex="5" GridPane.rowIndex="6" />
                         <CheckBox fx:id="tracing" mnemonicParsing="false" onAction="#checkTracing" text="Tracing" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                   <Label fx:id="travelTimeLabel" text="Mean" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+                  <ChoiceBox fx:id="greedyChoiceBox" prefHeight="25.0" prefWidth="88.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                     </children>
                 </GridPane>
                 <Separator prefWidth="200.0" />
@@ -138,7 +138,7 @@
                     </rowConstraints>
                     <children>
                         <Label text="  Run" GridPane.columnSpan="2147483647" />
-                        <Label text="Speed (Steps per second)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label text="Speed Limit (Moves per second)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <TextField fx:id="speedValue" onAction="#updateSpeedValue" prefHeight="25.0" prefWidth="62.0" promptText="1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <HBox alignment="CENTER_LEFT" prefHeight="39.0" prefWidth="302.0" spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
                             <children>

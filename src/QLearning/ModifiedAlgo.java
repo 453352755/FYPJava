@@ -130,38 +130,6 @@ public class ModifiedAlgo extends Algorithm {
     }
 
     @Override
-    public boolean doSteps(int count) {
-        for (int i = 0; i < count; i++) {
-            double rand = Math.random();
-            if (rand < greedyProb) {// act greedily
-//                int startDir = (int) (Math.random() * 4);
-//                int row = gw.getCurRow();
-//                int col = gw.getCurCol();
-//                int bat = gw.getRemainingSteps();
-//
-//                double bestVal = Qvalue[row][col][bat][startDir];
-//                int bestDir = startDir;
-//                for (int dir = 1; dir < 4; dir++) {
-//                    startDir = (startDir + 1) % 4;
-//                    if (Qvalue[row][col][bat][startDir] > bestVal) {
-//                        bestVal = Qvalue[row][col][bat][startDir];
-//                        bestDir = startDir;
-//                    }
-//                }
-
-                if (!moveToDir(getOptimalDir(gw.getCurRow(), gw.getCurCol()))) {
-                    return false;
-                }
-            } else { // act randomly
-                if (!moveToDir((int) (Math.random() * 4))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    @Override
     public int getOptimalDir(int row, int col) {
         int startDir = (int) (Math.random() * 4);
         int bat = gw.getRemainingSteps();

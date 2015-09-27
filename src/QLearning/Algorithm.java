@@ -1,5 +1,10 @@
 package QLearning;
 
+import static QLearning.GridWorld.Down;
+import static QLearning.GridWorld.Left;
+import static QLearning.GridWorld.Right;
+import static QLearning.GridWorld.Up;
+
 /**
  *
  * @author dong
@@ -9,8 +14,10 @@ public abstract class Algorithm {
     protected double discount = 0.9;
     protected boolean alphaFixed = false;
     protected double greedyProb = 0.8;
+    protected double softmaxT = 0.2;
     protected double alpha = 0.5;
     protected boolean tracing = false;
+    protected boolean greedy = true;
     protected GridWorld gw;
     protected double highest = 0, lowest = 0, range = 0;
 
@@ -48,14 +55,41 @@ public abstract class Algorithm {
 
     public boolean doSteps(int count) {
         for (int i = 0; i < count; i++) {
-            double rand = Math.random();
-            if (rand < greedyProb) {// act greedily
-                if (!moveToDir(getOptimalDir(gw.getCurRow(), gw.getCurCol()))) {
-                    return false;
+            if (greedy) {
+                double rand = Math.random();
+                if (rand < greedyProb) {//greedy
+                    if (!moveToDir(getOptimalDir(gw.getCurRow(), gw.getCurCol()))) {
+                        return false;
+                    }
+                } else { // act randomly
+                    if (!moveToDir((int) (Math.random() * 4))) {
+                        return false;
+                    }
                 }
-            } else { // act randomly
-                if (!moveToDir((int) (Math.random() * 4))) {
-                    return false;
+            } else {//softmax
+                double[] prob = new double[4];
+                double sum = 0;
+                for (int j = 0; j < 4; j++) {
+                    prob[j] = Math.pow(Math.E, getQvalue(gw.getCurRow(), gw.getCurCol(), j) / softmaxT);
+                    sum += prob[j];
+                }
+                for (int j = 0; j < 4; j++) {
+                    prob[j] /= sum;
+                }
+                double[] cProb = new double[4];
+                cProb[0] = prob[0];
+                for (int j = 1; j < 4; j++) {
+                    cProb[j] = cProb[j - 1] + prob[j];
+                }
+                double rand = Math.random();
+                if (rand < cProb[Up]) {
+                    moveToDir(Up);
+                } else if (rand < cProb[Down]) {
+                    moveToDir(Down);
+                } else if (rand < cProb[Left]) {
+                    moveToDir(Left);
+                } else {
+                    moveToDir(Right);
                 }
             }
         }
@@ -77,6 +111,14 @@ public abstract class Algorithm {
 
     public void setGreedyProb(double greedyProb) {
         this.greedyProb = greedyProb;
+    }
+
+    public boolean isGreedy() {
+        return greedy;
+    }
+
+    public void setGreedy(boolean greedy) {
+        this.greedy = greedy;
     }
 
     public void setTracing(boolean tracing) {

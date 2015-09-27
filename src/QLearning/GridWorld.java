@@ -36,6 +36,7 @@ public class GridWorld {
     private double defaultMean = 8;
     private boolean randomTravelTime = false;
     private boolean batteryEnabled = true;
+    private boolean travelTimeFollowsNormalDistribution = true;
     private int fullBattery = 4;
 
     private final int rows;
@@ -53,15 +54,11 @@ public class GridWorld {
     private int goalCol;
     private int remainingBattery;
     private final Location[][] location;
-//    private double range;
-//    private double highest, lowest;
 
     public GridWorld(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
         remainingBattery = fullBattery;
-//        curRow = (int) (Math.random() * rows);
-//        curCol = (int) (Math.random() * cols);
         location = new Location[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -336,17 +333,17 @@ public class GridWorld {
     }
 
     public int getActualDirection(int d) {
-            double rand = Math.random();
-            if (rand < DirectionProbability) {
-                return d;
-            } else {
-                int r = d;
-                while (r == d) {
-                    r = (int) (Math.random() * 4);
-                }
-                return r;
+        double rand = Math.random();
+        if (rand < DirectionProbability) {
+            return d;
+        } else {
+            int r = d;
+            while (r == d) {
+                r = (int) (Math.random() * 4);
             }
+            return r;
         }
+    }
 
     public void reset() {
         for (int i = 0; i < location.length; i++) {
@@ -369,20 +366,24 @@ public class GridWorld {
     }
 
     public void generateTravelTime() {
-        Random rand = new Random();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
-                    double time = rand.nextGaussian() * location[i][j].getStddev(k)
-                            + location[i][j].getMeanTravelTime(k);
-                    while (time < 0) {
-                        //System.out.println("generate time < 0");
-                        time = rand.nextGaussian() * location[i][j].getStddev(k)
+        if (travelTimeFollowsNormalDistribution) {
+            Random rand = new Random();
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    for (int k = 0; k < location[i][j].getTravelTime().length; k++) {
+                        double time = rand.nextGaussian() * location[i][j].getStddev(k)
                                 + location[i][j].getMeanTravelTime(k);
+                        while (time < 0) {
+                            //System.out.println("generate time < 0");
+                            time = rand.nextGaussian() * location[i][j].getStddev(k)
+                                    + location[i][j].getMeanTravelTime(k);
+                        }
+                        location[i][j].setTravelTime(k, time);
                     }
-                    location[i][j].setTravelTime(k, time);
                 }
             }
+        } else {
+
         }
     }
 
