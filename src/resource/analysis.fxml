@@ -15,14 +15,28 @@
          <children>
             <Button fx:id="floatButton" mnemonicParsing="false" onAction="#floatButtonClicked" text="float" />
             <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonClicked" text="save" />
-            <Pane fx:id="qLearnControlPane" prefHeight="187.0" prefWidth="100.0">
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="48.0" minWidth="10.0" prefWidth="16.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="137.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="79.0" minWidth="9.0" prefWidth="9.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <CheckBox fx:id="qLearnCChart" layoutX="7.0" layoutY="115.0" mnemonicParsing="false" onAction="#cChartChecked" prefHeight="17.0" prefWidth="89.0" text="PDF-CDF" />
-                  <CheckBox fx:id="qLearnAChart" layoutX="7.0" layoutY="49.0" mnemonicParsing="false" onAction="#aChartChecked" text="Step-Reward" />
-                  <CheckBox fx:id="qLearnBChart" layoutX="7.0" layoutY="83.0" mnemonicParsing="false" onAction="#bChartChecked" text="Total Time Taken" />
-                  <Label layoutX="29.0" layoutY="14.0" text="QLearning" />
+                  <Label text="QLearning" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <CheckBox fx:id="qLearnAChartCheckBox" mnemonicParsing="false" onAction="#aChartChecked" text="Step-Reward" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <CheckBox fx:id="qLearnBChartCheckBox" mnemonicParsing="false" onAction="#bChartChecked" text="Total Time Taken" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <CheckBox fx:id="qLearnCChartCheckBox" mnemonicParsing="false" onAction="#cChartChecked" prefHeight="17.0" prefWidth="122.0" text="Path PDF-CDF" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <CheckBox fx:id="QValueChartCheckBox" mnemonicParsing="false" onAction="#checkQValueChart" text="Q Values" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                </children>
-            </Pane>
+            </GridPane>
+            <Pane fx:id="qLearnControlPane" prefHeight="187.0" prefWidth="100.0" />
          </children>
          <opaqueInsets>
             <Insets />

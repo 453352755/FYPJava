@@ -1,7 +1,10 @@
 package analysis;
 
-import QLearning.Algorithm;
-import QLearning.GridWorld;
+import QLearning.*;
+import static QLearning.GridWorld.Down;
+import static QLearning.GridWorld.Left;
+import static QLearning.GridWorld.Right;
+import static QLearning.GridWorld.Up;
 import app.GUI;
 import java.io.File;
 import java.io.IOException;
@@ -43,14 +46,14 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
  */
 public class AnalysisController implements Initializable {
 
-    double path1mean = 48, path1steps = 6, path1dev = 2;
-    double path2mean = 50, path2steps = 8, path2dev = 0.3;
-    double stddev = 1;
+    double path1mean = 46, path1steps = 6, path1dev = 8.12;
+    double path2mean = 56, path2steps = 8, path2dev = 2.82;
 
     private QLearning.Algorithm algo;
-    private LineChart aLineChart;
-    private LineChart bLineChart;
-    private LineChart cLineChart;
+    private LineChart aLineChart;//reward 
+    private LineChart bLineChart;//time
+    private LineChart cLineChart;//cdf-pdf chart
+    private LineChart QvalueLineChart;//Qvalue chart
     private XYChart.Series rewardSeries;
     private XYChart.Series timeSeries;
     private final String chartStyle
@@ -63,6 +66,21 @@ public class AnalysisController implements Initializable {
             + "-fx-max-width: 1900;"
             + "-fx-min-height: 320;"
             + "-fx-min-width: 400;";
+    private int row = 0;
+    private int col = 0;
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
+        if(QValueChartCheckBox.isSelected()){
+            removeChart(QvalueLineChart);
+            QValueChartInit();
+            addChart(QvalueLineChart);
+        }
+    }
 
     public void setAlgo(Algorithm algo) {
         this.algo = algo;
@@ -158,15 +176,15 @@ public class AnalysisController implements Initializable {
         PDF1.setName("PDF1");
         XYChart.Series CDF1 = new XYChart.Series();
         CDF1.setName("CDF1");
-        try {
-            path1mean = algo.getGridWorld().getPathMean()[0];
-            stddev = algo.getGridWorld().getPathMean()[1];
-            System.out.println(path1mean + "," + stddev);
-        } catch (NullPointerException ne) {
-            System.out.println("No Path");
-        }
-        //stddev = Math.sqrt(Math.pow(path1dev, 2) * path1steps);
-        NormalDistribution nd1 = new NormalDistribution(path1mean, stddev);
+//        try {
+//            path1mean = algo.getGridWorld().getPathMean()[0];
+//            path1dev = algo.getGridWorld().getPathMean()[1];
+//            System.out.println(path1mean + "," + path1dev);
+//        } catch (NullPointerException ne) {
+//            System.out.println("No Path");
+//        }
+
+        NormalDistribution nd1 = new NormalDistribution(path1mean, path1dev);
         for (int i = 0; i < algo.getGridWorld().getFullBatterySteps() * 15; i++) {
             double p = i / 10.0;
             PDF1.getData().add(new XYChart.Data(p, nd1.density(p)));
@@ -180,8 +198,7 @@ public class AnalysisController implements Initializable {
         XYChart.Series CDF2 = new XYChart.Series();
         CDF2.setName("CDF2");
 
-        stddev = Math.sqrt(Math.pow(path2dev, 2) * path2steps);
-        NormalDistribution nd2 = new NormalDistribution(path2mean, stddev);
+        NormalDistribution nd2 = new NormalDistribution(path2mean, path2dev);
         for (int i = 0; i < algo.getGridWorld().getFullBatterySteps() * 15; i++) {
             double p = i / 10.0;
             PDF2.getData().add(new XYChart.Data(p, nd2.density(p)));
@@ -191,22 +208,60 @@ public class AnalysisController implements Initializable {
 
         cLineChart.getData().add(PDF1);
         cLineChart.getData().add(CDF1);
-//            cLineChart.getData().add(PDF2);
-//            cLineChart.getData().add(CDF2);
+        cLineChart.getData().add(PDF2);
+        cLineChart.getData().add(CDF2);
         cLineChart.setCreateSymbols(false);
     }
 
+    private void QValueChartInit() {
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Remaining Battery");
+        yAxis.setLabel("Q Values");
+        //creating the chart
+        QvalueLineChart = new LineChart<>(xAxis, yAxis);
+        QvalueLineChart.setTitle("Q Values Row " + row + " Col " + col);
+        QvalueLineChart.setManaged(true);
+        QvalueLineChart.setStyle(chartStyle);
+
+        XYChart.Series up = new XYChart.Series();
+        up.setName("Up");
+        XYChart.Series down = new XYChart.Series();
+        down.setName("Down");
+        XYChart.Series left = new XYChart.Series();
+        left.setName("Left");
+        XYChart.Series right = new XYChart.Series();
+        right.setName("Right");
+        if (algo.getClass() == ModifiedAlgo.class) {
+            for (int i = 0; i < algo.getGridWorld().getFullBatterySteps(); i++) {
+                up.getData().add(new XYChart.Data(i,algo.getQvalue(row, col)[i][Up]));
+                down.getData().add(new XYChart.Data(i,algo.getQvalue(row, col) [i][Down]));
+                left.getData().add(new XYChart.Data(i,algo.getQvalue(row, col) [i][Left]));
+                right.getData().add(new XYChart.Data(i,algo.getQvalue(row, col) [i][Right]));
+            }
+            QvalueLineChart.getData().add(up);
+            QvalueLineChart.getData().add(down);
+            QvalueLineChart.getData().add(left);
+            QvalueLineChart.getData().add(right);
+        } else {
+            QvalueLineChart.setTitle("Original Algo selected");
+        }
+
+    }
     @FXML
-    private CheckBox qLearnCChart;
+    private CheckBox qLearnCChartCheckBox;
 
     @FXML
     public HBox chartHBox;
 
     @FXML
-    private CheckBox qLearnBChart;
+    private CheckBox qLearnBChartCheckBox;
 
     @FXML
-    private CheckBox qLearnAChart;
+    private CheckBox qLearnAChartCheckBox;
+
+    @FXML
+    private CheckBox QValueChartCheckBox;
 
     @FXML
     private HBox analysisPane;
@@ -250,11 +305,10 @@ public class AnalysisController implements Initializable {
         System.out.print("Saving Chart ");
 
         //construct file name
-        Format form = new SimpleDateFormat("yyyyMMdd");
+        Format form = new SimpleDateFormat("yyyyMMddmmss");
         String name = "";
         for (int i = 0; i < chartHBox.getChildrenUnmodifiable().size(); i++) {
-            name += ((Chart) ((AnchorPane) chartHBox.getChildrenUnmodifiable().
-                    get(i)).getChildren().get(0)).getTitle();
+            name += ((Chart) chartHBox.getChildrenUnmodifiable().get(i)).getTitle();
         }
         name += " " + form.format(new Date()) + ".png";
         System.out.println(name);
@@ -284,7 +338,7 @@ public class AnalysisController implements Initializable {
 
     @FXML
     void aChartChecked(ActionEvent event) {
-        if (qLearnAChart.isSelected()) {
+        if (qLearnAChartCheckBox.isSelected()) {
             chartAInit();
             addChart(aLineChart);
             System.out.println("Adding aLineChart");
@@ -296,7 +350,7 @@ public class AnalysisController implements Initializable {
 
     @FXML
     void bChartChecked(ActionEvent event) {
-        if (qLearnBChart.isSelected()) {
+        if (qLearnBChartCheckBox.isSelected()) {
             chartBInit();
             addChart(bLineChart);
             System.out.println("Adding bLineChart");
@@ -308,13 +362,25 @@ public class AnalysisController implements Initializable {
 
     @FXML
     void cChartChecked(ActionEvent event) {
-        if (qLearnCChart.isSelected()) {
+        if (qLearnCChartCheckBox.isSelected()) {
             chartCInit();
             addChart(cLineChart);
-            System.out.println("Adding cLineChart");
+            System.out.println("Adding Path CDF PDF Chart");
         } else {
             removeChart(cLineChart);
-            System.out.println("cLineChart removed");
+            System.out.println("Chart removed");
+        }
+    }
+
+    @FXML
+    void checkQValueChart(ActionEvent event) {
+        if (QValueChartCheckBox.isSelected()) {
+            QValueChartInit();
+            addChart(QvalueLineChart);
+            System.out.println("Adding Q Values Chart");
+        } else {
+            removeChart(QvalueLineChart);
+            System.out.println("Chart removed");
         }
     }
 

@@ -27,10 +27,10 @@ public class GridWorld {
 
     public static double DeadPenalty = -100;
     private double DirectionProbability = 1;
-    private double WallPenalty = 0;
+    private final double WallPenalty = -3;
     private double BlockPenalty = 0;
-    private double defaultReward = 0;
-    private double ChargingReward = 0.0;
+    private final double defaultReward = 0;
+    private final double ChargingReward = 0.0;
     private double GoalReward = 100;
     private double defaultTraveTime = 1;
     private double defaultMean = 8;
@@ -325,10 +325,6 @@ public class GridWorld {
         this.DirectionProbability = DirectionProbability;
     }
 
-    public void setWallPenalty(double WallPenalty) {
-        this.WallPenalty = WallPenalty;
-    }
-
     public void setBlockPenalty(double BlockPenalty) {
         this.BlockPenalty = BlockPenalty;
     }
@@ -340,17 +336,17 @@ public class GridWorld {
     }
 
     public int getActualDirection(int d) {
-        double rand = Math.random();
-        if (rand < DirectionProbability) {
-            return d;
-        } else {
-            int r = d;
-            while (r == d) {
-                r = (int) (Math.random() * 4);
+            double rand = Math.random();
+            if (rand < DirectionProbability) {
+                return d;
+            } else {
+                int r = d;
+                while (r == d) {
+                    r = (int) (Math.random() * 4);
+                }
+                return r;
             }
-            return r;
         }
-    }
 
     public void reset() {
         for (int i = 0; i < location.length; i++) {

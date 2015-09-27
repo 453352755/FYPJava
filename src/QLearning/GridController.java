@@ -224,9 +224,12 @@ public class GridController {
                 location.setOnMouseClicked((MouseEvent me) -> {
                     detailCtrl.setAlgo(algo);
                     detailCtrl.setGridWorld(gw);
+                    analysisCtrl.setAlgo(algo);
                     selectedLocationPane = (GridPane) me.getSource();
                     int row = GridPane.getRowIndex(selectedLocationPane);
                     int col = GridPane.getColumnIndex(selectedLocationPane);
+                    analysisCtrl.setRow(row);
+                    analysisCtrl.setCol(col);
 //                    for (int k = 0; k < gw.getRows(); k++) {
 //                        for (int l = 0; l < gw.getCols(); l++) {
 //                            
