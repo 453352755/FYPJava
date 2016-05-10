@@ -536,7 +536,7 @@ public class GridController {
                     //if (move == false) play = false;
 //                    play = move;
                     //algo.doSteps(1);
-                    if (interval > 100) {
+                    if (interval > 1) {
                         long start = System.nanoTime();
 
                         long end = System.nanoTime();

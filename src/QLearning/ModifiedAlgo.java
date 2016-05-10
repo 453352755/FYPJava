@@ -20,7 +20,7 @@ public class ModifiedAlgo extends Algorithm {
     ModifiedAlgo(GridWorld gw) {
         super(gw);
         Qvalue = new double[gw.getRows()][gw.getCols()][gw.getFullBatterySteps() + 1][4];
-        if (gw.getGoal() != null) {
+        if (gw.getGoal() != null && false) {
             warmStart();
         } else {
             for (int i = 0; i < Qvalue.length; i++) {

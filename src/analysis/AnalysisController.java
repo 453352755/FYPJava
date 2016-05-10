@@ -13,12 +13,10 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
-import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.Chart;
@@ -27,18 +25,14 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.imageio.ImageIO;
 import org.apache.commons.math3.distribution.NormalDistribution;
-import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
 /**
  *
@@ -46,8 +40,8 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
  */
 public class AnalysisController implements Initializable {
 
-    double path1mean = 46, path1steps = 6, path1dev = 8.12;
-    double path2mean = 56, path2steps = 8, path2dev = 2.82;
+    double path1mean = 49, path1steps = 6, path1dev = 63;
+    double path2mean = 56, path2steps = 8, path2dev = 7;
 
     private QLearning.Algorithm algo;
     private LineChart aLineChart;//reward 
@@ -75,7 +69,7 @@ public class AnalysisController implements Initializable {
 
     public void setCol(int col) {
         this.col = col;
-        if(QValueChartCheckBox.isSelected()){
+        if (QValueChartCheckBox.isSelected()) {
             removeChart(QvalueLineChart);
             QValueChartInit();
             addChart(QvalueLineChart);
@@ -184,7 +178,7 @@ public class AnalysisController implements Initializable {
 //            System.out.println("No Path");
 //        }
 
-        NormalDistribution nd1 = new NormalDistribution(path1mean, path1dev);
+        NormalDistribution nd1 = new NormalDistribution(path1mean, Math.sqrt(path1dev));
         for (int i = 0; i < algo.getGridWorld().getFullBatterySteps() * 15; i++) {
             double p = i / 10.0;
             PDF1.getData().add(new XYChart.Data(p, nd1.density(p)));
@@ -198,7 +192,7 @@ public class AnalysisController implements Initializable {
         XYChart.Series CDF2 = new XYChart.Series();
         CDF2.setName("CDF2");
 
-        NormalDistribution nd2 = new NormalDistribution(path2mean, path2dev);
+        NormalDistribution nd2 = new NormalDistribution(path2mean, Math.sqrt(path2dev));
         for (int i = 0; i < algo.getGridWorld().getFullBatterySteps() * 15; i++) {
             double p = i / 10.0;
             PDF2.getData().add(new XYChart.Data(p, nd2.density(p)));
@@ -216,7 +210,7 @@ public class AnalysisController implements Initializable {
     private void QValueChartInit() {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("Remaining Battery");
+        xAxis.setLabel("Remaining Deadline");
         yAxis.setLabel("Q Values");
         //creating the chart
         QvalueLineChart = new LineChart<>(xAxis, yAxis);
@@ -234,10 +228,12 @@ public class AnalysisController implements Initializable {
         right.setName("Right");
         if (algo.getClass() == ModifiedAlgo.class) {
             for (int i = 0; i < algo.getGridWorld().getFullBatterySteps(); i++) {
-                up.getData().add(new XYChart.Data(i,algo.getQvalue(row, col)[i][Up]));
-                down.getData().add(new XYChart.Data(i,algo.getQvalue(row, col) [i][Down]));
-                left.getData().add(new XYChart.Data(i,algo.getQvalue(row, col) [i][Left]));
-                right.getData().add(new XYChart.Data(i,algo.getQvalue(row, col) [i][Right]));
+                up.getData().add(new XYChart.Data(i, algo.getQvalue(row, col)[i][Up]));
+                down.getData().add(new XYChart.Data(i, algo.getQvalue(row, col)[i][Down]));
+                left.getData().add(new XYChart.Data(i, algo.getQvalue(row, col)[i][Left]));
+                right.getData().add(new XYChart.Data(i, algo.getQvalue(row, col)[i][Right]));
+                System.out.println(i + "," + algo.getQvalue(row, col)[i][Up] + "," + algo.getQvalue(row, col)[i][Down]
+                        + "," + algo.getQvalue(row, col)[i][Left] + "," + algo.getQvalue(row, col)[i][Right]);
             }
             QvalueLineChart.getData().add(up);
             QvalueLineChart.getData().add(down);

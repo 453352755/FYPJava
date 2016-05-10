@@ -12,12 +12,18 @@
             <file>file:/C:/Dropbox/FYP/FYPJava/src/QLearning/ValueNeuralNetwork.java</file>
             <file>file:/C:/Dropbox/FYP/FYPJava/src/QLearning/DetailController.java</file>
             <file>file:/C:/Dropbox/FYP/FYPJava/src/app/GUI.java</file>
+            <file>file:/C:/Dropbox/FYP/FYPJava/src/reference/QYPriorityQueue.java</file>
             <file>file:/C:/Dropbox/FYP/FYPJava/src/QLearning/QLearnAlgo.java</file>
             <file>file:/C:/Dropbox/FYP/FYPJava/src/QLearning/RealWorld.java</file>
             <file>file:/C:/Dropbox/FYP/FYPJava/src/QLearning/GridWorld.java</file>
             <file>file:/C:/Dropbox/FYP/FYPJava/src/app/RootController.java</file>
+            <file>file:/C:/Dropbox/FYP/FYPJava/src/QLearning/KShortAlgo.java</file>
+            <file>file:/C:/Dropbox/FYP/FYPJava/src/QLearning/Reward.java</file>
+            <file>file:/C:/Dropbox/FYP/FYPJava/src/app/Color.java</file>
             <file>file:/C:/Dropbox/FYP/FYPJava/src/QLearning/Location.java</file>
+            <file>file:/C:/Dropbox/FYP/FYPJava/src/reference/Q_Env.java</file>
             <file>file:/C:/Dropbox/FYP/FYPJava/src/Simulator/GridMap.java</file>
+            <file>file:/C:/Dropbox/FYP/FYPJava/src/resource/analysis.fxml</file>
             <file>file:/C:/Dropbox/FYP/FYPJava/src/QLearning/GridController.java</file>
             <file>file:/C:/Dropbox/FYP/FYPJava/src/analysis/AnalysisController.java</file>
         </group>

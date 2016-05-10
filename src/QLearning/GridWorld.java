@@ -30,7 +30,7 @@ public class GridWorld {
     private final double WallPenalty = -3;
     private double BlockPenalty = 0;
     private final double defaultReward = 0;
-    private final double ChargingReward = 0.0;
+    private final double ChargingReward = 0;
     private double GoalReward = 100;
     private double defaultTraveTime = 1;
     private double defaultMean = 8;
